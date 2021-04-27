@@ -7,6 +7,10 @@ exports.getInformacionPaciente = async (req, res) =>{
             PAC_PAC_Numero: req.pacPacNumero
         })    
         .exec()
+        if(paciente == null){
+            res.sendStatus(200)
+            return
+        }
         const pacienteInfo = {
             Nombre: paciente.PAC_PAC_Nombre+' '+paciente.PAC_PAC_ApellPater+' '+paciente.PAC_PAC_ApellMater ,
             Rut:paciente.PAC_PAC_Rut,
