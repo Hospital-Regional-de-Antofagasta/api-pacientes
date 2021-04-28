@@ -1,9 +1,10 @@
-const Recetas = require('../models/Pacientes')
-const {mensajesRecetas} = require ('../config')
+const Pacientes = require('../models/Pacientes')
+const PacientesActualizados = require('../models/PacientesActualizados')
+const {mensajes} = require ('../config')
 
 exports.getInformacionPaciente = async (req, res) =>{
     try {
-        const paciente = await Recetas.findOne({
+        const paciente = await Pacientes.findOne({
             PAC_PAC_Numero: req.pacPacNumero
         })    
         .exec()
@@ -27,6 +28,22 @@ exports.getInformacionPaciente = async (req, res) =>{
             PAC_PAC_CorreoExtension: paciente.PAC_PAC_CorreoExtension,           
         }
         res.status(200).send(pacienteInfo)
+    } catch (error) {
+        res.status(500).send({ respuesta: mensajes.serverError})
+    }
+}
+
+exports.putDatosPaciente = async (req, res) =>{
+    try {
+        // await Pacientes.updateOne({
+        //     PAC_PAC_Numero: req.pacPacNumero
+        // },req.body)    
+        // .exec()
+        await PacientesActualizados.deleteOne({
+            numeroPaciente: req.pacPacNumero
+        })
+        await PacientesActualizados.create(req.body)
+        res.sendStatus(204)
     } catch (error) {
         res.status(500).send({ respuesta: mensajesRecetas.serverError})
     }

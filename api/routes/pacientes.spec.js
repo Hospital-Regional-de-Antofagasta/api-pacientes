@@ -5,6 +5,7 @@ const supertest = require("supertest")
 const pacientesSeeds = require('../testSeeds/pacientesSeeds.json')
 
 const Pacientes = require('../models/Pacientes')
+const PacientesActualizados = require('../models/PacientesActualizados')
 
 const request = supertest(app)
 const secreto = process.env.JWT_SECRET
@@ -22,26 +23,6 @@ beforeAll(async done =>{
             Pacientes.create(pacienteSeed),
         ])
     }
-    // //Cambiar fechas de las citas 13, 14, 17 y 18 del seeder para que sean del día actual.
-    // const fechaHoy = new Date()
-    // const fechaHoy1 =  new Date(fechaHoy.getFullYear(),fechaHoy.getMonth(),fechaHoy.getDate(),8,30,0,0)
-    // const fechaHoy2 =  new Date(fechaHoy.getFullYear(),fechaHoy.getMonth(),fechaHoy.getDate(),16,30,0,0)
-    // await Promise.all([
-    //     CitasPacientes.findOneAndUpdate({CorrelativoCita: 13},{FechaCitacion: fechaHoy1}),
-    //     CitasPacientes.findOneAndUpdate({CorrelativoCita: 14},{FechaCitacion: fechaHoy2}),
-    //     CitasPacientes.findOneAndUpdate({CorrelativoCita: 17},{FechaCitacion: fechaHoy1}),
-    //     CitasPacientes.findOneAndUpdate({CorrelativoCita: 18},{FechaCitacion: fechaHoy2})
-    // ])
-    // //Cambiar fechas de las citas 19, 20, 21 y 24 del seeder para que sean posteriores al día actual.
-    // const anio = fechaHoy.getFullYear()+1
-    // const fechaPosterior1 =  new Date(anio,1,1,8,30,0,0)
-    // const fechaPosterior2 =  new Date(anio,2,1,16,30,0,0)
-    // await Promise.all([
-    //     CitasPacientes.findOneAndUpdate({CorrelativoCita: 19},{FechaCitacion: fechaPosterior1}),
-    //     CitasPacientes.findOneAndUpdate({CorrelativoCita: 20},{FechaCitacion: fechaPosterior1}),
-    //     CitasPacientes.findOneAndUpdate({CorrelativoCita: 21},{FechaCitacion: fechaPosterior2}),
-    //     CitasPacientes.findOneAndUpdate({CorrelativoCita: 24},{FechaCitacion: fechaPosterior2})
-    // ])
     done()
 })
 
@@ -49,6 +30,7 @@ beforeAll(async done =>{
 afterAll(async (done) => {
     //Borrar el contenido de la colección en la base de datos despues de la pruebas.
     await Pacientes.deleteMany()
+    await PacientesActualizados.deleteMany()
     //Cerrar la conexión a la base de datos despues de la pruebas.
     await mongoose.connection.close()
     done()
@@ -59,7 +41,7 @@ describe('Endpoints', () => {
     describe('Información de Pacientes', () => {
         it('Intenta obtener la información de un paciente sin token', async done =>{ 
             const respuesta = await request.get('/pacientes/informacion')
-            expect(respuesta.status).toBe(403)
+            expect(respuesta.status).toBe(401)
             //Probar que se recibe un mensaje
             expect(respuesta.body.respuesta).toBeTruthy()
             done()
@@ -94,6 +76,61 @@ describe('Endpoints', () => {
             expect(paciente.PAC_PAC_TelefonoMovil).toStrictEqual('')
             expect(paciente.PAC_PAC_CorreoCuerpo).toStrictEqual('')
             expect(paciente.PAC_PAC_CorreoExtension).toStrictEqual('')
+            done()
+        })
+    })
+    describe('Actualizar datos de Pacientes', () => {
+        it('Intenta actualizar los datos de un paciente sin token', async done =>{ 
+            const respuesta = await request.put('/pacientes/actualizar_datos')
+            expect(respuesta.status).toBe(401)
+            //Probar que se recibe un mensaje
+            expect(respuesta.body.respuesta).toBeTruthy()
+            done()
+        })
+        it('Intenta actualizar los datos de un paciente con token (El paciente no existe)', async done =>{            
+            token = jwt.sign({PAC_PAC_Numero: 2}, secreto)
+            const respuesta = await request.put('/pacientes/actualizar_datos')
+                .set('Authorization',token)
+            expect(respuesta.status).toBe(204)
+            done()
+        })
+        it('Intenta actualizar los datos de un paciente con token (El paciente si existe)', async done =>{            
+            token = jwt.sign({PAC_PAC_Numero: 4}, secreto)
+            const pacienteActualizar = {
+                numeroPaciente: 4,
+                textoCalle: 'Calle Nueva 123',
+                textoNumero: '10',
+                textoDepartamento: '',
+                textoPoblacion: 'VILLA CASPAÑA',
+                codigoComuna: '01',
+                codigoCiudad: '01',
+                codigoRegion: '02',
+                fono: ' ',
+                telefonoMovil: '094924483',
+                correoCuerpo: '',
+                correoExtension: '' 
+            }
+            const respuesta = await request.put('/pacientes/actualizar_datos')
+                .set('Authorization',token)
+                .send(pacienteActualizar)
+            expect(respuesta.status).toBe(204)
+
+            const paciente = await PacientesActualizados.findOne({
+                numeroPaciente: 4
+            })
+            //Probar que el paciente está en la colección de actualizados.
+            expect(paciente.numeroPaciente).toStrictEqual(4)
+            expect(paciente.textoCalle).toStrictEqual('Calle Nueva 123')
+            expect(paciente.textoNumero).toStrictEqual('10')
+            expect(paciente.textoDepartamento).toStrictEqual('')
+            expect(paciente.textoPoblacion).toStrictEqual('VILLA CASPAÑA')
+            expect(paciente.codigoComuna).toStrictEqual('01')
+            expect(paciente.codigoCiudad).toStrictEqual('01')
+            expect(paciente.codigoRegion).toStrictEqual('02')
+            expect(paciente.fono).toStrictEqual(' ')
+            expect(paciente.telefonoMovil).toStrictEqual('094924483')
+            expect(paciente.correoCuerpo).toBeFalsy()
+            expect(paciente.correoExtension).toBeFalsy()
             done()
         })
     })
