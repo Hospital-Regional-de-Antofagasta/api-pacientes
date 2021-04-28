@@ -3,9 +3,9 @@ const PacientesActualizados = require('../models/PacientesActualizados')
 const {mensajes} = require ('../config')
 
 exports.getInformacionPaciente = async (req, res) =>{
-    try {
+    try {        
         const paciente = await Pacientes.findOne({
-            PAC_PAC_Numero: req.pacPacNumero
+            numeroPaciente: req.numeroPaciente
         })    
         .exec()
         if(paciente == null){
@@ -13,19 +13,20 @@ exports.getInformacionPaciente = async (req, res) =>{
             return
         }
         const pacienteInfo = {
-            Nombre: paciente.PAC_PAC_Nombre+' '+paciente.PAC_PAC_ApellPater+' '+paciente.PAC_PAC_ApellMater ,
-            Rut:paciente.PAC_PAC_Rut,
-            PAC_PAC_CalleHabit: paciente.PAC_PAC_CalleHabit,
-            PAC_PAC_NumerHabit: paciente.PAC_PAC_NumerHabit,
-            PAC_PAC_DeparHabit: paciente.PAC_PAC_DeparHabit,
-            PAC_PAC_PoblaHabit: paciente.PAC_PAC_PoblaHabit,
-            PAC_PAC_ComunHabit: paciente.PAC_PAC_ComunHabit,
-            PAC_PAC_CiudaHabit: paciente.PAC_PAC_CiudaHabit,
-            PAC_PAC_RegioHabit: paciente.PAC_PAC_RegioHabit,
-            PAC_PAC_Fono: paciente.PAC_PAC_Fono,
-            PAC_PAC_TelefonoMovil: paciente.PAC_PAC_TelefonoMovil,
-            PAC_PAC_CorreoCuerpo: paciente.PAC_PAC_CorreoCuerpo,
-            PAC_PAC_CorreoExtension: paciente.PAC_PAC_CorreoExtension,           
+            numeroPaciente: paciente.numeroPaciente,
+            rut:paciente.rut,
+            nombreCompleto: paciente.nombre+' '+paciente.apellidoPaterno+' '+paciente.apellidoMaterno,
+            textoCalle: paciente.textoCalle,
+            textoNumero: paciente.textoNumero,
+            textoDepartamento: paciente.textoDepartamento,
+            textoPoblacion: paciente.textoPoblacion,
+            codigoComuna: paciente.codigoComuna,
+            codigoCiudad: paciente.codigoCiudad,
+            codigoRegion: paciente.codigoRegion,
+            fono: paciente.fono,
+            telefonoMovil: paciente.telefonoMovil,
+            correoCuerpo: paciente.correoCuerpo,
+            correoExtension: paciente.correoExtension,           
         }
         res.status(200).send(pacienteInfo)
     } catch (error) {
@@ -36,11 +37,11 @@ exports.getInformacionPaciente = async (req, res) =>{
 exports.putDatosPaciente = async (req, res) =>{
     try {
         // await Pacientes.updateOne({
-        //     PAC_PAC_Numero: req.pacPacNumero
+        //     numeroPaciente: req.numeroPaciente
         // },req.body)    
         // .exec()
         await PacientesActualizados.deleteOne({
-            numeroPaciente: req.pacPacNumero
+            numeroPaciente: req.numeroPaciente
         })
         await PacientesActualizados.create(req.body)
         res.sendStatus(204)
