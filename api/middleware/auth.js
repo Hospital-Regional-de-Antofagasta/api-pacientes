@@ -11,9 +11,9 @@ const estaAutenticado = (req, res, next) => {
         if (error) {
             return res.status(401).send({respuesta: mensajes.forbiddenAccess})
         }
-        const {_id, PAC_PAC_Numero} =  decoded
+        const {_id, numeroPaciente} =  decoded
         req.idPaciente = _id
-        req.pacPacNumero = PAC_PAC_Numero
+        req.numeroPaciente = numeroPaciente
         next()
     })
 }
