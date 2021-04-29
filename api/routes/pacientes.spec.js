@@ -65,10 +65,10 @@ describe('Endpoints', () => {
             const paciente = respuesta.body
             expect(paciente.rut).toStrictEqual('10771131-7')
             expect(paciente.nombreCompleto).toStrictEqual('JACQUELINE CLOTILDE LAZO ZAMBRA')
-            expect(paciente.textoCalle).toStrictEqual('')
-            expect(paciente.textoNumero).toStrictEqual('')
-            expect(paciente.textoDepartamento).toStrictEqual(' ')
-            expect(paciente.textoPoblacion).toStrictEqual('')
+            expect(paciente.direccionCalle).toStrictEqual('')
+            expect(paciente.direccionNumero).toStrictEqual('')
+            expect(paciente.direccionDepartamento).toStrictEqual(' ')
+            expect(paciente.direccionPoblacion).toStrictEqual('')
             expect(paciente.codigoComuna).toStrictEqual('01')
             expect(paciente.codigoCiudad).toStrictEqual('03')
             expect(paciente.codigoRegion).toStrictEqual('01')
@@ -98,10 +98,10 @@ describe('Endpoints', () => {
             token = jwt.sign({numeroPaciente: 4}, secreto)
             const pacienteActualizar = {
                 numeroPaciente: 4,
-                textoCalle: 'Calle Nueva 123',
-                textoNumero: '10',
-                textoDepartamento: '',
-                textoPoblacion: 'VILLA CASPAÑA',
+                direccionCalle: 'Calle Nueva 123',
+                direccionNumero: '10',
+                direccionDepartamento: '',
+                direccionPoblacion: 'VILLA CASPAÑA',
                 codigoComuna: '01',
                 codigoCiudad: '01',
                 codigoRegion: '02',
@@ -120,10 +120,10 @@ describe('Endpoints', () => {
             })
             //Probar que el paciente está en la colección de actualizados.
             expect(paciente.numeroPaciente).toStrictEqual(4)
-            expect(paciente.textoCalle).toStrictEqual('Calle Nueva 123')
-            expect(paciente.textoNumero).toStrictEqual('10')
-            expect(paciente.textoDepartamento).toStrictEqual('')
-            expect(paciente.textoPoblacion).toStrictEqual('VILLA CASPAÑA')
+            expect(paciente.direccionCalle).toStrictEqual('Calle Nueva 123')
+            expect(paciente.direccionNumero).toStrictEqual('10')
+            expect(paciente.direccionDepartamento).toStrictEqual('')
+            expect(paciente.direccionPoblacion).toStrictEqual('VILLA CASPAÑA')
             expect(paciente.codigoComuna).toStrictEqual('01')
             expect(paciente.codigoCiudad).toStrictEqual('01')
             expect(paciente.codigoRegion).toStrictEqual('02')
