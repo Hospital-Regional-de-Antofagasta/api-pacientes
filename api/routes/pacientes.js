@@ -5,7 +5,7 @@ const router = express.Router()
 
 router.get('/informacion',estaAutenticado, pacientesController.getInformacionPaciente)
 
-router.put('/actualizar_datos',estaAutenticado, pacientesController.putDatosPaciente)
+router.post('/actualizar_datos',estaAutenticado, pacientesController.postDatosPaciente)
 
 
 module.exports = router

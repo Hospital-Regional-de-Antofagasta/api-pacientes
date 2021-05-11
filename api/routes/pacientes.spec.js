@@ -81,7 +81,7 @@ describe('Endpoints', () => {
     })
     describe('Actualizar datos de Pacientes', () => {
         it('Intenta actualizar los datos de un paciente sin token', async done =>{ 
-            const respuesta = await request.put('/pacientes/actualizar_datos')
+            const respuesta = await request.post('/pacientes/actualizar_datos')
             expect(respuesta.status).toBe(401)
             //Probar que se recibe un mensaje
             expect(respuesta.body.respuesta).toBeTruthy()
@@ -89,9 +89,9 @@ describe('Endpoints', () => {
         })
         it('Intenta actualizar los datos de un paciente con token (El paciente no existe)', async done =>{            
             token = jwt.sign({numeroPaciente: 2}, secreto)
-            const respuesta = await request.put('/pacientes/actualizar_datos')
+            const respuesta = await request.post('/pacientes/actualizar_datos')
                 .set('Authorization',token)
-            expect(respuesta.status).toBe(204)
+            expect(respuesta.status).toBe(201)
             done()
         })
         it('Intenta actualizar los datos de un paciente con token (El paciente si existe)', async done =>{            
@@ -110,10 +110,10 @@ describe('Endpoints', () => {
                 correoCuerpo: '',
                 correoExtension: '' 
             }
-            const respuesta = await request.put('/pacientes/actualizar_datos')
+            const respuesta = await request.post('/pacientes/actualizar_datos')
                 .set('Authorization',token)
                 .send(pacienteActualizar)
-            expect(respuesta.status).toBe(204)
+            expect(respuesta.status).toBe(201)
 
             const paciente = await PacientesActualizados.findOne({
                 numeroPaciente: 4

@@ -34,7 +34,7 @@ exports.getInformacionPaciente = async (req, res) =>{
     }
 }
 
-exports.putDatosPaciente = async (req, res) =>{
+exports.postDatosPaciente = async (req, res) =>{
     try {
         // await Pacientes.updateOne({
         //     numeroPaciente: req.numeroPaciente
@@ -44,7 +44,7 @@ exports.putDatosPaciente = async (req, res) =>{
             numeroPaciente: req.numeroPaciente
         })
         await PacientesActualizados.create(req.body)
-        res.sendStatus(204)
+        res.sendStatus(201)
     } catch (error) {
         res.status(500).send({ respuesta: mensajesRecetas.serverError})
     }
