@@ -40,14 +40,16 @@ exports.getInformacionPaciente = async (req, res) => {
 
 exports.postDatosPaciente = async (req, res) => {
   try {
-    // await Pacientes.updateOne({
-    //     numeroPaciente: req.numeroPaciente
-    // },req.body)
-    // .exec()
     await PacientesActualizados.deleteOne({
       numeroPaciente: req.numeroPaciente,
     });
     await PacientesActualizados.create(req.body);
+    await Pacientes.updateOne(
+      {
+        numeroPaciente: req.numeroPaciente,
+      },
+      { datosContactoActualizados: true }
+    ).exec();
     res.sendStatus(201);
   } catch (error) {
     res.status(500).send({ respuesta: mensajesRecetas.serverError });
