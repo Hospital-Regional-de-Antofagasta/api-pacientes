@@ -25,6 +25,7 @@ const Pacientes = mongoose.model(
       telefonoMovil: String,
       correoCuerpo: String,
       correoExtension: String,
+      datosContactoActualizados: Boolean,
     },
     { timestamps: true }
   )
