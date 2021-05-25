@@ -52,6 +52,32 @@ exports.postDatosPaciente = async (req, res) => {
     ).exec();
     res.sendStatus(201);
   } catch (error) {
-    res.status(500).send({ respuesta: mensajesRecetas.serverError });
+    res.status(500).send({ respuesta: mensajes.serverError });
+  }
+};
+
+exports.getSiDatosActualizadosPaciente = async (req, res) => {
+  try {
+    const paciente = await Pacientes.findOne({
+      numeroPaciente: req.numeroPaciente,
+    }).exec();
+    res
+      .status(200)
+      .send({ respuesta: paciente.datosContactoActualizados });
+  } catch (error) {
+    res.status(500).send({ respuesta: mensajes.serverError });
+  }
+};
+
+exports.getSolicitudPendientePaciente = async (req, res) => {
+  try {
+    const solicitudPendiente = await PacientesActualizados.findOne({
+      numeroPaciente: req.numeroPaciente,
+    }).exec();
+    if (solicitudPendiente)
+      return res.status(200).send({ respuesta: true });
+    res.status(200).send({ respuesta: false });
+  } catch (error) {
+    res.status(500).send({ respuesta: mensajes.serverError });
   }
 };
