@@ -149,17 +149,21 @@ describe("Endpoints", () => {
       expect(respuesta.status).toBe(201);
       //Probar que el paciente está en la colección de actualizados.
       expect(pacienteActualizado.numeroPaciente).toStrictEqual(4);
-      expect(pacienteActualizado.direccionCalle).toStrictEqual("Calle Nueva 123");
+      expect(pacienteActualizado.direccionCalle).toStrictEqual(
+        "Calle Nueva 123"
+      );
       expect(pacienteActualizado.direccionNumero).toStrictEqual("10");
       expect(pacienteActualizado.direccionDepartamento).toStrictEqual("");
-      expect(pacienteActualizado.direccionPoblacion).toStrictEqual("VILLA CASPAÑA");
+      expect(pacienteActualizado.direccionPoblacion).toStrictEqual(
+        "VILLA CASPAÑA"
+      );
       expect(pacienteActualizado.codigoComuna).toStrictEqual("01");
       expect(pacienteActualizado.codigoCiudad).toStrictEqual("01");
       expect(pacienteActualizado.codigoRegion).toStrictEqual("02");
       expect(pacienteActualizado.fono).toStrictEqual("");
       expect(pacienteActualizado.telefonoMovil).toStrictEqual("094924483");
-      expect(pacienteActualizado.correoCuerpo).toBe('correo');
-      expect(pacienteActualizado.correoExtension).toBe('correo.com');
+      expect(pacienteActualizado.correoCuerpo).toBe("correo");
+      expect(pacienteActualizado.correoExtension).toBe("correo.com");
 
       expect(paciente.datosContactoActualizados).toBeTruthy();
 
@@ -192,7 +196,7 @@ describe("Endpoints", () => {
       });
 
       expect(respuesta.status).toBe(400);
-      expect(respuesta.body).toEqual({ respuesta: mensajes.badRequest});
+      expect(respuesta.body).toEqual({ respuesta: mensajes.badRequest });
 
       expect(pacienteActualizado).toBeFalsy();
 
@@ -225,7 +229,7 @@ describe("Endpoints", () => {
       });
 
       expect(respuesta.status).toBe(400);
-      expect(respuesta.body).toEqual({ respuesta: mensajes.badRequest});
+      expect(respuesta.body).toEqual({ respuesta: mensajes.badRequest });
 
       expect(pacienteActualizado).toBeFalsy();
 
@@ -258,9 +262,114 @@ describe("Endpoints", () => {
       });
 
       expect(respuesta.status).toBe(400);
-      expect(respuesta.body).toEqual({ respuesta: mensajes.badRequest});
+      expect(respuesta.body).toEqual({ respuesta: mensajes.badRequest });
 
       expect(pacienteActualizado).toBeFalsy();
+
+      done();
+    });
+  });
+  describe("Verify if datos paciente are updated", () => {
+    it("Should not verify without token", async (done) => {
+      const respuesta = await request
+        .get("/v1/pacientes/verificar_si_datos_actualizados_paciente")
+        .set("Authorization", "no-token");
+
+      expect(respuesta.status).toBe(401);
+      expect(respuesta.body.respuesta).toBe(mensajes.forbiddenAccess);
+
+      done();
+    });
+    it("Should not verify if paciente does not exists", async (done) => {
+      token = jwt.sign({ numeroPaciente: 5 }, secreto);
+      const respuesta = await request
+        .get("/v1/pacientes/verificar_si_datos_actualizados_paciente")
+        .set("Authorization", token);
+
+      expect(respuesta.status).toBe(400);
+      expect(respuesta.body.respuesta).toBe(mensajes.badRequest);
+
+      done();
+    });
+    it("Should verify paciente without updated datos contacto", async (done) => {
+      token = jwt.sign({ numeroPaciente: 4 }, secreto);
+      const respuesta = await request
+        .get("/v1/pacientes/verificar_si_datos_actualizados_paciente")
+        .set("Authorization", token);
+
+      expect(respuesta.status).toBe(200);
+      expect(respuesta.body.respuesta).toBeFalsy();
+
+      done();
+    });
+    it("Should verify paciente with updated datos contacto", async (done) => {
+      token = jwt.sign({ numeroPaciente: 3 }, secreto);
+      const respuesta = await request
+        .get("/v1/pacientes/verificar_si_datos_actualizados_paciente")
+        .set("Authorization", token);
+
+      expect(respuesta.status).toBe(200);
+      expect(respuesta.body.respuesta).toBeTruthy();
+
+      done();
+    });
+  });
+  describe("verify if there is a solicitud pendiente de actualizar datos paciente", () => {
+    it("Should not verify without token", async (done) => {
+      const respuesta = await request
+        .get("/v1/pacientes/verificar_solicitud_pendiente_paciente")
+        .set("Authorization", "no-token");
+
+      expect(respuesta.status).toBe(401);
+      expect(respuesta.body.respuesta).toBe(mensajes.forbiddenAccess);
+
+      done();
+    });
+    it("Should not verify if paciente does not exists", async (done) => {
+      token = jwt.sign({ numeroPaciente: 5 }, secreto);
+      const respuesta = await request
+        .get("/v1/pacientes/verificar_solicitud_pendiente_paciente")
+        .set("Authorization", token);
+
+      expect(respuesta.status).toBe(400);
+      expect(respuesta.body.respuesta).toBe(mensajes.badRequest);
+
+      done();
+    });
+    it("Should verify without existing solicitud de actualizar datos", async (done) => {
+      token = jwt.sign({ numeroPaciente: 4 }, secreto);
+      const respuesta = await request
+        .get("/v1/pacientes/verificar_si_datos_actualizados_paciente")
+        .set("Authorization", token);
+
+      expect(respuesta.status).toBe(200);
+      expect(respuesta.body.solicitudPendiente).toBeFalsy();
+
+      done();
+    });
+    it("Should verify with existing solicitud de actualizar datos", async (done) => {
+      token = jwt.sign({ numeroPaciente: 4 }, secreto);
+      const pacienteActualizar = {
+        numeroPaciente: 4,
+        direccionCalle: "Calle Nueva 123",
+        direccionNumero: "10",
+        direccionDepartamento: "",
+        direccionPoblacion: "VILLA CASPAÑA",
+        codigoComuna: "01",
+        codigoCiudad: "01",
+        codigoRegion: "02",
+        fono: "",
+        telefonoMovil: "094924483",
+        correoCuerpo: "correo",
+        correoExtension: "correo.com",
+      };
+      await PacientesActualizados.create(pacienteActualizar);
+      const respuesta = await request
+        .get("/v1/pacientes/verificar_si_datos_actualizados_paciente")
+        .set("Authorization", token);
+
+      expect(respuesta.status).toBe(200);
+      expect(respuesta.body.solicitudPendiente).toBeFalsy();
 
       done();
     });

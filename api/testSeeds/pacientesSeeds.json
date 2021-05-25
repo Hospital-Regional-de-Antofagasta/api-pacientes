@@ -15,7 +15,8 @@
     "fono": "",
     "telefonoMovil": "",
     "correoCuerpo": "",
-    "correoExtension": ""
+    "correoExtension": "",
+    "datosContactoActualizados": false
   },
   {
     "numeroPaciente": 3,
@@ -33,7 +34,8 @@
     "fono": "",
     "telefonoMovil": "",
     "correoCuerpo": "",
-    "correoExtension": ""
+    "correoExtension": "",
+    "datosContactoActualizados": true
   },
   {
     "numeroPaciente": 4,
@@ -51,6 +53,7 @@
     "fono": " ",
     "telefonoMovil": " 094924483",
     "correoCuerpo": null,
-    "correoExtension": null
+    "correoExtension": null,
+    "datosContactoActualizados": false
   }
 ]
