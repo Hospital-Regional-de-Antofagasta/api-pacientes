@@ -31,6 +31,7 @@ exports.getInformacionPaciente = async (req, res) => {
       telefonoMovil: paciente.telefonoMovil,
       correoCuerpo: paciente.correoCuerpo,
       correoExtension: paciente.correoExtension,
+      datosContactoActualizados: paciente.datosContactoActualizados
     };
     res.status(200).send(pacienteInfo);
   } catch (error) {
@@ -50,7 +51,7 @@ exports.postDatosPaciente = async (req, res) => {
       },
       { datosContactoActualizados: true }
     ).exec();
-    res.sendStatus(201);
+    res.status(201).send({});
   } catch (error) {
     res.status(500).send({ respuesta: mensajes.serverError });
   }
