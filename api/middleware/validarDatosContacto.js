@@ -21,9 +21,32 @@ exports.validarCorreo = (req, res, next) => {
 exports.validarTelefono = (req, res, next) => {
   try {
     const { fono, telefonoMovil } = req.body;
-    if (!fono && !telefonoMovil)
+    if (
+      typeof telefonoMovil !== "string" ||
+      typeof fono !== "string"
+    ) {
       return res.status(400).send({ respuesta: mensajes.badRequest });
+    } else {
+      if ((telefonoMovil === "" && fono.length < 6) || (fono === "" && telefonoMovil.length < 9)) {
+        return res.status(400).send({ respuesta: mensajes.badRequest });
+      }
+    }
+    next();
+  } catch (error) {
+    res.status(500).send({ respuesta: mensajes.serverError });
+  }
+};
 
+exports.validarUbicacion = (req, res, next) => {
+  try {
+    const { codigoComuna, codigoCiudad, codigoRegion } = req.body;
+    if (
+      (typeof codigoComuna !== "string" || codigoComuna.length < 2) ||
+      (typeof codigoCiudad !== "string" || codigoCiudad.length < 2) ||
+      (typeof codigoRegion !== "string" || codigoRegion.length < 2)
+    ) {
+      return res.status(400).send({ respuesta: mensajes.badRequest });
+    } 
     next();
   } catch (error) {
     res.status(500).send({ respuesta: mensajes.serverError });
