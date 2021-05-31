@@ -22,7 +22,7 @@ exports.validarTelefono = (req, res, next) => {
   try {
     const { fono, telefonoMovil } = req.body;
     if (
-      typeof telefonoMovil !== "string" &&
+      typeof telefonoMovil !== "string" ||
       typeof fono !== "string"
     ) {
       return res.status(400).send({ respuesta: mensajes.badRequest });
