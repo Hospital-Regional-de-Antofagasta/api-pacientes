@@ -23,13 +23,15 @@ exports.validarTelefono = (req, res, next) => {
     const { fono, telefonoMovil } = req.body;
     if (
       typeof telefonoMovil !== "string" ||
-      typeof fono !== "string"
+      typeof fono !== "string" ||
+      (fono === "" && telefonoMovil === "") ||
+      (fono === "" && telefonoMovil.length < 8) ||
+      (fono.length < 6 && telefonoMovil === "") ||
+      (fono !== ""&& telefonoMovil !== "" && fono.length < 6 && telefonoMovil.length < 8) ||
+      (fono.length > 6 && telefonoMovil !== "" && telefonoMovil.length < 8) ||
+      (fono !== "" && fono.length < 6 && telefonoMovil.length > 8)
     ) {
       return res.status(400).send({ respuesta: mensajes.badRequest });
-    } else {
-      if ((telefonoMovil === "" && fono.length < 6) || (fono === "" && telefonoMovil.length < 9)) {
-        return res.status(400).send({ respuesta: mensajes.badRequest });
-      }
     }
     next();
   } catch (error) {
@@ -41,12 +43,15 @@ exports.validarUbicacion = (req, res, next) => {
   try {
     const { codigoComuna, codigoCiudad, codigoRegion } = req.body;
     if (
-      (typeof codigoComuna !== "string" || codigoComuna.length < 2) ||
-      (typeof codigoCiudad !== "string" || codigoCiudad.length < 2) ||
-      (typeof codigoRegion !== "string" || codigoRegion.length < 2)
+      typeof codigoComuna !== "string" ||
+      codigoComuna.length < 2 ||
+      typeof codigoCiudad !== "string" ||
+      codigoCiudad.length < 2 ||
+      typeof codigoRegion !== "string" ||
+      codigoRegion.length < 2
     ) {
       return res.status(400).send({ respuesta: mensajes.badRequest });
-    } 
+    }
     next();
   } catch (error) {
     res.status(500).send({ respuesta: mensajes.serverError });
