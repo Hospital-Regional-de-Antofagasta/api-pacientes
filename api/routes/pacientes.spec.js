@@ -96,7 +96,6 @@ describe("Endpoints", () => {
     it("Intenta actualizar los datos de un paciente con token (El paciente no existe)", async (done) => {
       token = jwt.sign({ numeroPaciente: 5 }, secreto);
       const pacienteActualizar = {
-        numeroPaciente: 5,
         direccionCalle: "Calle Nueva 123",
         direccionNumero: "10",
         direccionDepartamento: "",
@@ -120,7 +119,6 @@ describe("Endpoints", () => {
     it("Should update datos de un paciente", async (done) => {
       token = jwt.sign({ numeroPaciente: 4 }, secreto);
       const pacienteActualizar = {
-        numeroPaciente: 4,
         direccionCalle: "Calle Nueva 123",
         direccionNumero: "10",
         direccionDepartamento: "",
@@ -148,7 +146,7 @@ describe("Endpoints", () => {
 
       expect(respuesta.status).toBe(201);
       //Probar que el paciente está en la colección de actualizados.
-      expect(pacienteActualizado.numeroPaciente).toStrictEqual(4);
+      expect(pacienteActualizado.numeroPaciente).toBeFalsy();
       expect(pacienteActualizado.direccionCalle).toStrictEqual(
         "Calle Nueva 123"
       );
@@ -172,7 +170,6 @@ describe("Endpoints", () => {
     it("Should not update datos de contacto del paciente si el correo es vacio", async (done) => {
       token = jwt.sign({ numeroPaciente: 4 }, secreto);
       const pacienteActualizar = {
-        numeroPaciente: 4,
         direccionCalle: "Calle Nueva 123",
         direccionNumero: "10",
         direccionDepartamento: "",
@@ -205,7 +202,6 @@ describe("Endpoints", () => {
     it("Should not update datos de contacto del paciente si el correo es invalido", async (done) => {
       token = jwt.sign({ numeroPaciente: 4 }, secreto);
       const pacienteActualizar = {
-        numeroPaciente: 4,
         direccionCalle: "Calle Nueva 123",
         direccionNumero: "10",
         direccionDepartamento: "",
@@ -238,7 +234,6 @@ describe("Endpoints", () => {
     it("Should not update datos de contacto del paciente si ambos telefonos son vacios", async (done) => {
       token = jwt.sign({ numeroPaciente: 4 }, secreto);
       const pacienteActualizar = {
-        numeroPaciente: 4,
         direccionCalle: "Calle Nueva 123",
         direccionNumero: "10",
         direccionDepartamento: "",
