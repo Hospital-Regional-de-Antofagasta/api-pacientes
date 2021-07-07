@@ -9,6 +9,7 @@ const PacientesActualizados = mongoose.model(
         type: Number,
         require: true,
         unique: true,
+        select: false,
       },
       direccionCalle: String,
       direccionNumero: String,

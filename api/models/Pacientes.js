@@ -9,6 +9,7 @@ const Pacientes = mongoose.model(
         type: Number,
         require: true,
         unique: true,
+        select: false,
       },
       rut: String,
       apellidoPaterno: String,

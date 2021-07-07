@@ -31,7 +31,7 @@ exports.getInformacionPaciente = async (req, res) => {
       telefonoMovil: paciente.telefonoMovil,
       correoCuerpo: paciente.correoCuerpo,
       correoExtension: paciente.correoExtension,
-      datosContactoActualizados: paciente.datosContactoActualizados
+      datosContactoActualizados: paciente.datosContactoActualizados,
     };
     res.status(200).send(pacienteInfo);
   } catch (error) {
@@ -41,13 +41,16 @@ exports.getInformacionPaciente = async (req, res) => {
 
 exports.postDatosPaciente = async (req, res) => {
   try {
+    const numeroPaciente = req.numeroPaciente;
     await PacientesActualizados.deleteOne({
-      numeroPaciente: req.numeroPaciente,
+      numeroPaciente,
     });
+    const pacienteAActualizar = req.body;
+    pacienteAActualizar.numeroPaciente = numeroPaciente;
     await PacientesActualizados.create(req.body);
     await Pacientes.updateOne(
       {
-        numeroPaciente: req.numeroPaciente,
+        numeroPaciente,
       },
       { datosContactoActualizados: true }
     ).exec();
@@ -62,9 +65,7 @@ exports.getSiDatosActualizadosPaciente = async (req, res) => {
     const paciente = await Pacientes.findOne({
       numeroPaciente: req.numeroPaciente,
     }).exec();
-    res
-      .status(200)
-      .send({ respuesta: paciente.datosContactoActualizados });
+    res.status(200).send({ respuesta: paciente.datosContactoActualizados });
   } catch (error) {
     res.status(500).send({ respuesta: mensajes.serverError });
   }
@@ -75,8 +76,7 @@ exports.getSolicitudPendientePaciente = async (req, res) => {
     const solicitudPendiente = await PacientesActualizados.findOne({
       numeroPaciente: req.numeroPaciente,
     }).exec();
-    if (solicitudPendiente)
-      return res.status(200).send({ respuesta: true });
+    if (solicitudPendiente) return res.status(200).send({ respuesta: true });
     res.status(200).send({ respuesta: false });
   } catch (error) {
     res.status(500).send({ respuesta: mensajes.serverError });
