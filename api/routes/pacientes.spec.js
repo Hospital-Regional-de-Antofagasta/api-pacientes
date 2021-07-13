@@ -104,7 +104,7 @@ describe("Endpoints", () => {
         codigoCiudad: "01",
         codigoRegion: "02",
         fono: "",
-        telefonoMovil: "094924483",
+        telefonoMovil: "94924483",
         correoCuerpo: "correo",
         correoExtension: "correo.com",
       };
@@ -127,7 +127,7 @@ describe("Endpoints", () => {
         codigoCiudad: "01",
         codigoRegion: "02",
         fono: "",
-        telefonoMovil: "094924483",
+        telefonoMovil: "94924483",
         correoCuerpo: "correo",
         correoExtension: "correo.com",
       };
@@ -159,7 +159,7 @@ describe("Endpoints", () => {
       expect(pacienteActualizado.codigoCiudad).toStrictEqual("01");
       expect(pacienteActualizado.codigoRegion).toStrictEqual("02");
       expect(pacienteActualizado.fono).toStrictEqual("");
-      expect(pacienteActualizado.telefonoMovil).toStrictEqual("094924483");
+      expect(pacienteActualizado.telefonoMovil).toStrictEqual("94924483");
       expect(pacienteActualizado.correoCuerpo).toBe("correo");
       expect(pacienteActualizado.correoExtension).toBe("correo.com");
 
@@ -178,7 +178,7 @@ describe("Endpoints", () => {
         codigoCiudad: "01",
         codigoRegion: "02",
         fono: "",
-        telefonoMovil: "094924483",
+        telefonoMovil: "94924483",
         correoCuerpo: "",
         correoExtension: "",
       };
@@ -210,7 +210,7 @@ describe("Endpoints", () => {
         codigoCiudad: "01",
         codigoRegion: "02",
         fono: "",
-        telefonoMovil: "094924483",
+        telefonoMovil: "94924483",
         correoCuerpo: "cor=reo",
         correoExtension: "correo",
       };

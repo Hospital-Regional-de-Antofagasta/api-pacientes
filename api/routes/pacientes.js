@@ -6,6 +6,7 @@ const {
   validarTelefono,
   validarSiPacienteExiste,
   validarUbicacion,
+  validarNoObligatorios,
 } = require("../middleware/validarDatosContacto");
 const router = express.Router();
 
@@ -20,7 +21,8 @@ router.post(
   estaAutenticado,
   validarCorreo,
   validarTelefono,
-  validarUbicacion,
+  validarUbicacion,  
+  validarNoObligatorios,
   pacientesController.postDatosPaciente
 );
 
