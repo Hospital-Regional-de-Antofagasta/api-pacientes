@@ -119,17 +119,17 @@ describe("Endpoints", () => {
     it("Should update datos de un paciente", async (done) => {
       token = jwt.sign({ numeroPaciente: 4 }, secreto);
       const pacienteActualizar = {
-        direccionCalle: "Calle Nueva 123",
-        direccionNumero: "10",
-        direccionDepartamento: "",
-        direccionPoblacion: "VILLA CASPAÑA",
-        codigoComuna: "01",
-        codigoCiudad: "01",
-        codigoRegion: "02",
-        fono: "",
-        telefonoMovil: "94924483",
-        correoCuerpo: "correo",
-        correoExtension: "correo.com",
+        direccionCalle: "chhuu",
+        direccionNumero: "444442",
+        direccionDepartamento: "40y",
+        direccionPoblacion: "granví",
+        codigoComuna: "01    ",
+        codigoCiudad: "03 ",
+        codigoRegion: "01 ",
+        fono: "123456789",
+        telefonoMovil: "12345678",
+        correoCuerpo: "niicoleperez",
+        correoExtension: "gmail.com",
       };
       const respuesta = await request
         .post("/v1/pacientes/actualizar_datos")
@@ -147,21 +147,17 @@ describe("Endpoints", () => {
       expect(respuesta.status).toBe(201);
       //Probar que el paciente está en la colección de actualizados.
       expect(pacienteActualizado.numeroPaciente).toBeFalsy();
-      expect(pacienteActualizado.direccionCalle).toStrictEqual(
-        "Calle Nueva 123"
-      );
-      expect(pacienteActualizado.direccionNumero).toStrictEqual("10");
-      expect(pacienteActualizado.direccionDepartamento).toStrictEqual("");
-      expect(pacienteActualizado.direccionPoblacion).toStrictEqual(
-        "VILLA CASPAÑA"
-      );
-      expect(pacienteActualizado.codigoComuna).toStrictEqual("01");
-      expect(pacienteActualizado.codigoCiudad).toStrictEqual("01");
-      expect(pacienteActualizado.codigoRegion).toStrictEqual("02");
-      expect(pacienteActualizado.fono).toStrictEqual("");
-      expect(pacienteActualizado.telefonoMovil).toStrictEqual("94924483");
-      expect(pacienteActualizado.correoCuerpo).toBe("correo");
-      expect(pacienteActualizado.correoExtension).toBe("correo.com");
+      expect(pacienteActualizado.direccionCalle).toStrictEqual("chhuu");
+      expect(pacienteActualizado.direccionNumero).toStrictEqual("444442");
+      expect(pacienteActualizado.direccionDepartamento).toStrictEqual("40y");
+      expect(pacienteActualizado.direccionPoblacion).toStrictEqual("granví");
+      expect(pacienteActualizado.codigoComuna).toStrictEqual("01    ");
+      expect(pacienteActualizado.codigoCiudad).toStrictEqual("03 ");
+      expect(pacienteActualizado.codigoRegion).toStrictEqual("01 ");
+      expect(pacienteActualizado.fono).toStrictEqual("123456789");
+      expect(pacienteActualizado.telefonoMovil).toStrictEqual("12345678");
+      expect(pacienteActualizado.correoCuerpo).toBe("niicoleperez");
+      expect(pacienteActualizado.correoExtension).toBe("gmail.com");
 
       expect(paciente.datosContactoActualizados).toBeTruthy();
 

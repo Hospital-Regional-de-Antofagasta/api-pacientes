@@ -30,9 +30,9 @@ exports.validarTelefono = (req, res, next) => {
       telefonoMovil.length > 8 ||
       fono.length > 9 ||
       (fono.length === 0 && telefonoMovil.length === 0) ||
-      (fono.length === 0 && !regexTelefonoMovil.test(telefonoMovil)) ||
-      (!regexFonoLargo6.test(fono) && telefonoMovil.length === 0) ||
-      (!regexFonoLargo9.test(fono) && telefonoMovil.length === 0) ||
+      (fono.length === 0 && telefonoMovil.length > 0 && !regexTelefonoMovil.test(telefonoMovil)) ||
+      (fono.length > 0 && fono.length <= 6 && !regexFonoLargo6.test(fono) && telefonoMovil.length === 0) ||
+      (fono.length > 6 && !regexFonoLargo9.test(fono) && telefonoMovil.length === 0) ||
       (regexFonoLargo6.test(fono) &&
         telefonoMovil.length > 0 &&
         !regexTelefonoMovil.test(telefonoMovil)) ||
@@ -58,19 +58,16 @@ exports.validarTelefono = (req, res, next) => {
 exports.validarUbicacion = (req, res, next) => {
   try {
     const { codigoComuna, codigoCiudad, codigoRegion } = req.body;
-    const regexCodigo = new RegExp(/^[0-9]+$/);
+    const regexCodigo = new RegExp(/^[0-9]{2}[ ]*$/);
     if (
       typeof codigoComuna !== "string" ||
       !regexCodigo.test(codigoComuna) ||
       codigoComuna.length < 2 ||
-      codigoComuna.length > 3 ||
       typeof codigoCiudad !== "string" ||
       !regexCodigo.test(codigoCiudad) ||
       codigoCiudad.length < 2 ||
-      codigoCiudad.length > 3 ||
       typeof codigoRegion !== "string" ||
       !regexCodigo.test(codigoRegion) ||
-      codigoRegion.length > 3 ||
       codigoRegion.length < 2
     ) {
       return res.status(400).send({ respuesta: mensajes.badRequest });
@@ -94,13 +91,13 @@ exports.validarNoObligatorios = (req, res, next) => {
     if (
       (direccionCalle.length > 0 &&
         (!regexTexto.test(direccionCalle) || direccionCalle.length > 255)) ||
-      (direccionPoblacion > 0 &&
+      (direccionPoblacion.length > 0 &&
         (!regexTexto.test(direccionPoblacion) ||
           direccionPoblacion.length > 255)) ||
-      (direccionDepartamento > 0 &&
+      (direccionDepartamento.length > 0 &&
         (!regexTexto.test(direccionDepartamento) ||
           direccionDepartamento.length > 255)) ||
-      (direccionNumero > 0 &&
+      (direccionNumero.length > 0 &&
         (!regexNumero.test(direccionNumero) || direccionNumero.length > 255))
     ) {
       return res.status(400).send({ respuesta: mensajes.badRequest });
