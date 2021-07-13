@@ -8,8 +8,8 @@ exports.validarCorreo = (req, res, next) => {
       return res.status(400).send({ respuesta: mensajes.badRequest });
 
     const correo = `${correoCuerpo}@${correoExtension}`;
-    const regex = new RegExp(/^[\w-\.]+@([\w-]+\.)+[\w-]+$/);
-    if (!regex.test(correo))
+    const regexCorreo = new RegExp(/^[\w-\.]+@([\w-]+\.)+[\w-]+$/);
+    if (!regexCorreo.test(correo) || correo.length >320)
       return res.status(400).send({ respuesta: mensajes.badRequest });
 
     next();
@@ -57,18 +57,18 @@ exports.validarTelefono = (req, res, next) => {
 exports.validarUbicacion = (req, res, next) => {
   try {
     const { codigoComuna, codigoCiudad, codigoRegion } = req.body;
-    const regex = new RegExp(/^[0-9]+$/);
+    const regexCodigo = new RegExp(/^[0-9]+$/);
     if (
       typeof codigoComuna !== "string" ||
-      !regex.test(codigoComuna) ||
+      !regexCodigo.test(codigoComuna) ||
       codigoComuna.length < 2 ||
       codigoComuna.length > 3 ||
       typeof codigoCiudad !== "string" ||
-      !regex.test(codigoCiudad) ||
+      !regexCodigo.test(codigoCiudad) ||
       codigoCiudad.length < 2 ||
       codigoCiudad.length > 3 ||
       typeof codigoRegion !== "string" ||
-      !regex.test(codigoRegion) ||
+      !regexCodigo.test(codigoRegion) ||
       codigoRegion.length > 3 ||
       codigoRegion.length < 2
     ) {
