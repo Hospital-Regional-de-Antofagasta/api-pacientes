@@ -9,7 +9,7 @@ exports.validarCorreo = (req, res, next) => {
 
     const correo = `${correoCuerpo}@${correoExtension}`;
     const regexCorreo = new RegExp(/^[\w-\.]+@([\w-]+\.)+[\w-]+$/);
-    if (!regexCorreo.test(correo) || correo.length >320)
+    if (!regexCorreo.test(correo) || correo.length > 320)
       return res.status(400).send({ respuesta: mensajes.badRequest });
 
     next();
@@ -40,6 +40,7 @@ exports.validarTelefono = (req, res, next) => {
         telefonoMovil.length > 0 &&
         !regexTelefonoMovil.test(telefonoMovil)) ||
       (fono.length > 0 &&
+        fono.length <= 6 &&
         !regexFonoLargo6.test(fono) &&
         regexTelefonoMovil.test(telefonoMovil)) ||
       (fono.length > 6 &&
