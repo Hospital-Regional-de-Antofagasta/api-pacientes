@@ -1,24 +1,28 @@
 const Pacientes = require("../models/Pacientes");
-const { mensajes } = require("../config");
+const { getMensajes } = require("../config");
 
-exports.validarCorreo = (req, res, next) => {
+exports.validarCorreo = async (req, res, next) => {
   try {
     const { correoCuerpo, correoExtension } = req.body;
     if (!correoCuerpo || !correoExtension)
-      return res.status(400).send({ respuesta: mensajes.badRequest });
+      return res
+        .status(400)
+        .send({ respuesta: await getMensajes("badRequest") });
 
     const correo = `${correoCuerpo}@${correoExtension}`;
     const regexCorreo = new RegExp(/^[\w-\.]+@([\w-]+\.)+[\w-]+$/);
     if (!regexCorreo.test(correo) || correo.length > 320)
-      return res.status(400).send({ respuesta: mensajes.badRequest });
+      return res
+        .status(400)
+        .send({ respuesta: await getMensajes("badRequest") });
 
     next();
   } catch (error) {
-    res.status(500).send({ respuesta: mensajes.serverError });
+    res.status(500).send({ respuesta: await getMensajes("serverError") });
   }
 };
 
-exports.validarTelefono = (req, res, next) => {
+exports.validarTelefono = async (req, res, next) => {
   try {
     const { fono, telefonoMovil } = req.body;
     const regexTelefonoMovil = new RegExp(/^[987654321]\d{7}$/);
@@ -30,9 +34,16 @@ exports.validarTelefono = (req, res, next) => {
       telefonoMovil.length > 8 ||
       fono.length > 9 ||
       (fono.length === 0 && telefonoMovil.length === 0) ||
-      (fono.length === 0 && telefonoMovil.length > 0 && !regexTelefonoMovil.test(telefonoMovil)) ||
-      (fono.length > 0 && fono.length <= 6 && !regexFonoLargo6.test(fono) && telefonoMovil.length === 0) ||
-      (fono.length > 6 && !regexFonoLargo9.test(fono) && telefonoMovil.length === 0) ||
+      (fono.length === 0 &&
+        telefonoMovil.length > 0 &&
+        !regexTelefonoMovil.test(telefonoMovil)) ||
+      (fono.length > 0 &&
+        fono.length <= 6 &&
+        !regexFonoLargo6.test(fono) &&
+        telefonoMovil.length === 0) ||
+      (fono.length > 6 &&
+        !regexFonoLargo9.test(fono) &&
+        telefonoMovil.length === 0) ||
       (regexFonoLargo6.test(fono) &&
         telefonoMovil.length > 0 &&
         !regexTelefonoMovil.test(telefonoMovil)) ||
@@ -47,15 +58,17 @@ exports.validarTelefono = (req, res, next) => {
         !regexFonoLargo9.test(fono) &&
         regexTelefonoMovil.test(telefonoMovil))
     ) {
-      return res.status(400).send({ respuesta: mensajes.badRequest });
+      return res
+        .status(400)
+        .send({ respuesta: await getMensajes("badRequest") });
     }
     next();
   } catch (error) {
-    res.status(500).send({ respuesta: mensajes.serverError });
+    res.status(500).send({ respuesta: await getMensajes("serverError") });
   }
 };
 
-exports.validarUbicacion = (req, res, next) => {
+exports.validarUbicacion = async (req, res, next) => {
   try {
     const { codigoComuna, codigoCiudad, codigoRegion } = req.body;
     const regexCodigo = new RegExp(/^[0-9]{2}[ ]*$/);
@@ -70,15 +83,17 @@ exports.validarUbicacion = (req, res, next) => {
       !regexCodigo.test(codigoRegion) ||
       codigoRegion.length < 2
     ) {
-      return res.status(400).send({ respuesta: mensajes.badRequest });
+      return res
+        .status(400)
+        .send({ respuesta: await getMesnajes("badRequest") });
     }
     next();
   } catch (error) {
-    res.status(500).send({ respuesta: mensajes.serverError });
+    res.status(500).send({ respuesta: await getMensajes("serverError") });
   }
 };
 
-exports.validarNoObligatorios = (req, res, next) => {
+exports.validarNoObligatorios = async (req, res, next) => {
   try {
     const {
       direccionCalle,
@@ -100,11 +115,13 @@ exports.validarNoObligatorios = (req, res, next) => {
       (direccionNumero.length > 0 &&
         (!regexNumero.test(direccionNumero) || direccionNumero.length > 255))
     ) {
-      return res.status(400).send({ respuesta: mensajes.badRequest });
+      return res
+        .status(400)
+        .send({ respuesta: await getMensajes("badRequest") });
     }
     next();
   } catch (error) {
-    res.status(500).send({ respuesta: mensajes.serverError });
+    res.status(500).send({ respuesta: await getMensajes("serverError") });
   }
 };
 
@@ -114,10 +131,12 @@ exports.validarSiPacienteExiste = async (req, res, next) => {
       numeroPaciente: req.numeroPaciente,
     }).exec();
     if (!paciente)
-      return res.status(400).send({ respuesta: mensajes.badRequest });
+      return res
+        .status(400)
+        .send({ respuesta: await getMensajes("badRequest") });
 
     next();
   } catch (error) {
-    res.status(500).send({ respuesta: mensajes.serverError });
+    res.status(500).send({ respuesta: await getMensajes("serverError") });
   }
 };

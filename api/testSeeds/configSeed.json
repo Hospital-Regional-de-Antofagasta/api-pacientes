@@ -1,0 +1,43 @@
+[
+  {
+    "mensajes": {
+      "forbiddenAccess": {
+        "titulo": "Alerta -test",
+        "mensaje": "Su sesión ha expirado. -test",
+        "color": " -test",
+        "icono": " -test"
+      },
+      "serverError": {
+        "titulo": "Alerta -test",
+        "mensaje": "Ocurrió un error inesperado. -test",
+        "color": " -test",
+        "icono": " -test"
+      },
+      "badRequest": {
+        "titulo": "Alerta -test",
+        "mensaje": "La solicitud no está bien formada. -test",
+        "color": " -test",
+        "icono": " -test"
+      },
+      "solicitudCreada": {
+        "titulo": "!Todo ha salido bien¡ -test",
+        "mensaje": "Su solicitud ha sido creada con éxito, en breve su información será actualizada. -test",
+        "color": " -test",
+        "icono": " -test"
+      },
+      "datosContactoNoConfirmados": {
+        "titulo": "Confirmación Pendiente -test",
+        "mensaje": "Es importante que confirme que su información de contacto está correcta. -test",
+        "color": " -test",
+        "icono": " -test"
+      },
+      "solicitudDuplicada": {
+        "titulo": "Solicitud Pendiente -test",
+        "mensaje": "Ya tiene una solicitud en curso. -test",
+        "color": " -test",
+        "icono": " -test"
+      }
+    },
+    "version": 1
+  }
+]

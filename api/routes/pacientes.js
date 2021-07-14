@@ -21,20 +21,20 @@ router.post(
   estaAutenticado,
   validarCorreo,
   validarTelefono,
-  validarUbicacion,  
+  validarUbicacion,
   validarNoObligatorios,
   pacientesController.postDatosPaciente
 );
 
 router.get(
-  "/verificar_si_datos_actualizados_paciente",
+  "/verificar_si_datos_contacto_confirmados",
   estaAutenticado,
   validarSiPacienteExiste,
-  pacientesController.getSiDatosActualizadosPaciente
+  pacientesController.getSiDatosContactoConfirmados
 );
 
 router.get(
-  "/verificar_solicitud_pendiente_paciente",
+  "/verificar_solicitud_duplicada",
   estaAutenticado,
   validarSiPacienteExiste,
   pacientesController.getSolicitudPendientePaciente
