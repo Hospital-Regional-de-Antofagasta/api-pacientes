@@ -98,7 +98,7 @@ describe("Endpoints", () => {
   });
   describe("Actualizar datos de Pacientes", () => {
     it("Intenta actualizar los datos de un paciente sin token", async (done) => {
-      const respuesta = await request.post("/v1/pacientes/actualizar_datos");
+      const respuesta = await request.post("/v1/pacientes/actualizar-datos");
 
       const mensaje = await getMensajes("forbiddenAccess");
 
@@ -130,7 +130,7 @@ describe("Endpoints", () => {
         correoExtension: "correo.com",
       };
       const respuesta = await request
-        .post("/v1/pacientes/actualizar_datos")
+        .post("/v1/pacientes/actualizar-datos")
         .set("Authorization", token)
         .send(pacienteActualizar);
 
@@ -164,7 +164,7 @@ describe("Endpoints", () => {
         correoExtension: "gmail.com",
       };
       const respuesta = await request
-        .post("/v1/pacientes/actualizar_datos")
+        .post("/v1/pacientes/actualizar-datos")
         .set("Authorization", token)
         .send(pacienteActualizar);
 
@@ -223,7 +223,7 @@ describe("Endpoints", () => {
       };
 
       const respuesta = await request
-        .post("/v1/pacientes/actualizar_datos")
+        .post("/v1/pacientes/actualizar-datos")
         .set("Authorization", token)
         .send(pacienteActualizar);
 
@@ -264,7 +264,7 @@ describe("Endpoints", () => {
       };
 
       const respuesta = await request
-        .post("/v1/pacientes/actualizar_datos")
+        .post("/v1/pacientes/actualizar-datos")
         .set("Authorization", token)
         .send(pacienteActualizar);
 
@@ -305,7 +305,7 @@ describe("Endpoints", () => {
       };
 
       const respuesta = await request
-        .post("/v1/pacientes/actualizar_datos")
+        .post("/v1/pacientes/actualizar-datos")
         .set("Authorization", token)
         .send(pacienteActualizar);
 
@@ -333,7 +333,7 @@ describe("Endpoints", () => {
   describe("Verify if datos paciente are confirmed", () => {
     it("Should not verify without token", async (done) => {
       const respuesta = await request
-        .get("/v1/pacientes/verificar_si_datos_contacto_confirmados")
+        .get("/v1/pacientes/verificar-si-datos-contacto-confirmados")
         .set("Authorization", "no-token");
 
       const mensaje = await getMensajes("forbiddenAccess");
@@ -353,7 +353,7 @@ describe("Endpoints", () => {
     it("Should not verify if paciente does not exists", async (done) => {
       token = jwt.sign({ numeroPaciente: 5 }, secreto);
       const respuesta = await request
-        .get("/v1/pacientes/verificar_si_datos_contacto_confirmados")
+        .get("/v1/pacientes/verificar-si-datos-contacto-confirmados")
         .set("Authorization", token);
 
       const mensaje = await getMensajes("badRequest");
@@ -373,7 +373,7 @@ describe("Endpoints", () => {
     it("Should verify paciente without confirmed datos contacto", async (done) => {
       token = jwt.sign({ numeroPaciente: 4 }, secreto);
       const respuesta = await request
-        .get("/v1/pacientes/verificar_si_datos_contacto_confirmados")
+        .get("/v1/pacientes/verificar-si-datos-contacto-confirmados")
         .set("Authorization", token);
 
       const mensaje = await getMensajes("datosContactoNoConfirmados");
@@ -394,7 +394,7 @@ describe("Endpoints", () => {
     it("Should verify paciente with confirmed datos contacto", async (done) => {
       token = jwt.sign({ numeroPaciente: 3 }, secreto);
       const respuesta = await request
-        .get("/v1/pacientes/verificar_si_datos_contacto_confirmados")
+        .get("/v1/pacientes/verificar-si-datos-contacto-confirmados")
         .set("Authorization", token);
 
       expect(respuesta.status).toBe(200);
@@ -406,7 +406,7 @@ describe("Endpoints", () => {
   describe("verify if there is a solicitud pendiente de actualizar datos paciente", () => {
     it("Should not verify without token", async (done) => {
       const respuesta = await request
-        .get("/v1/pacientes/verificar_solicitud_duplicada")
+        .get("/v1/pacientes/verificar-solicitud-duplicada")
         .set("Authorization", "no-token");
 
       const mensaje = await getMensajes("forbiddenAccess");
@@ -426,7 +426,7 @@ describe("Endpoints", () => {
     it("Should not verify if paciente does not exists", async (done) => {
       token = jwt.sign({ numeroPaciente: 5 }, secreto);
       const respuesta = await request
-        .get("/v1/pacientes/verificar_solicitud_duplicada")
+        .get("/v1/pacientes/verificar-solicitud-duplicada")
         .set("Authorization", token);
 
       const mensaje = await getMensajes("badRequest");
@@ -446,7 +446,7 @@ describe("Endpoints", () => {
     it("Should verify without existing solicitud de actualizar datos", async (done) => {
       token = jwt.sign({ numeroPaciente: 4 }, secreto);
       const respuesta = await request
-        .get("/v1/pacientes/verificar_solicitud_duplicada")
+        .get("/v1/pacientes/verificar-solicitud-duplicada")
         .set("Authorization", token);
 
       expect(respuesta.status).toBe(200);
@@ -472,7 +472,7 @@ describe("Endpoints", () => {
       };
       await PacientesActualizados.create(pacienteActualizar);
       const respuesta = await request
-        .get("/v1/pacientes/verificar_solicitud_duplicada")
+        .get("/v1/pacientes/verificar-solicitud-duplicada")
         .set("Authorization", token);
 
       const mensaje = await getMensajes("solicitudDuplicada");

@@ -17,7 +17,7 @@ router.get(
 );
 
 router.post(
-  "/actualizar_datos",
+  "/actualizar-datos",
   estaAutenticado,
   validarCorreo,
   validarTelefono,
@@ -27,14 +27,14 @@ router.post(
 );
 
 router.get(
-  "/verificar_si_datos_contacto_confirmados",
+  "/verificar-si-datos-contacto-confirmados",
   estaAutenticado,
   validarSiPacienteExiste,
   pacientesController.getSiDatosContactoConfirmados
 );
 
 router.get(
-  "/verificar_solicitud_duplicada",
+  "/verificar-solicitud-duplicada",
   estaAutenticado,
   validarSiPacienteExiste,
   pacientesController.getSolicitudPendientePaciente
