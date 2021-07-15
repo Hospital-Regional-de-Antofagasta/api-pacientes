@@ -2,11 +2,12 @@ const app = require("../index");
 const mongoose = require("mongoose");
 const jwt = require("jsonwebtoken");
 const supertest = require("supertest");
-const pacientesSeeds = require("../testSeeds/pacientesSeeds.json");
-
 const Pacientes = require("../models/Pacientes");
 const PacientesActualizados = require("../models/PacientesActualizados");
-const { mensajes } = require("../config");
+const pacientesSeeds = require("../testSeeds/pacientesSeeds.json");
+const { getMensajes } = require("../config");
+const ConfigApiPacientes = require("../models/ConfigApiPacientes");
+const configSeed = require("../testSeeds/configSeed.json");
 
 const request = supertest(app);
 const secreto = process.env.JWT_SECRET;
@@ -22,6 +23,7 @@ beforeEach(async (done) => {
   });
   //Cargar los seeds a la base de datos.
   await Pacientes.create(pacientesSeeds);
+  await ConfigApiPacientes.create(configSeed);
 
   done();
 });
@@ -30,6 +32,7 @@ afterEach(async (done) => {
   //Borrar el contenido de la colección en la base de datos despues de la pruebas.
   await Pacientes.deleteMany();
   await PacientesActualizados.deleteMany();
+  await ConfigApiPacientes.deleteMany();
   //Cerrar la conexión a la base de datos despues de la pruebas.
   await mongoose.connection.close();
 
@@ -40,9 +43,18 @@ describe("Endpoints", () => {
   describe("Información de Pacientes", () => {
     it("Intenta obtener la información de un paciente sin token", async (done) => {
       const respuesta = await request.get("/v1/pacientes/informacion");
+
+      const mensaje = await getMensajes("forbiddenAccess");
+
       expect(respuesta.status).toBe(401);
-      //Probar que se recibe un mensaje
-      expect(respuesta.body.respuesta).toBeTruthy();
+      expect(respuesta.body).toEqual({
+        respuesta: {
+          titulo: mensaje.titulo,
+          mensaje: mensaje.mensaje,
+          color: mensaje.color,
+          icono: mensaje.icono,
+        },
+      });
 
       done();
     });
@@ -86,10 +98,19 @@ describe("Endpoints", () => {
   });
   describe("Actualizar datos de Pacientes", () => {
     it("Intenta actualizar los datos de un paciente sin token", async (done) => {
-      const respuesta = await request.post("/v1/pacientes/actualizar_datos");
+      const respuesta = await request.post("/v1/pacientes/actualizar-datos");
+
+      const mensaje = await getMensajes("forbiddenAccess");
+
       expect(respuesta.status).toBe(401);
-      //Probar que se recibe un mensaje
-      expect(respuesta.body.respuesta).toBeTruthy();
+      expect(respuesta.body).toEqual({
+        respuesta: {
+          titulo: mensaje.titulo,
+          mensaje: mensaje.mensaje,
+          color: mensaje.color,
+          icono: mensaje.icono,
+        },
+      });
 
       done();
     });
@@ -109,10 +130,21 @@ describe("Endpoints", () => {
         correoExtension: "correo.com",
       };
       const respuesta = await request
-        .post("/v1/pacientes/actualizar_datos")
+        .post("/v1/pacientes/actualizar-datos")
         .set("Authorization", token)
         .send(pacienteActualizar);
+
+      const mensaje = await getMensajes("solicitudCreada");
+
       expect(respuesta.status).toBe(201);
+      expect(respuesta.body).toEqual({
+        respuesta: {
+          titulo: mensaje.titulo,
+          mensaje: mensaje.mensaje,
+          color: mensaje.color,
+          icono: mensaje.icono,
+        },
+      });
 
       done();
     });
@@ -132,7 +164,7 @@ describe("Endpoints", () => {
         correoExtension: "gmail.com",
       };
       const respuesta = await request
-        .post("/v1/pacientes/actualizar_datos")
+        .post("/v1/pacientes/actualizar-datos")
         .set("Authorization", token)
         .send(pacienteActualizar);
 
@@ -144,7 +176,18 @@ describe("Endpoints", () => {
         numeroPaciente: 4,
       });
 
+      const mensaje = await getMensajes("solicitudCreada");
+
       expect(respuesta.status).toBe(201);
+      expect(respuesta.body).toEqual({
+        respuesta: {
+          titulo: mensaje.titulo,
+          mensaje: mensaje.mensaje,
+          color: mensaje.color,
+          icono: mensaje.icono,
+        },
+      });
+
       //Probar que el paciente está en la colección de actualizados.
       expect(pacienteActualizado.numeroPaciente).toBeFalsy();
       expect(pacienteActualizado.direccionCalle).toStrictEqual("chhuu");
@@ -180,7 +223,7 @@ describe("Endpoints", () => {
       };
 
       const respuesta = await request
-        .post("/v1/pacientes/actualizar_datos")
+        .post("/v1/pacientes/actualizar-datos")
         .set("Authorization", token)
         .send(pacienteActualizar);
 
@@ -188,8 +231,17 @@ describe("Endpoints", () => {
         numeroPaciente: 4,
       });
 
+      const mensaje = await getMensajes("badRequest");
+
       expect(respuesta.status).toBe(400);
-      expect(respuesta.body).toEqual({ respuesta: mensajes.badRequest });
+      expect(respuesta.body).toEqual({
+        respuesta: {
+          titulo: mensaje.titulo,
+          mensaje: mensaje.mensaje,
+          color: mensaje.color,
+          icono: mensaje.icono,
+        },
+      });
 
       expect(pacienteActualizado).toBeFalsy();
 
@@ -212,7 +264,7 @@ describe("Endpoints", () => {
       };
 
       const respuesta = await request
-        .post("/v1/pacientes/actualizar_datos")
+        .post("/v1/pacientes/actualizar-datos")
         .set("Authorization", token)
         .send(pacienteActualizar);
 
@@ -220,8 +272,17 @@ describe("Endpoints", () => {
         numeroPaciente: 4,
       });
 
+      const mensaje = await getMensajes("badRequest");
+
       expect(respuesta.status).toBe(400);
-      expect(respuesta.body).toEqual({ respuesta: mensajes.badRequest });
+      expect(respuesta.body).toEqual({
+        respuesta: {
+          titulo: mensaje.titulo,
+          mensaje: mensaje.mensaje,
+          color: mensaje.color,
+          icono: mensaje.icono,
+        },
+      });
 
       expect(pacienteActualizado).toBeFalsy();
 
@@ -244,7 +305,7 @@ describe("Endpoints", () => {
       };
 
       const respuesta = await request
-        .post("/v1/pacientes/actualizar_datos")
+        .post("/v1/pacientes/actualizar-datos")
         .set("Authorization", token)
         .send(pacienteActualizar);
 
@@ -252,55 +313,92 @@ describe("Endpoints", () => {
         numeroPaciente: 4,
       });
 
+      const mensaje = await getMensajes("badRequest");
+
       expect(respuesta.status).toBe(400);
-      expect(respuesta.body).toEqual({ respuesta: mensajes.badRequest });
+      expect(respuesta.body).toEqual({
+        respuesta: {
+          titulo: mensaje.titulo,
+          mensaje: mensaje.mensaje,
+          color: mensaje.color,
+          icono: mensaje.icono,
+        },
+      });
 
       expect(pacienteActualizado).toBeFalsy();
 
       done();
     });
   });
-  describe("Verify if datos paciente are updated", () => {
+  describe("Verify if datos paciente are confirmed", () => {
     it("Should not verify without token", async (done) => {
       const respuesta = await request
-        .get("/v1/pacientes/verificar_si_datos_actualizados_paciente")
+        .get("/v1/pacientes/verificar-si-datos-contacto-confirmados")
         .set("Authorization", "no-token");
 
+      const mensaje = await getMensajes("forbiddenAccess");
+
       expect(respuesta.status).toBe(401);
-      expect(respuesta.body.respuesta).toBe(mensajes.forbiddenAccess);
+      expect(respuesta.body).toEqual({
+        respuesta: {
+          titulo: mensaje.titulo,
+          mensaje: mensaje.mensaje,
+          color: mensaje.color,
+          icono: mensaje.icono,
+        },
+      });
 
       done();
     });
     it("Should not verify if paciente does not exists", async (done) => {
       token = jwt.sign({ numeroPaciente: 5 }, secreto);
       const respuesta = await request
-        .get("/v1/pacientes/verificar_si_datos_actualizados_paciente")
+        .get("/v1/pacientes/verificar-si-datos-contacto-confirmados")
         .set("Authorization", token);
+
+      const mensaje = await getMensajes("badRequest");
 
       expect(respuesta.status).toBe(400);
-      expect(respuesta.body.respuesta).toBe(mensajes.badRequest);
+      expect(respuesta.body).toEqual({
+        respuesta: {
+          titulo: mensaje.titulo,
+          mensaje: mensaje.mensaje,
+          color: mensaje.color,
+          icono: mensaje.icono,
+        },
+      });
 
       done();
     });
-    it("Should verify paciente without updated datos contacto", async (done) => {
+    it("Should verify paciente without confirmed datos contacto", async (done) => {
       token = jwt.sign({ numeroPaciente: 4 }, secreto);
       const respuesta = await request
-        .get("/v1/pacientes/verificar_si_datos_actualizados_paciente")
+        .get("/v1/pacientes/verificar-si-datos-contacto-confirmados")
         .set("Authorization", token);
 
+      const mensaje = await getMensajes("datosContactoNoConfirmados");
+
       expect(respuesta.status).toBe(200);
-      expect(respuesta.body.respuesta).toBeFalsy();
+      expect(respuesta.body).toEqual({
+        datosContactoConfirmados: false,
+        respuesta: {
+          titulo: mensaje.titulo,
+          mensaje: mensaje.mensaje,
+          color: mensaje.color,
+          icono: mensaje.icono,
+        },
+      });
 
       done();
     });
-    it("Should verify paciente with updated datos contacto", async (done) => {
+    it("Should verify paciente with confirmed datos contacto", async (done) => {
       token = jwt.sign({ numeroPaciente: 3 }, secreto);
       const respuesta = await request
-        .get("/v1/pacientes/verificar_si_datos_actualizados_paciente")
+        .get("/v1/pacientes/verificar-si-datos-contacto-confirmados")
         .set("Authorization", token);
 
       expect(respuesta.status).toBe(200);
-      expect(respuesta.body.respuesta).toBeTruthy();
+      expect(respuesta.body).toEqual({ datosContactoConfirmados: true });
 
       done();
     });
@@ -308,33 +406,51 @@ describe("Endpoints", () => {
   describe("verify if there is a solicitud pendiente de actualizar datos paciente", () => {
     it("Should not verify without token", async (done) => {
       const respuesta = await request
-        .get("/v1/pacientes/verificar_solicitud_pendiente_paciente")
+        .get("/v1/pacientes/verificar-solicitud-duplicada")
         .set("Authorization", "no-token");
 
+      const mensaje = await getMensajes("forbiddenAccess");
+
       expect(respuesta.status).toBe(401);
-      expect(respuesta.body.respuesta).toBe(mensajes.forbiddenAccess);
+      expect(respuesta.body).toEqual({
+        respuesta: {
+          titulo: mensaje.titulo,
+          mensaje: mensaje.mensaje,
+          color: mensaje.color,
+          icono: mensaje.icono,
+        },
+      });
 
       done();
     });
     it("Should not verify if paciente does not exists", async (done) => {
       token = jwt.sign({ numeroPaciente: 5 }, secreto);
       const respuesta = await request
-        .get("/v1/pacientes/verificar_solicitud_pendiente_paciente")
+        .get("/v1/pacientes/verificar-solicitud-duplicada")
         .set("Authorization", token);
 
+      const mensaje = await getMensajes("badRequest");
+
       expect(respuesta.status).toBe(400);
-      expect(respuesta.body.respuesta).toBe(mensajes.badRequest);
+      expect(respuesta.body).toEqual({
+        respuesta: {
+          titulo: mensaje.titulo,
+          mensaje: mensaje.mensaje,
+          color: mensaje.color,
+          icono: mensaje.icono,
+        },
+      });
 
       done();
     });
     it("Should verify without existing solicitud de actualizar datos", async (done) => {
       token = jwt.sign({ numeroPaciente: 4 }, secreto);
       const respuesta = await request
-        .get("/v1/pacientes/verificar_si_datos_actualizados_paciente")
+        .get("/v1/pacientes/verificar-solicitud-duplicada")
         .set("Authorization", token);
 
       expect(respuesta.status).toBe(200);
-      expect(respuesta.body.solicitudPendiente).toBeFalsy();
+      expect(respuesta.body).toEqual({ solicitudDuplicada: false });
 
       done();
     });
@@ -356,11 +472,21 @@ describe("Endpoints", () => {
       };
       await PacientesActualizados.create(pacienteActualizar);
       const respuesta = await request
-        .get("/v1/pacientes/verificar_si_datos_actualizados_paciente")
+        .get("/v1/pacientes/verificar-solicitud-duplicada")
         .set("Authorization", token);
 
+      const mensaje = await getMensajes("solicitudDuplicada");
+
       expect(respuesta.status).toBe(200);
-      expect(respuesta.body.solicitudPendiente).toBeFalsy();
+      expect(respuesta.body).toEqual({
+        solicitudDuplicada: true,
+        respuesta: {
+          titulo: mensaje.titulo,
+          mensaje: mensaje.mensaje,
+          color: mensaje.color,
+          icono: mensaje.icono,
+        },
+      });
 
       done();
     });

@@ -17,24 +17,24 @@ router.get(
 );
 
 router.post(
-  "/actualizar_datos",
+  "/actualizar-datos",
   estaAutenticado,
   validarCorreo,
   validarTelefono,
-  validarUbicacion,  
+  validarUbicacion,
   validarNoObligatorios,
   pacientesController.postDatosPaciente
 );
 
 router.get(
-  "/verificar_si_datos_actualizados_paciente",
+  "/verificar-si-datos-contacto-confirmados",
   estaAutenticado,
   validarSiPacienteExiste,
-  pacientesController.getSiDatosActualizadosPaciente
+  pacientesController.getSiDatosContactoConfirmados
 );
 
 router.get(
-  "/verificar_solicitud_pendiente_paciente",
+  "/verificar-solicitud-duplicada",
   estaAutenticado,
   validarSiPacienteExiste,
   pacientesController.getSolicitudPendientePaciente

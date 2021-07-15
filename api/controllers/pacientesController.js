@@ -1,6 +1,6 @@
 const Pacientes = require("../models/Pacientes");
 const PacientesActualizados = require("../models/PacientesActualizados");
-const { mensajes } = require("../config");
+const { getMensajes } = require("../config");
 
 exports.getInformacionPaciente = async (req, res) => {
   try {
@@ -35,7 +35,7 @@ exports.getInformacionPaciente = async (req, res) => {
     };
     res.status(200).send(pacienteInfo);
   } catch (error) {
-    res.status(500).send({ respuesta: mensajes.serverError });
+    res.status(500).send({ respuesta: await getMensajes("serverError") });
   }
 };
 
@@ -54,31 +54,41 @@ exports.postDatosPaciente = async (req, res) => {
       },
       { datosContactoActualizados: true }
     ).exec();
-    res.status(201).send({});
+
+    res.status(201).send({ respuesta: await getMensajes("solicitudCreada") });
   } catch (error) {
-    res.status(500).send({ respuesta: mensajes.serverError });
+    res.status(500).send({ respuesta: await getMensajes("serverError") });
   }
 };
 
-exports.getSiDatosActualizadosPaciente = async (req, res) => {
+exports.getSiDatosContactoConfirmados = async (req, res) => {
   try {
     const paciente = await Pacientes.findOne({
       numeroPaciente: req.numeroPaciente,
     }).exec();
-    res.status(200).send({ respuesta: paciente.datosContactoActualizados });
+    if (!paciente.datosContactoActualizados)
+      return res.status(200).send({
+        datosContactoConfirmados: paciente.datosContactoActualizados,
+        respuesta: await getMensajes("datosContactoNoConfirmados"),
+      });
+    res.status(200).send({ datosContactoConfirmados: paciente.datosContactoActualizados });
   } catch (error) {
-    res.status(500).send({ respuesta: mensajes.serverError });
+    res.status(500).send({ respuesta: await getMensajes("serverError") });
   }
 };
 
 exports.getSolicitudPendientePaciente = async (req, res) => {
   try {
-    const solicitudPendiente = await PacientesActualizados.findOne({
+    const solicitudDuplicada = await PacientesActualizados.findOne({
       numeroPaciente: req.numeroPaciente,
     }).exec();
-    if (solicitudPendiente) return res.status(200).send({ respuesta: true });
-    res.status(200).send({ respuesta: false });
+    if (solicitudDuplicada)
+      return res.status(200).send({
+        solicitudDuplicada: true,
+        respuesta: await getMensajes("solicitudDuplicada"),
+      });
+    res.status(200).send({ solicitudDuplicada: false });
   } catch (error) {
-    res.status(500).send({ respuesta: mensajes.serverError });
+    res.status(500).send({ respuesta: await getMensajes("serverError") });
   }
 };
