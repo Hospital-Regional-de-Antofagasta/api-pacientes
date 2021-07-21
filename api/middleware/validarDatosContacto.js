@@ -24,38 +24,38 @@ exports.validarCorreo = async (req, res, next) => {
 
 exports.validarTelefono = async (req, res, next) => {
   try {
-    const { fono, telefonoMovil } = req.body;
+    const { telefonoFijo, telefonoMovil } = req.body;
     const regexTelefonoMovil = new RegExp(/^[987654321]\d{7}$/);
     const regexFonoLargo6 = new RegExp(/^[987654321]\d{5}$/);
     const regexFonoLargo9 = new RegExp(/^[987654321]\d{8}$/);
     if (
       typeof telefonoMovil !== "string" ||
-      typeof fono !== "string" ||
+      typeof telefonoFijo !== "string" ||
       telefonoMovil.length > 8 ||
-      fono.length > 9 ||
-      (fono.length === 0 && telefonoMovil.length === 0) ||
-      (fono.length === 0 &&
+      telefonoFijo.length > 9 ||
+      (telefonoFijo.length === 0 && telefonoMovil.length === 0) ||
+      (telefonoFijo.length === 0 &&
         telefonoMovil.length > 0 &&
         !regexTelefonoMovil.test(telefonoMovil)) ||
-      (fono.length > 0 &&
-        fono.length <= 6 &&
-        !regexFonoLargo6.test(fono) &&
+      (telefonoFijo.length > 0 &&
+        telefonoFijo.length <= 6 &&
+        !regexFonoLargo6.test(telefonoFijo) &&
         telefonoMovil.length === 0) ||
-      (fono.length > 6 &&
-        !regexFonoLargo9.test(fono) &&
+      (telefonoFijo.length > 6 &&
+        !regexFonoLargo9.test(telefonoFijo) &&
         telefonoMovil.length === 0) ||
-      (regexFonoLargo6.test(fono) &&
+      (regexFonoLargo6.test(telefonoFijo) &&
         telefonoMovil.length > 0 &&
         !regexTelefonoMovil.test(telefonoMovil)) ||
-      (regexFonoLargo9.test(fono) &&
+      (regexFonoLargo9.test(telefonoFijo) &&
         telefonoMovil.length > 0 &&
         !regexTelefonoMovil.test(telefonoMovil)) ||
-      (fono.length > 0 &&
-        fono.length <= 6 &&
-        !regexFonoLargo6.test(fono) &&
+      (telefonoFijo.length > 0 &&
+        telefonoFijo.length <= 6 &&
+        !regexFonoLargo6.test(telefonoFijo) &&
         regexTelefonoMovil.test(telefonoMovil)) ||
-      (fono.length > 6 &&
-        !regexFonoLargo9.test(fono) &&
+      (telefonoFijo.length > 6 &&
+        !regexFonoLargo9.test(telefonoFijo) &&
         regexTelefonoMovil.test(telefonoMovil))
     ) {
       return res
@@ -96,24 +96,24 @@ exports.validarUbicacion = async (req, res, next) => {
 exports.validarNoObligatorios = async (req, res, next) => {
   try {
     const {
-      direccionCalle,
+      direccion,
       direccionNumero,
-      direccionDepartamento,
+      detallesDireccion,
       direccionPoblacion,
     } = req.body;
     const regexTexto = new RegExp(/[\s\w\.\,\-áéíóúÁÉÍÓÚñÑ%$¡!¿?()]+$/);
     const regexNumero = new RegExp(/^[0-9]+$/);
     if (
-      (direccionCalle.length > 0 &&
-        (!regexTexto.test(direccionCalle) || direccionCalle.length > 255)) ||
+      (direccion.length > 0 &&
+        (!regexTexto.test(direccion) || direccion.length > 100)) ||
       (direccionPoblacion.length > 0 &&
         (!regexTexto.test(direccionPoblacion) ||
-          direccionPoblacion.length > 255)) ||
-      (direccionDepartamento.length > 0 &&
-        (!regexTexto.test(direccionDepartamento) ||
-          direccionDepartamento.length > 255)) ||
+          direccionPoblacion.length > 30)) ||
+      (detallesDireccion.length > 0 &&
+        (!regexTexto.test(detallesDireccion) ||
+          detallesDireccion.length > 20)) ||
       (direccionNumero.length > 0 &&
-        (!regexNumero.test(direccionNumero) || direccionNumero.length > 255))
+        (!regexNumero.test(direccionNumero) || direccionNumero.length > 8))
     ) {
       return res
         .status(400)

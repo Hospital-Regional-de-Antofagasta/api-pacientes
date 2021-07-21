@@ -40,7 +40,7 @@ afterEach(async (done) => {
 });
 
 describe("Endpoints", () => {
-  describe("Información de Pacientes", () => {
+  describe("GET /v1/pacientes/informacion", () => {
     it("Intenta obtener la información de un paciente sin token", async (done) => {
       const respuesta = await request.get("/v1/pacientes/informacion");
 
@@ -82,21 +82,21 @@ describe("Endpoints", () => {
       expect(paciente.nombreCompleto).toStrictEqual(
         "JACQUELINE CLOTILDE LAZO ZAMBRA"
       );
-      expect(paciente.direccionCalle).toStrictEqual("");
+      expect(paciente.direccion).toStrictEqual("");
       expect(paciente.direccionNumero).toStrictEqual("");
-      expect(paciente.direccionDepartamento).toStrictEqual(" ");
+      expect(paciente.detallesDireccion).toStrictEqual(" ");
       expect(paciente.direccionPoblacion).toStrictEqual("");
       expect(paciente.codigoComuna).toStrictEqual("01");
       expect(paciente.codigoCiudad).toStrictEqual("03");
       expect(paciente.codigoRegion).toStrictEqual("01");
-      expect(paciente.fono).toStrictEqual("");
+      expect(paciente.telefonoFijo).toStrictEqual("");
       expect(paciente.telefonoMovil).toStrictEqual("");
       expect(paciente.correoCuerpo).toStrictEqual("");
       expect(paciente.correoExtension).toStrictEqual("");
       done();
     });
   });
-  describe("Actualizar datos de Pacientes", () => {
+  describe("POST /v1/pacientes/actualizar-datos", () => {
     it("Intenta actualizar los datos de un paciente sin token", async (done) => {
       const respuesta = await request.post("/v1/pacientes/actualizar-datos");
 
@@ -117,14 +117,14 @@ describe("Endpoints", () => {
     it("Intenta actualizar los datos de un paciente con token (El paciente no existe)", async (done) => {
       token = jwt.sign({ numeroPaciente: 5 }, secreto);
       const pacienteActualizar = {
-        direccionCalle: "Calle Nueva 123",
+        direccion: "Calle Nueva 123",
         direccionNumero: "10",
-        direccionDepartamento: "",
+        detallesDireccion: "",
         direccionPoblacion: "VILLA CASPAÑA",
         codigoComuna: "01",
         codigoCiudad: "01",
         codigoRegion: "02",
-        fono: "",
+        telefonoFijo: "",
         telefonoMovil: "94924483",
         correoCuerpo: "correo",
         correoExtension: "correo.com",
@@ -151,14 +151,14 @@ describe("Endpoints", () => {
     it("Should update datos de un paciente", async (done) => {
       token = jwt.sign({ numeroPaciente: 4 }, secreto);
       const pacienteActualizar = {
-        direccionCalle: "chhuu",
+        direccion: "chhuu",
         direccionNumero: "444442",
-        direccionDepartamento: "40y",
+        detallesDireccion: "40y",
         direccionPoblacion: "granví",
         codigoComuna: "01    ",
         codigoCiudad: "03 ",
         codigoRegion: "01 ",
-        fono: "123456789",
+        telefonoFijo: "123456789",
         telefonoMovil: "12345678",
         correoCuerpo: "niicoleperez",
         correoExtension: "gmail.com",
@@ -190,14 +190,14 @@ describe("Endpoints", () => {
 
       //Probar que el paciente está en la colección de actualizados.
       expect(pacienteActualizado.numeroPaciente).toBeFalsy();
-      expect(pacienteActualizado.direccionCalle).toStrictEqual("chhuu");
+      expect(pacienteActualizado.direccion).toStrictEqual("chhuu");
       expect(pacienteActualizado.direccionNumero).toStrictEqual("444442");
-      expect(pacienteActualizado.direccionDepartamento).toStrictEqual("40y");
+      expect(pacienteActualizado.detallesDireccion).toStrictEqual("40y");
       expect(pacienteActualizado.direccionPoblacion).toStrictEqual("granví");
       expect(pacienteActualizado.codigoComuna).toStrictEqual("01    ");
       expect(pacienteActualizado.codigoCiudad).toStrictEqual("03 ");
       expect(pacienteActualizado.codigoRegion).toStrictEqual("01 ");
-      expect(pacienteActualizado.fono).toStrictEqual("123456789");
+      expect(pacienteActualizado.telefonoFijo).toStrictEqual("123456789");
       expect(pacienteActualizado.telefonoMovil).toStrictEqual("12345678");
       expect(pacienteActualizado.correoCuerpo).toBe("niicoleperez");
       expect(pacienteActualizado.correoExtension).toBe("gmail.com");
@@ -209,14 +209,14 @@ describe("Endpoints", () => {
     it("Should not update datos de contacto del paciente si el correo es vacio", async (done) => {
       token = jwt.sign({ numeroPaciente: 4 }, secreto);
       const pacienteActualizar = {
-        direccionCalle: "Calle Nueva 123",
+        direccion: "Calle Nueva 123",
         direccionNumero: "10",
-        direccionDepartamento: "",
+        detallesDireccion: "",
         direccionPoblacion: "VILLA CASPAÑA",
         codigoComuna: "01",
         codigoCiudad: "01",
         codigoRegion: "02",
-        fono: "",
+        telefonoFijo: "",
         telefonoMovil: "94924483",
         correoCuerpo: "",
         correoExtension: "",
@@ -250,14 +250,14 @@ describe("Endpoints", () => {
     it("Should not update datos de contacto del paciente si el correo es invalido", async (done) => {
       token = jwt.sign({ numeroPaciente: 4 }, secreto);
       const pacienteActualizar = {
-        direccionCalle: "Calle Nueva 123",
+        direccion: "Calle Nueva 123",
         direccionNumero: "10",
-        direccionDepartamento: "",
+        detallesDireccion: "",
         direccionPoblacion: "VILLA CASPAÑA",
         codigoComuna: "01",
         codigoCiudad: "01",
         codigoRegion: "02",
-        fono: "",
+        telefonoFijo: "",
         telefonoMovil: "94924483",
         correoCuerpo: "cor=reo",
         correoExtension: "correo",
@@ -291,14 +291,14 @@ describe("Endpoints", () => {
     it("Should not update datos de contacto del paciente si ambos telefonos son vacios", async (done) => {
       token = jwt.sign({ numeroPaciente: 4 }, secreto);
       const pacienteActualizar = {
-        direccionCalle: "Calle Nueva 123",
+        direccion: "Calle Nueva 123",
         direccionNumero: "10",
-        direccionDepartamento: "",
+        detallesDireccion: "",
         direccionPoblacion: "VILLA CASPAÑA",
         codigoComuna: "01",
         codigoCiudad: "01",
         codigoRegion: "02",
-        fono: "",
+        telefonoFijo: "",
         telefonoMovil: "",
         correoCuerpo: "correo",
         correoExtension: "correo.com",
@@ -330,7 +330,7 @@ describe("Endpoints", () => {
       done();
     });
   });
-  describe("Verify if datos paciente are confirmed", () => {
+  describe("GET /v1/pacientes/verificar-si-datos-contacto-confirmados", () => {
     it("Should not verify without token", async (done) => {
       const respuesta = await request
         .get("/v1/pacientes/verificar-si-datos-contacto-confirmados")
@@ -403,7 +403,7 @@ describe("Endpoints", () => {
       done();
     });
   });
-  describe("verify if there is a solicitud pendiente de actualizar datos paciente", () => {
+  describe("GET /v1/pacientes/verificar-solicitud-duplicada", () => {
     it("Should not verify without token", async (done) => {
       const respuesta = await request
         .get("/v1/pacientes/verificar-solicitud-duplicada")
@@ -458,14 +458,14 @@ describe("Endpoints", () => {
       token = jwt.sign({ numeroPaciente: 4 }, secreto);
       const pacienteActualizar = {
         numeroPaciente: 4,
-        direccionCalle: "Calle Nueva 123",
+        direccion: "Calle Nueva 123",
         direccionNumero: "10",
-        direccionDepartamento: "",
+        detallesDireccion: "",
         direccionPoblacion: "VILLA CASPAÑA",
         codigoComuna: "01",
         codigoCiudad: "01",
         codigoRegion: "02",
-        fono: "",
+        telefonoFijo: "",
         telefonoMovil: "094924483",
         correoCuerpo: "correo",
         correoExtension: "correo.com",
