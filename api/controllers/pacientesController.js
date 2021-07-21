@@ -20,14 +20,14 @@ exports.getInformacionPaciente = async (req, res) => {
         paciente.apellidoPaterno +
         " " +
         paciente.apellidoMaterno,
-      direccionCalle: paciente.direccionCalle,
+      direccion: paciente.direccion,
       direccionNumero: paciente.direccionNumero,
-      direccionDepartamento: paciente.direccionDepartamento,
+      detallesDireccion: paciente.detallesDireccion,
       direccionPoblacion: paciente.direccionPoblacion,
       codigoComuna: paciente.codigoComuna,
       codigoCiudad: paciente.codigoCiudad,
       codigoRegion: paciente.codigoRegion,
-      fono: paciente.fono,
+      telefonoFijo: paciente.telefonoFijo,
       telefonoMovil: paciente.telefonoMovil,
       correoCuerpo: paciente.correoCuerpo,
       correoExtension: paciente.correoExtension,
