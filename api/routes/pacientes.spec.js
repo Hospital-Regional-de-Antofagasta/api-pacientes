@@ -93,6 +93,33 @@ describe("Endpoints", () => {
       expect(paciente.telefonoMovil).toStrictEqual("");
       expect(paciente.correoCuerpo).toStrictEqual("");
       expect(paciente.correoExtension).toStrictEqual("");
+      expect(paciente.datosContactoActualizados).toBeFalsy();
+      done();
+    });
+    it("Intenta obtener la información de un paciente con token (El paciente si existe y con nombre social)", async (done) => {
+      token = jwt.sign({ numeroPaciente: 3 }, secreto);
+      const respuesta = await request
+        .get("/v1/pacientes/informacion")
+        .set("Authorization", token);
+      expect(respuesta.status).toBe(200);
+      //Probar que el paciente es el esperado.
+      const paciente = respuesta.body;
+      expect(paciente.rut).toStrictEqual("17724699-9");
+      expect(paciente.nombreCompleto).toStrictEqual(
+        "name RIVERA ARANCIBIA"
+      );
+      expect(paciente.direccion).toStrictEqual("");
+      expect(paciente.direccionNumero).toStrictEqual("");
+      expect(paciente.detallesDireccion).toStrictEqual(" ");
+      expect(paciente.direccionPoblacion).toStrictEqual("");
+      expect(paciente.codigoComuna).toStrictEqual("01");
+      expect(paciente.codigoCiudad).toStrictEqual("03");
+      expect(paciente.codigoRegion).toStrictEqual("01");
+      expect(paciente.telefonoFijo).toStrictEqual("");
+      expect(paciente.telefonoMovil).toStrictEqual("");
+      expect(paciente.correoCuerpo).toStrictEqual("");
+      expect(paciente.correoExtension).toStrictEqual("");
+      expect(paciente.datosContactoActualizados).toBeTruthy();
       done();
     });
   });
