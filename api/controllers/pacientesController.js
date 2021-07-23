@@ -14,6 +14,10 @@ exports.getInformacionPaciente = async (req, res) => {
     const pacienteInfo = {
       numeroPaciente: paciente.numeroPaciente,
       rut: paciente.rut,
+      nombre: paciente.nombre,
+      nombreSocial: paciente.nombreSocial,
+      apellidoPaterno: paciente.apellidoPaterno,
+      apellidoMaterno: paciente.apellidoMaterno,
       direccion: paciente.direccion,
       direccionNumero: paciente.direccionNumero,
       detallesDireccion: paciente.detallesDireccion,
@@ -27,11 +31,6 @@ exports.getInformacionPaciente = async (req, res) => {
       correoExtension: paciente.correoExtension,
       datosContactoActualizados: paciente.datosContactoActualizados,
     };
-    if(paciente.nombreSocial == null){
-      pacienteInfo.nombreCompleto = paciente.nombre + " " + paciente.apellidoPaterno + " " + paciente.apellidoMaterno
-    }else{
-      pacienteInfo.nombreCompleto = paciente.nombreSocial + " " + paciente.apellidoPaterno + " " + paciente.apellidoMaterno
-    }
     res.status(200).send(pacienteInfo);
   } catch (error) {
     res.status(500).send({ respuesta: await getMensajes("serverError") });
@@ -46,7 +45,10 @@ exports.postDatosPaciente = async (req, res) => {
     });
     const pacienteAActualizar = req.body;
     pacienteAActualizar.numeroPaciente = numeroPaciente;
-    await PacientesActualizados.create(req.body);
+    pacienteAActualizar.direccion = pacienteAActualizar.direccion.toUpperCase();
+    pacienteAActualizar.detallesDireccion = pacienteAActualizar.detallesDireccion.toUpperCase();
+    pacienteAActualizar.direccionPoblacion = pacienteAActualizar.direccionPoblacion.toUpperCase();
+    await PacientesActualizados.create(pacienteAActualizar);
     await Pacientes.updateOne(
       {
         numeroPaciente,

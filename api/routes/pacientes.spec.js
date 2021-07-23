@@ -79,9 +79,10 @@ describe("Endpoints", () => {
       //Probar que el paciente es el esperado.
       const paciente = respuesta.body;
       expect(paciente.rut).toStrictEqual("10771131-7");
-      expect(paciente.nombreCompleto).toStrictEqual(
-        "JACQUELINE CLOTILDE LAZO ZAMBRA"
-      );
+      expect(paciente.nombre).toStrictEqual("JACQUELINE CLOTILDE");
+      expect(paciente.nombreSocial).toBeFalsy()
+      expect(paciente.apellidoPaterno).toStrictEqual("LAZO");
+      expect(paciente.apellidoMaterno).toStrictEqual("ZAMBRA");
       expect(paciente.direccion).toStrictEqual("");
       expect(paciente.direccionNumero).toStrictEqual("");
       expect(paciente.detallesDireccion).toStrictEqual(" ");
@@ -105,9 +106,10 @@ describe("Endpoints", () => {
       //Probar que el paciente es el esperado.
       const paciente = respuesta.body;
       expect(paciente.rut).toStrictEqual("17724699-9");
-      expect(paciente.nombreCompleto).toStrictEqual(
-        "name RIVERA ARANCIBIA"
-      );
+      expect(paciente.nombre).toStrictEqual("JOHANA GABRIEL");
+      expect(paciente.nombreSocial).toStrictEqual("name");
+      expect(paciente.apellidoPaterno).toStrictEqual("RIVERA");
+      expect(paciente.apellidoMaterno).toStrictEqual("ARANCIBIA");
       expect(paciente.direccion).toStrictEqual("");
       expect(paciente.direccionNumero).toStrictEqual("");
       expect(paciente.detallesDireccion).toStrictEqual(" ");
@@ -217,10 +219,10 @@ describe("Endpoints", () => {
 
       //Probar que el paciente está en la colección de actualizados.
       expect(pacienteActualizado.numeroPaciente).toBeFalsy();
-      expect(pacienteActualizado.direccion).toStrictEqual("chhuu");
+      expect(pacienteActualizado.direccion).toStrictEqual("CHHUU");
       expect(pacienteActualizado.direccionNumero).toStrictEqual("444442");
-      expect(pacienteActualizado.detallesDireccion).toStrictEqual("40y");
-      expect(pacienteActualizado.direccionPoblacion).toStrictEqual("granví");
+      expect(pacienteActualizado.detallesDireccion).toStrictEqual("40Y");
+      expect(pacienteActualizado.direccionPoblacion).toStrictEqual("GRANVÍ");
       expect(pacienteActualizado.codigoComuna).toStrictEqual("01    ");
       expect(pacienteActualizado.codigoCiudad).toStrictEqual("03 ");
       expect(pacienteActualizado.codigoRegion).toStrictEqual("01 ");
