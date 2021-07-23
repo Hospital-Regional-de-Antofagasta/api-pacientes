@@ -219,10 +219,10 @@ describe("Endpoints", () => {
 
       //Probar que el paciente está en la colección de actualizados.
       expect(pacienteActualizado.numeroPaciente).toBeFalsy();
-      expect(pacienteActualizado.direccion).toStrictEqual("chhuu");
+      expect(pacienteActualizado.direccion).toStrictEqual("CHHUU");
       expect(pacienteActualizado.direccionNumero).toStrictEqual("444442");
-      expect(pacienteActualizado.detallesDireccion).toStrictEqual("40y");
-      expect(pacienteActualizado.direccionPoblacion).toStrictEqual("granví");
+      expect(pacienteActualizado.detallesDireccion).toStrictEqual("40Y");
+      expect(pacienteActualizado.direccionPoblacion).toStrictEqual("GRANVÍ");
       expect(pacienteActualizado.codigoComuna).toStrictEqual("01    ");
       expect(pacienteActualizado.codigoCiudad).toStrictEqual("03 ");
       expect(pacienteActualizado.codigoRegion).toStrictEqual("01 ");

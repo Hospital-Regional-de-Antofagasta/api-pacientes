@@ -45,7 +45,10 @@ exports.postDatosPaciente = async (req, res) => {
     });
     const pacienteAActualizar = req.body;
     pacienteAActualizar.numeroPaciente = numeroPaciente;
-    await PacientesActualizados.create(req.body);
+    pacienteAActualizar.direccion = pacienteAActualizar.direccion.toUpperCase();
+    pacienteAActualizar.detallesDireccion = pacienteAActualizar.detallesDireccion.toUpperCase();
+    pacienteAActualizar.direccionPoblacion = pacienteAActualizar.direccionPoblacion.toUpperCase();
+    await PacientesActualizados.create(pacienteAActualizar);
     await Pacientes.updateOne(
       {
         numeroPaciente,
