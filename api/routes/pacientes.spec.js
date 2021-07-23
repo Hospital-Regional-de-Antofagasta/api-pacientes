@@ -79,9 +79,10 @@ describe("Endpoints", () => {
       //Probar que el paciente es el esperado.
       const paciente = respuesta.body;
       expect(paciente.rut).toStrictEqual("10771131-7");
-      expect(paciente.nombreCompleto).toStrictEqual(
-        "JACQUELINE CLOTILDE LAZO ZAMBRA"
-      );
+      expect(paciente.nombre).toStrictEqual("JACQUELINE CLOTILDE");
+      expect(paciente.nombreSocial).toBeFalsy()
+      expect(paciente.apellidoPaterno).toStrictEqual("LAZO");
+      expect(paciente.apellidoMaterno).toStrictEqual("ZAMBRA");
       expect(paciente.direccion).toStrictEqual("");
       expect(paciente.direccionNumero).toStrictEqual("");
       expect(paciente.detallesDireccion).toStrictEqual(" ");
@@ -105,9 +106,10 @@ describe("Endpoints", () => {
       //Probar que el paciente es el esperado.
       const paciente = respuesta.body;
       expect(paciente.rut).toStrictEqual("17724699-9");
-      expect(paciente.nombreCompleto).toStrictEqual(
-        "name RIVERA ARANCIBIA"
-      );
+      expect(paciente.nombre).toStrictEqual("JOHANA GABRIEL");
+      expect(paciente.nombreSocial).toStrictEqual("name");
+      expect(paciente.apellidoPaterno).toStrictEqual("RIVERA");
+      expect(paciente.apellidoMaterno).toStrictEqual("ARANCIBIA");
       expect(paciente.direccion).toStrictEqual("");
       expect(paciente.direccionNumero).toStrictEqual("");
       expect(paciente.detallesDireccion).toStrictEqual(" ");
