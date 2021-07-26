@@ -48,5 +48,5 @@ Thumbs.db
 *.mov
 *.wmv
 
-# Enviromental variables
+# Environmental variables
 .env
