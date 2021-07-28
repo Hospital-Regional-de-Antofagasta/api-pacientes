@@ -1,6 +1,6 @@
 const express = require("express");
 const pacientesController = require("../controllers/pacientesController");
-const estaAutenticado = require("../middleware/auth");
+const isAuthenticated = require("../middleware/auth");
 const {
   validarCorreo,
   validarTelefono,
@@ -12,13 +12,13 @@ const router = express.Router();
 
 router.get(
   "/informacion",
-  estaAutenticado,
+  isAuthenticated,
   pacientesController.getInformacionPaciente
 );
 
 router.post(
   "/actualizar-datos",
-  estaAutenticado,
+  isAuthenticated,
   validarCorreo,
   validarTelefono,
   validarUbicacion,
@@ -28,14 +28,14 @@ router.post(
 
 router.get(
   "/verificar-si-datos-contacto-confirmados",
-  estaAutenticado,
+  isAuthenticated,
   validarSiPacienteExiste,
   pacientesController.getSiDatosContactoConfirmados
 );
 
 router.get(
   "/verificar-solicitud-duplicada",
-  estaAutenticado,
+  isAuthenticated,
   validarSiPacienteExiste,
   pacientesController.getSolicitudPendientePaciente
 );

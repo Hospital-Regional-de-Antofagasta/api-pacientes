@@ -4,15 +4,13 @@ const { getMensajes } = require("../config");
 
 exports.getInformacionPaciente = async (req, res) => {
   try {
-    const paciente = await Pacientes.findOne({
-      numeroPaciente: req.numeroPaciente,
-    }).exec();
+    const paciente = await Pacientes.findById(req.idPaciente).exec();
     if (paciente == null) {
       res.sendStatus(200);
       return;
     }
     const pacienteInfo = {
-      numeroPaciente: paciente.numeroPaciente,
+      numerosPaciente: paciente.numerosPaciente,
       rut: paciente.rut,
       nombre: paciente.nombre,
       nombreSocial: paciente.nombreSocial,
@@ -39,19 +37,21 @@ exports.getInformacionPaciente = async (req, res) => {
 
 exports.postDatosPaciente = async (req, res) => {
   try {
-    const numeroPaciente = req.numeroPaciente;
+    const numerosPaciente = req.numerosPaciente;
     await PacientesActualizados.deleteOne({
-      numeroPaciente,
+      numerosPaciente,
     });
     const pacienteAActualizar = req.body;
-    pacienteAActualizar.numeroPaciente = numeroPaciente;
+    pacienteAActualizar.numerosPaciente = numerosPaciente;
     pacienteAActualizar.direccion = pacienteAActualizar.direccion.toUpperCase();
-    pacienteAActualizar.detallesDireccion = pacienteAActualizar.detallesDireccion.toUpperCase();
-    pacienteAActualizar.direccionPoblacion = pacienteAActualizar.direccionPoblacion.toUpperCase();
+    pacienteAActualizar.detallesDireccion =
+      pacienteAActualizar.detallesDireccion.toUpperCase();
+    pacienteAActualizar.direccionPoblacion =
+      pacienteAActualizar.direccionPoblacion.toUpperCase();
     await PacientesActualizados.create(pacienteAActualizar);
     await Pacientes.updateOne(
       {
-        numeroPaciente,
+        numerosPaciente,
       },
       { datosContactoActualizados: true }
     ).exec();
@@ -65,14 +65,16 @@ exports.postDatosPaciente = async (req, res) => {
 exports.getSiDatosContactoConfirmados = async (req, res) => {
   try {
     const paciente = await Pacientes.findOne({
-      numeroPaciente: req.numeroPaciente,
+      numerosPaciente: req.numerosPaciente,
     }).exec();
     if (!paciente.datosContactoActualizados)
       return res.status(200).send({
         datosContactoConfirmados: paciente.datosContactoActualizados,
         respuesta: await getMensajes("datosContactoNoConfirmados"),
       });
-    res.status(200).send({ datosContactoConfirmados: paciente.datosContactoActualizados });
+    res
+      .status(200)
+      .send({ datosContactoConfirmados: paciente.datosContactoActualizados });
   } catch (error) {
     res.status(500).send({ respuesta: await getMensajes("serverError") });
   }
@@ -81,7 +83,7 @@ exports.getSiDatosContactoConfirmados = async (req, res) => {
 exports.getSolicitudPendientePaciente = async (req, res) => {
   try {
     const solicitudDuplicada = await PacientesActualizados.findOne({
-      numeroPaciente: req.numeroPaciente,
+      numerosPaciente: req.numerosPaciente,
     }).exec();
     if (solicitudDuplicada)
       return res.status(200).send({

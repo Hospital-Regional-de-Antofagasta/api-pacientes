@@ -128,7 +128,7 @@ exports.validarNoObligatorios = async (req, res, next) => {
 exports.validarSiPacienteExiste = async (req, res, next) => {
   try {
     const paciente = await Pacientes.findOne({
-      numeroPaciente: req.numeroPaciente,
+      numerosPaciente: req.numerosPaciente,
     }).exec();
     if (!paciente)
       return res

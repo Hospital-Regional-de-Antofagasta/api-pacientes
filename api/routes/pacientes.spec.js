@@ -8,6 +8,7 @@ const pacientesSeeds = require("../testSeeds/pacientesSeeds.json");
 const { getMensajes } = require("../config");
 const ConfigApiPacientes = require("../models/ConfigApiPacientes");
 const configSeed = require("../testSeeds/configSeed.json");
+const { find } = require("../models/Pacientes");
 
 const request = supertest(app);
 const secreto = process.env.JWT_SECRET;
@@ -59,7 +60,26 @@ describe("Endpoints", () => {
       done();
     });
     it("Intenta obtener la información de un paciente con token (El paciente no existe)", async (done) => {
-      token = jwt.sign({ numeroPaciente: 2 }, secreto);
+      token = jwt.sign(
+        {
+          _id: "000000000000",
+          numerosPaciente: [
+            {
+              _id: "000000000000",
+              numero: 2,
+              codigoEstablecimiento: "E01",
+              nombreEstablecimiento: "Hospital Regional de Antofagasta",
+            },
+            {
+              _id: "000000000001",
+              numero: 9,
+              codigoEstablecimiento: "E02",
+              nombreEstablecimiento: "Hospital de Calama",
+            },
+          ],
+        },
+        secreto
+      );
       const respuesta = await request
         .get("/v1/pacientes/informacion")
         .set("Authorization", token);
@@ -71,57 +91,97 @@ describe("Endpoints", () => {
       done();
     });
     it("Intenta obtener la información de un paciente con token (El paciente si existe)", async (done) => {
-      token = jwt.sign({ numeroPaciente: 1 }, secreto);
+      const paciente = await Pacientes.findById("6101834e912f6209f4851fdc");
+      token = jwt.sign(
+        {
+          _id: "6101834e912f6209f4851fdc",
+          numerosPaciente: [
+            {
+              _id: paciente.numerosPaciente[0]._id,
+              numero: 1,
+              codigoEstablecimiento: "E01",
+              nombreEstablecimiento: "Hospital Regional de Antofagasta",
+            },
+            {
+              _id: paciente.numerosPaciente[1]._id,
+              numero: 5,
+              codigoEstablecimiento: "E02",
+              nombreEstablecimiento: "Hospital de Calama",
+            },
+          ],
+        },
+        secreto
+      );
       const respuesta = await request
         .get("/v1/pacientes/informacion")
         .set("Authorization", token);
       expect(respuesta.status).toBe(200);
       //Probar que el paciente es el esperado.
-      const paciente = respuesta.body;
-      expect(paciente.rut).toStrictEqual("10771131-7");
-      expect(paciente.nombre).toStrictEqual("JACQUELINE CLOTILDE");
-      expect(paciente.nombreSocial).toBeFalsy()
-      expect(paciente.apellidoPaterno).toStrictEqual("LAZO");
-      expect(paciente.apellidoMaterno).toStrictEqual("ZAMBRA");
-      expect(paciente.direccion).toStrictEqual("");
-      expect(paciente.direccionNumero).toStrictEqual("");
-      expect(paciente.detallesDireccion).toStrictEqual(" ");
-      expect(paciente.direccionPoblacion).toStrictEqual("");
-      expect(paciente.codigoComuna).toStrictEqual("01");
-      expect(paciente.codigoCiudad).toStrictEqual("03");
-      expect(paciente.codigoRegion).toStrictEqual("01");
-      expect(paciente.telefonoFijo).toStrictEqual("");
-      expect(paciente.telefonoMovil).toStrictEqual("");
-      expect(paciente.correoCuerpo).toStrictEqual("");
-      expect(paciente.correoExtension).toStrictEqual("");
-      expect(paciente.datosContactoActualizados).toBeFalsy();
+      const pacienteObtenido = respuesta.body;
+      expect(pacienteObtenido.rut).toStrictEqual("10771131-7");
+      expect(pacienteObtenido.nombre).toStrictEqual("JACQUELINE CLOTILDE");
+      expect(pacienteObtenido.nombreSocial).toBeFalsy();
+      expect(pacienteObtenido.apellidoPaterno).toStrictEqual("LAZO");
+      expect(pacienteObtenido.apellidoMaterno).toStrictEqual("ZAMBRA");
+      expect(pacienteObtenido.direccion).toStrictEqual("");
+      expect(pacienteObtenido.direccionNumero).toStrictEqual("");
+      expect(pacienteObtenido.detallesDireccion).toStrictEqual(" ");
+      expect(pacienteObtenido.direccionPoblacion).toStrictEqual("");
+      expect(pacienteObtenido.codigoComuna).toStrictEqual("01");
+      expect(pacienteObtenido.codigoCiudad).toStrictEqual("03");
+      expect(pacienteObtenido.codigoRegion).toStrictEqual("01");
+      expect(pacienteObtenido.telefonoFijo).toStrictEqual("");
+      expect(pacienteObtenido.telefonoMovil).toStrictEqual("");
+      expect(pacienteObtenido.correoCuerpo).toStrictEqual("");
+      expect(pacienteObtenido.correoExtension).toStrictEqual("");
+      expect(pacienteObtenido.datosContactoActualizados).toBeFalsy();
       done();
     });
     it("Intenta obtener la información de un paciente con token (El paciente si existe y con nombre social)", async (done) => {
-      token = jwt.sign({ numeroPaciente: 3 }, secreto);
+      const paciente = await Pacientes.findById("6101834e912f6209f4851fdd");
+      token = jwt.sign(
+        {
+          _id: "6101834e912f6209f4851fdd",
+          numerosPaciente: [
+            {
+              _id: paciente.numerosPaciente[0]._id,
+              numero: 3,
+              codigoEstablecimiento: "E01",
+              nombreEstablecimiento: "Hospital Regional de Antofagasta",
+            },
+            {
+              _id: paciente.numerosPaciente[1]._id,
+              numero: 2,
+              codigoEstablecimiento: "E03",
+              nombreEstablecimiento: "Hospital de Mejillones",
+            },
+          ],
+        },
+        secreto
+      );
       const respuesta = await request
         .get("/v1/pacientes/informacion")
         .set("Authorization", token);
       expect(respuesta.status).toBe(200);
       //Probar que el paciente es el esperado.
-      const paciente = respuesta.body;
-      expect(paciente.rut).toStrictEqual("17724699-9");
-      expect(paciente.nombre).toStrictEqual("JOHANA GABRIEL");
-      expect(paciente.nombreSocial).toStrictEqual("name");
-      expect(paciente.apellidoPaterno).toStrictEqual("RIVERA");
-      expect(paciente.apellidoMaterno).toStrictEqual("ARANCIBIA");
-      expect(paciente.direccion).toStrictEqual("");
-      expect(paciente.direccionNumero).toStrictEqual("");
-      expect(paciente.detallesDireccion).toStrictEqual(" ");
-      expect(paciente.direccionPoblacion).toStrictEqual("");
-      expect(paciente.codigoComuna).toStrictEqual("01");
-      expect(paciente.codigoCiudad).toStrictEqual("03");
-      expect(paciente.codigoRegion).toStrictEqual("01");
-      expect(paciente.telefonoFijo).toStrictEqual("");
-      expect(paciente.telefonoMovil).toStrictEqual("");
-      expect(paciente.correoCuerpo).toStrictEqual("");
-      expect(paciente.correoExtension).toStrictEqual("");
-      expect(paciente.datosContactoActualizados).toBeTruthy();
+      const pacienteObtenido = respuesta.body;
+      expect(pacienteObtenido.rut).toStrictEqual("17724699-9");
+      expect(pacienteObtenido.nombre).toStrictEqual("JOHANA GABRIEL");
+      expect(pacienteObtenido.nombreSocial).toStrictEqual("name");
+      expect(pacienteObtenido.apellidoPaterno).toStrictEqual("RIVERA");
+      expect(pacienteObtenido.apellidoMaterno).toStrictEqual("ARANCIBIA");
+      expect(pacienteObtenido.direccion).toStrictEqual("");
+      expect(pacienteObtenido.direccionNumero).toStrictEqual("");
+      expect(pacienteObtenido.detallesDireccion).toStrictEqual(" ");
+      expect(pacienteObtenido.direccionPoblacion).toStrictEqual("");
+      expect(pacienteObtenido.codigoComuna).toStrictEqual("01");
+      expect(pacienteObtenido.codigoCiudad).toStrictEqual("03");
+      expect(pacienteObtenido.codigoRegion).toStrictEqual("01");
+      expect(pacienteObtenido.telefonoFijo).toStrictEqual("");
+      expect(pacienteObtenido.telefonoMovil).toStrictEqual("");
+      expect(pacienteObtenido.correoCuerpo).toStrictEqual("");
+      expect(pacienteObtenido.correoExtension).toStrictEqual("");
+      expect(pacienteObtenido.datosContactoActualizados).toBeTruthy();
       done();
     });
   });
@@ -144,7 +204,26 @@ describe("Endpoints", () => {
       done();
     });
     it("Intenta actualizar los datos de un paciente con token (El paciente no existe)", async (done) => {
-      token = jwt.sign({ numeroPaciente: 5 }, secreto);
+      token = jwt.sign(
+        {
+          _id: "000000000000",
+          numerosPaciente: [
+            {
+              _id: "000000000000",
+              numero: 2,
+              codigoEstablecimiento: "E01",
+              nombreEstablecimiento: "Hospital Regional de Antofagasta",
+            },
+            {
+              _id: "000000000001",
+              numero: 9,
+              codigoEstablecimiento: "E02",
+              nombreEstablecimiento: "Hospital de Calama",
+            },
+          ],
+        },
+        secreto
+      );
       const pacienteActualizar = {
         direccion: "Calle Nueva 123",
         direccionNumero: "10",
@@ -178,7 +257,27 @@ describe("Endpoints", () => {
       done();
     });
     it("Should update datos de un paciente", async (done) => {
-      token = jwt.sign({ numeroPaciente: 4 }, secreto);
+      let paciente = await Pacientes.findById("6101834e912f6209f4851fdb");
+      token = jwt.sign(
+        {
+          _id: "6101834e912f6209f4851fdb",
+          numerosPaciente: [
+            {
+              _id: paciente.numerosPaciente[0]._id,
+              numero: 4,
+              codigoEstablecimiento: "E01",
+              nombreEstablecimiento: "Hospital Regional de Antofagasta",
+            },
+            {
+              _id: paciente.numerosPaciente[1]._id,
+              numero: 14,
+              codigoEstablecimiento: "E02",
+              nombreEstablecimiento: "Hospital de Calama",
+            },
+          ],
+        },
+        secreto
+      );
       const pacienteActualizar = {
         direccion: "chhuu",
         direccionNumero: "444442",
@@ -198,11 +297,20 @@ describe("Endpoints", () => {
         .send(pacienteActualizar);
 
       const pacienteActualizado = await PacientesActualizados.findOne({
-        numeroPaciente: 4,
-      });
-
-      const paciente = await Pacientes.findOne({
-        numeroPaciente: 4,
+        numerosPaciente: [
+          {
+            _id: paciente.numerosPaciente[0]._id,
+            numero: 4,
+            codigoEstablecimiento: "E01",
+            nombreEstablecimiento: "Hospital Regional de Antofagasta",
+          },
+          {
+            _id: paciente.numerosPaciente[1]._id,
+            numero: 14,
+            codigoEstablecimiento: "E02",
+            nombreEstablecimiento: "Hospital de Calama",
+          },
+        ],
       });
 
       const mensaje = await getMensajes("solicitudCreada");
@@ -218,7 +326,8 @@ describe("Endpoints", () => {
       });
 
       //Probar que el paciente está en la colección de actualizados.
-      expect(pacienteActualizado.numeroPaciente).toBeFalsy();
+      expect(pacienteActualizado.numerosPaciente[0].numeroPaciente).toBeFalsy();
+      expect(pacienteActualizado.numerosPaciente[1].numeroPaciente).toBeFalsy();
       expect(pacienteActualizado.direccion).toStrictEqual("CHHUU");
       expect(pacienteActualizado.direccionNumero).toStrictEqual("444442");
       expect(pacienteActualizado.detallesDireccion).toStrictEqual("40Y");
@@ -231,12 +340,33 @@ describe("Endpoints", () => {
       expect(pacienteActualizado.correoCuerpo).toBe("niicoleperez");
       expect(pacienteActualizado.correoExtension).toBe("gmail.com");
 
+      paciente = await Pacientes.findById("6101834e912f6209f4851fdb");
       expect(paciente.datosContactoActualizados).toBeTruthy();
 
       done();
     });
     it("Should not update datos de contacto del paciente si el correo es vacio", async (done) => {
-      token = jwt.sign({ numeroPaciente: 4 }, secreto);
+      const paciente = await Pacientes.findById("6101834e912f6209f4851fdb");
+      token = jwt.sign(
+        {
+          _id: "6101834e912f6209f4851fdb",
+          numerosPaciente: [
+            {
+              _id: paciente.numerosPaciente[0]._id,
+              numero: 4,
+              codigoEstablecimiento: "E01",
+              nombreEstablecimiento: "Hospital Regional de Antofagasta",
+            },
+            {
+              _id: paciente.numerosPaciente[1]._id,
+              numero: 14,
+              codigoEstablecimiento: "E02",
+              nombreEstablecimiento: "Hospital de Calama",
+            },
+          ],
+        },
+        secreto
+      );
       const pacienteActualizar = {
         direccion: "Calle Nueva 123",
         direccionNumero: "10",
@@ -257,7 +387,20 @@ describe("Endpoints", () => {
         .send(pacienteActualizar);
 
       const pacienteActualizado = await PacientesActualizados.findOne({
-        numeroPaciente: 4,
+        numerosPaciente: [
+          {
+            _id: paciente.numerosPaciente[0]._id,
+            numero: 4,
+            codigoEstablecimiento: "E01",
+            nombreEstablecimiento: "Hospital Regional de Antofagasta",
+          },
+          {
+            _id: paciente.numerosPaciente[1]._id,
+            numero: 14,
+            codigoEstablecimiento: "E02",
+            nombreEstablecimiento: "Hospital de Calama",
+          },
+        ],
       });
 
       const mensaje = await getMensajes("badRequest");
@@ -277,7 +420,27 @@ describe("Endpoints", () => {
       done();
     });
     it("Should not update datos de contacto del paciente si el correo es invalido", async (done) => {
-      token = jwt.sign({ numeroPaciente: 4 }, secreto);
+      const paciente = await Pacientes.findById("6101834e912f6209f4851fdb");
+      token = jwt.sign(
+        {
+          _id: "6101834e912f6209f4851fdb",
+          numerosPaciente: [
+            {
+              _id: paciente.numerosPaciente[0]._id,
+              numero: 4,
+              codigoEstablecimiento: "E01",
+              nombreEstablecimiento: "Hospital Regional de Antofagasta",
+            },
+            {
+              _id: paciente.numerosPaciente[1]._id,
+              numero: 14,
+              codigoEstablecimiento: "E02",
+              nombreEstablecimiento: "Hospital de Calama",
+            },
+          ],
+        },
+        secreto
+      );
       const pacienteActualizar = {
         direccion: "Calle Nueva 123",
         direccionNumero: "10",
@@ -298,7 +461,20 @@ describe("Endpoints", () => {
         .send(pacienteActualizar);
 
       const pacienteActualizado = await PacientesActualizados.findOne({
-        numeroPaciente: 4,
+        numeroPaciente: [
+          {
+            _id: paciente.numerosPaciente[0]._id,
+            numero: 4,
+            codigoEstablecimiento: "E01",
+            nombreEstablecimiento: "Hospital Regional de Antofagasta",
+          },
+          {
+            _id: paciente.numerosPaciente[1]._id,
+            numero: 14,
+            codigoEstablecimiento: "E02",
+            nombreEstablecimiento: "Hospital de Calama",
+          },
+        ],
       });
 
       const mensaje = await getMensajes("badRequest");
@@ -318,7 +494,27 @@ describe("Endpoints", () => {
       done();
     });
     it("Should not update datos de contacto del paciente si ambos telefonos son vacios", async (done) => {
-      token = jwt.sign({ numeroPaciente: 4 }, secreto);
+      const paciente = await Pacientes.findById("6101834e912f6209f4851fdb");
+      token = jwt.sign(
+        {
+          _id: "6101834e912f6209f4851fdb",
+          numerosPaciente: [
+            {
+              _id: paciente.numerosPaciente[0]._id,
+              numero: 4,
+              codigoEstablecimiento: "E01",
+              nombreEstablecimiento: "Hospital Regional de Antofagasta",
+            },
+            {
+              _id: paciente.numerosPaciente[1]._id,
+              numero: 14,
+              codigoEstablecimiento: "E02",
+              nombreEstablecimiento: "Hospital de Calama",
+            },
+          ],
+        },
+        secreto
+      );
       const pacienteActualizar = {
         direccion: "Calle Nueva 123",
         direccionNumero: "10",
@@ -339,7 +535,20 @@ describe("Endpoints", () => {
         .send(pacienteActualizar);
 
       const pacienteActualizado = await PacientesActualizados.findOne({
-        numeroPaciente: 4,
+        numeroPaciente: [
+          {
+            _id: paciente.numerosPaciente[0]._id,
+            numero: 4,
+            codigoEstablecimiento: "E01",
+            nombreEstablecimiento: "Hospital Regional de Antofagasta",
+          },
+          {
+            _id: paciente.numerosPaciente[1]._id,
+            numero: 14,
+            codigoEstablecimiento: "E02",
+            nombreEstablecimiento: "Hospital de Calama",
+          },
+        ],
       });
 
       const mensaje = await getMensajes("badRequest");
@@ -380,7 +589,26 @@ describe("Endpoints", () => {
       done();
     });
     it("Should not verify if paciente does not exists", async (done) => {
-      token = jwt.sign({ numeroPaciente: 5 }, secreto);
+      token = jwt.sign(
+        {
+          _id: "000000000000",
+          numerosPaciente: [
+            {
+              _id: "000000000000",
+              numero: 2,
+              codigoEstablecimiento: "E01",
+              nombreEstablecimiento: "Hospital Regional de Antofagasta",
+            },
+            {
+              _id: "000000000001",
+              numero: 9,
+              codigoEstablecimiento: "E02",
+              nombreEstablecimiento: "Hospital de Calama",
+            },
+          ],
+        },
+        secreto
+      );
       const respuesta = await request
         .get("/v1/pacientes/verificar-si-datos-contacto-confirmados")
         .set("Authorization", token);
@@ -400,7 +628,27 @@ describe("Endpoints", () => {
       done();
     });
     it("Should verify paciente without confirmed datos contacto", async (done) => {
-      token = jwt.sign({ numeroPaciente: 4 }, secreto);
+      const paciente = await Pacientes.findById("6101834e912f6209f4851fdb");
+      token = jwt.sign(
+        {
+          _id: "6101834e912f6209f4851fdb",
+          numerosPaciente: [
+            {
+              _id: paciente.numerosPaciente[0]._id,
+              numero: 4,
+              codigoEstablecimiento: "E01",
+              nombreEstablecimiento: "Hospital Regional de Antofagasta",
+            },
+            {
+              _id: paciente.numerosPaciente[1]._id,
+              numero: 14,
+              codigoEstablecimiento: "E02",
+              nombreEstablecimiento: "Hospital de Calama",
+            },
+          ],
+        },
+        secreto
+      );
       const respuesta = await request
         .get("/v1/pacientes/verificar-si-datos-contacto-confirmados")
         .set("Authorization", token);
@@ -421,7 +669,27 @@ describe("Endpoints", () => {
       done();
     });
     it("Should verify paciente with confirmed datos contacto", async (done) => {
-      token = jwt.sign({ numeroPaciente: 3 }, secreto);
+      const paciente = await Pacientes.findById("6101834e912f6209f4851fdd");
+      token = jwt.sign(
+        {
+          _id: "6101834e912f6209f4851fdd",
+          numerosPaciente: [
+            {
+              _id: paciente.numerosPaciente[0]._id,
+              numero: 3,
+              codigoEstablecimiento: "E01",
+              nombreEstablecimiento: "Hospital Regional de Antofagasta",
+            },
+            {
+              _id: paciente.numerosPaciente[1]._id,
+              numero: 2,
+              codigoEstablecimiento: "E03",
+              nombreEstablecimiento: "Hospital de Mejillones",
+            },
+          ],
+        },
+        secreto
+      );
       const respuesta = await request
         .get("/v1/pacientes/verificar-si-datos-contacto-confirmados")
         .set("Authorization", token);
@@ -453,7 +721,26 @@ describe("Endpoints", () => {
       done();
     });
     it("Should not verify if paciente does not exists", async (done) => {
-      token = jwt.sign({ numeroPaciente: 5 }, secreto);
+      token = jwt.sign(
+        {
+          _id: "000000000000",
+          numerosPaciente: [
+            {
+              _id: "000000000000",
+              numero: 2,
+              codigoEstablecimiento: "E01",
+              nombreEstablecimiento: "Hospital Regional de Antofagasta",
+            },
+            {
+              _id: "000000000001",
+              numero: 9,
+              codigoEstablecimiento: "E02",
+              nombreEstablecimiento: "Hospital de Calama",
+            },
+          ],
+        },
+        secreto
+      );
       const respuesta = await request
         .get("/v1/pacientes/verificar-solicitud-duplicada")
         .set("Authorization", token);
@@ -473,7 +760,27 @@ describe("Endpoints", () => {
       done();
     });
     it("Should verify without existing solicitud de actualizar datos", async (done) => {
-      token = jwt.sign({ numeroPaciente: 4 }, secreto);
+      const paciente = await Pacientes.findById("6101834e912f6209f4851fdb");
+      token = jwt.sign(
+        {
+          _id: "6101834e912f6209f4851fdb",
+          numerosPaciente: [
+            {
+              _id: paciente.numerosPaciente[0]._id,
+              numero: 4,
+              codigoEstablecimiento: "E01",
+              nombreEstablecimiento: "Hospital Regional de Antofagasta",
+            },
+            {
+              _id: paciente.numerosPaciente[1]._id,
+              numero: 14,
+              codigoEstablecimiento: "E02",
+              nombreEstablecimiento: "Hospital de Calama",
+            },
+          ],
+        },
+        secreto
+      );
       const respuesta = await request
         .get("/v1/pacientes/verificar-solicitud-duplicada")
         .set("Authorization", token);
@@ -484,9 +791,42 @@ describe("Endpoints", () => {
       done();
     });
     it("Should verify with existing solicitud de actualizar datos", async (done) => {
-      token = jwt.sign({ numeroPaciente: 4 }, secreto);
+      const paciente = await Pacientes.findById("6101834e912f6209f4851fdb");
+      token = jwt.sign(
+        {
+          _id: "6101834e912f6209f4851fdb",
+          numerosPaciente: [
+            {
+              _id: paciente.numerosPaciente[0]._id,
+              numero: 4,
+              codigoEstablecimiento: "E01",
+              nombreEstablecimiento: "Hospital Regional de Antofagasta",
+            },
+            {
+              _id: paciente.numerosPaciente[1]._id,
+              numero: 14,
+              codigoEstablecimiento: "E02",
+              nombreEstablecimiento: "Hospital de Calama",
+            },
+          ],
+        },
+        secreto
+      );
       const pacienteActualizar = {
-        numeroPaciente: 4,
+        numerosPaciente: [
+          {
+            _id: paciente.numerosPaciente[0]._id,
+            numero: 4,
+            codigoEstablecimiento: "E01",
+            nombreEstablecimiento: "Hospital Regional de Antofagasta",
+          },
+          {
+            _id: paciente.numerosPaciente[1]._id,
+            numero: 14,
+            codigoEstablecimiento: "E02",
+            nombreEstablecimiento: "Hospital de Calama",
+          },
+        ],
         direccion: "Calle Nueva 123",
         direccionNumero: "10",
         detallesDireccion: "",
