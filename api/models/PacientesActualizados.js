@@ -5,6 +5,7 @@ const PacientesActualizados = mongoose.model(
   "pacientes_actualizado",
   new Schema(
     {
+      idPaciente: String,
       numerosPaciente: [
         {
           numero: {type: Number, require: true, unique: true, select: false},

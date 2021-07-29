@@ -37,12 +37,12 @@ exports.getInformacionPaciente = async (req, res) => {
 
 exports.postDatosPaciente = async (req, res) => {
   try {
-    const numerosPaciente = req.numerosPaciente;
     await PacientesActualizados.deleteOne({
-      numerosPaciente,
+      idPaciente: req.idPaciente,
     });
     const pacienteAActualizar = req.body;
-    pacienteAActualizar.numerosPaciente = numerosPaciente;
+    pacienteAActualizar.idPaciente = req.idPaciente;
+    pacienteAActualizar.numerosPaciente = req.numerosPaciente;
     pacienteAActualizar.direccion = pacienteAActualizar.direccion.toUpperCase();
     pacienteAActualizar.detallesDireccion =
       pacienteAActualizar.detallesDireccion.toUpperCase();
@@ -51,7 +51,7 @@ exports.postDatosPaciente = async (req, res) => {
     await PacientesActualizados.create(pacienteAActualizar);
     await Pacientes.updateOne(
       {
-        numerosPaciente,
+        _id: req.idPaciente,
       },
       { datosContactoActualizados: true }
     ).exec();
@@ -64,9 +64,7 @@ exports.postDatosPaciente = async (req, res) => {
 
 exports.getSiDatosContactoConfirmados = async (req, res) => {
   try {
-    const paciente = await Pacientes.findOne({
-      numerosPaciente: req.numerosPaciente,
-    }).exec();
+    const paciente = await Pacientes.findById(req.idPaciente).exec();
     if (!paciente.datosContactoActualizados)
       return res.status(200).send({
         datosContactoConfirmados: paciente.datosContactoActualizados,
@@ -83,7 +81,7 @@ exports.getSiDatosContactoConfirmados = async (req, res) => {
 exports.getSolicitudPendientePaciente = async (req, res) => {
   try {
     const solicitudDuplicada = await PacientesActualizados.findOne({
-      numerosPaciente: req.numerosPaciente,
+      idPaciente: req.idPaciente,
     }).exec();
     if (solicitudDuplicada)
       return res.status(200).send({
