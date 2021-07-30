@@ -65,13 +65,11 @@ describe("Endpoints", () => {
           _id: "000000000000",
           numerosPaciente: [
             {
-              _id: "000000000000",
               numero: 2,
               codigoEstablecimiento: "E01",
               nombreEstablecimiento: "Hospital Regional de Antofagasta",
             },
             {
-              _id: "000000000001",
               numero: 9,
               codigoEstablecimiento: "E02",
               nombreEstablecimiento: "Hospital de Calama",
@@ -183,13 +181,11 @@ describe("Endpoints", () => {
           _id: "000000000000",
           numerosPaciente: [
             {
-              _id: "000000000000",
               numero: 2,
               codigoEstablecimiento: "E01",
               nombreEstablecimiento: "Hospital Regional de Antofagasta",
             },
             {
-              _id: "000000000001",
               numero: 9,
               codigoEstablecimiento: "E02",
               nombreEstablecimiento: "Hospital de Calama",
@@ -297,7 +293,7 @@ describe("Endpoints", () => {
       const paciente = await Pacientes.findById("6101834e912f6209f4851fdb");
       token = jwt.sign(
         {
-          _id: "6101834e912f6209f4851fdb",
+          _id: paciente._id,
           numerosPaciente: paciente.numerosPaciente,
         },
         secreto
@@ -345,7 +341,7 @@ describe("Endpoints", () => {
       const paciente = await Pacientes.findById("6101834e912f6209f4851fdb");
       token = jwt.sign(
         {
-          _id: "6101834e912f6209f4851fdb",
+          _id: paciente._id,
           numerosPaciente: paciente.numerosPaciente,
         },
         secreto
@@ -393,7 +389,7 @@ describe("Endpoints", () => {
       const paciente = await Pacientes.findById("6101834e912f6209f4851fdb");
       token = jwt.sign(
         {
-          _id: "6101834e912f6209f4851fdb",
+          _id: paciente._id,
           numerosPaciente: paciente.numerosPaciente,
         },
         secreto
@@ -464,13 +460,11 @@ describe("Endpoints", () => {
           _id: "000000000000",
           numerosPaciente: [
             {
-              _id: "000000000000",
               numero: 2,
               codigoEstablecimiento: "E01",
               nombreEstablecimiento: "Hospital Regional de Antofagasta",
             },
             {
-              _id: "000000000001",
               numero: 9,
               codigoEstablecimiento: "E02",
               nombreEstablecimiento: "Hospital de Calama",
@@ -570,13 +564,11 @@ describe("Endpoints", () => {
           _id: "000000000000",
           numerosPaciente: [
             {
-              _id: "000000000000",
               numero: 2,
               codigoEstablecimiento: "E01",
               nombreEstablecimiento: "Hospital Regional de Antofagasta",
             },
             {
-              _id: "000000000001",
               numero: 9,
               codigoEstablecimiento: "E02",
               nombreEstablecimiento: "Hospital de Calama",
@@ -607,7 +599,7 @@ describe("Endpoints", () => {
       const paciente = await Pacientes.findById("6101834e912f6209f4851fdb");
       token = jwt.sign(
         {
-          _id: "6101834e912f6209f4851fdb",
+          _id: paciente._id,
           numerosPaciente: paciente.numerosPaciente,
         },
         secreto
