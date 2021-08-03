@@ -18,6 +18,14 @@ exports.validarCorreo = async (req, res, next) => {
 
     next();
   } catch (error) {
+    if (process.env.NODE_ENV === "dev")
+      return res.status(500).send({
+        respuesta: await getMensajes("serverError"),
+        detalles_error: {
+          nombre: error.name,
+          mensaje: error.message,
+        },
+      });
     res.status(500).send({ respuesta: await getMensajes("serverError") });
   }
 };
@@ -64,6 +72,14 @@ exports.validarTelefono = async (req, res, next) => {
     }
     next();
   } catch (error) {
+    if (process.env.NODE_ENV === "dev")
+      return res.status(500).send({
+        respuesta: await getMensajes("serverError"),
+        detalles_error: {
+          nombre: error.name,
+          mensaje: error.message,
+        },
+      });
     res.status(500).send({ respuesta: await getMensajes("serverError") });
   }
 };
@@ -89,6 +105,14 @@ exports.validarUbicacion = async (req, res, next) => {
     }
     next();
   } catch (error) {
+    if (process.env.NODE_ENV === "dev")
+      return res.status(500).send({
+        respuesta: await getMensajes("serverError"),
+        detalles_error: {
+          nombre: error.name,
+          mensaje: error.message,
+        },
+      });
     res.status(500).send({ respuesta: await getMensajes("serverError") });
   }
 };
@@ -121,6 +145,14 @@ exports.validarNoObligatorios = async (req, res, next) => {
     }
     next();
   } catch (error) {
+    if (process.env.NODE_ENV === "dev")
+      return res.status(500).send({
+        respuesta: await getMensajes("serverError"),
+        detalles_error: {
+          nombre: error.name,
+          mensaje: error.message,
+        },
+      });
     res.status(500).send({ respuesta: await getMensajes("serverError") });
   }
 };
@@ -137,6 +169,14 @@ exports.validarSiPacienteExiste = async (req, res, next) => {
 
     next();
   } catch (error) {
+    if (process.env.NODE_ENV === "dev")
+      return res.status(500).send({
+        respuesta: await getMensajes("serverError"),
+        detalles_error: {
+          nombre: error.name,
+          mensaje: error.message,
+        },
+      });
     res.status(500).send({ respuesta: await getMensajes("serverError") });
   }
 };

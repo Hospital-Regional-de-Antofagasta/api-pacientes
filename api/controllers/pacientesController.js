@@ -31,6 +31,14 @@ exports.getInformacionPaciente = async (req, res) => {
     };
     res.status(200).send(pacienteInfo);
   } catch (error) {
+    if (process.env.NODE_ENV === "dev")
+      return res.status(500).send({
+        respuesta: await getMensajes("serverError"),
+        detalles_error: {
+          nombre: error.name,
+          mensaje: error.message,
+        },
+      });
     res.status(500).send({ respuesta: await getMensajes("serverError") });
   }
 };
@@ -58,6 +66,14 @@ exports.postDatosPaciente = async (req, res) => {
 
     res.status(201).send({ respuesta: await getMensajes("solicitudCreada") });
   } catch (error) {
+    if (process.env.NODE_ENV === "dev")
+      return res.status(500).send({
+        respuesta: await getMensajes("serverError"),
+        detalles_error: {
+          nombre: error.name,
+          mensaje: error.message,
+        },
+      });
     res.status(500).send({ respuesta: await getMensajes("serverError") });
   }
 };
@@ -74,6 +90,14 @@ exports.getSiDatosContactoConfirmados = async (req, res) => {
       .status(200)
       .send({ datosContactoConfirmados: paciente.datosContactoActualizados });
   } catch (error) {
+    if (process.env.NODE_ENV === "dev")
+      return res.status(500).send({
+        respuesta: await getMensajes("serverError"),
+        detalles_error: {
+          nombre: error.name,
+          mensaje: error.message,
+        },
+      });
     res.status(500).send({ respuesta: await getMensajes("serverError") });
   }
 };
@@ -90,6 +114,14 @@ exports.getSolicitudPendientePaciente = async (req, res) => {
       });
     res.status(200).send({ solicitudDuplicada: false });
   } catch (error) {
+    if (process.env.NODE_ENV === "dev")
+      return res.status(500).send({
+        respuesta: await getMensajes("serverError"),
+        detalles_error: {
+          nombre: error.name,
+          mensaje: error.message,
+        },
+      });
     res.status(500).send({ respuesta: await getMensajes("serverError") });
   }
 };
