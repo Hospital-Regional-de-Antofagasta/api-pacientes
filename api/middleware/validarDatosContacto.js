@@ -87,7 +87,7 @@ exports.validarTelefono = async (req, res, next) => {
 exports.validarUbicacion = async (req, res, next) => {
   try {
     const { codigoComuna, codigoCiudad, codigoRegion } = req.body;
-    const regexCodigo = new RegExp(/^[0-9]{2}[ ]*$/);
+    const regexCodigo = new RegExp(/^\d{2}[ ]*$/);
     if (
       typeof codigoComuna !== "string" ||
       !regexCodigo.test(codigoComuna) ||
@@ -126,7 +126,7 @@ exports.validarNoObligatorios = async (req, res, next) => {
       direccionPoblacion,
     } = req.body;
     const regexTexto = new RegExp(/[\s\w\.\,\-áéíóúÁÉÍÓÚñÑ%$¡!¿?()]+$/);
-    const regexNumero = new RegExp(/^[0-9]+$/);
+    const regexNumero = new RegExp(/^\d+$/);
     if (
       (direccion.length > 0 &&
         (!regexTexto.test(direccion) || direccion.length > 100)) ||

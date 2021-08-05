@@ -212,9 +212,9 @@ describe("Endpoints", () => {
         .set("Authorization", token)
         .send(pacienteActualizar);
 
-      const mensaje = await getMensajes("solicitudCreada");
+      const mensaje = await getMensajes("badRequest");
 
-      expect(respuesta.status).toBe(201);
+      expect(respuesta.status).toBe(400);
       expect(respuesta.body).toEqual({
         respuesta: {
           titulo: mensaje.titulo,
@@ -253,10 +253,9 @@ describe("Endpoints", () => {
         .set("Authorization", token)
         .send(pacienteActualizar);
 
-      const pacienteActualizado = await PacientesActualizados.findOne({
-        numerosPaciente: paciente.numerosPaciente,
+      const solicitudesPacienteActualizado = await PacientesActualizados.find({
+        numeroPaciente: { $in: paciente.numerosPaciente },
       });
-
       const mensaje = await getMensajes("solicitudCreada");
 
       expect(respuesta.status).toBe(201);
@@ -268,21 +267,37 @@ describe("Endpoints", () => {
           icono: mensaje.icono,
         },
       });
-
+      
       //Probar que el paciente está en la colección de actualizados.
-      expect(pacienteActualizado.numerosPaciente[0].numeroPaciente).toBeFalsy();
-      expect(pacienteActualizado.numerosPaciente[1].numeroPaciente).toBeFalsy();
-      expect(pacienteActualizado.direccion).toStrictEqual("CHHUU");
-      expect(pacienteActualizado.direccionNumero).toStrictEqual("444442");
-      expect(pacienteActualizado.detallesDireccion).toStrictEqual("40Y");
-      expect(pacienteActualizado.direccionPoblacion).toStrictEqual("GRANVÍ");
-      expect(pacienteActualizado.codigoComuna).toStrictEqual("01    ");
-      expect(pacienteActualizado.codigoCiudad).toStrictEqual("03 ");
-      expect(pacienteActualizado.codigoRegion).toStrictEqual("01 ");
-      expect(pacienteActualizado.telefonoFijo).toStrictEqual("123456789");
-      expect(pacienteActualizado.telefonoMovil).toStrictEqual("12345678");
-      expect(pacienteActualizado.correoCuerpo).toBe("niicoleperez");
-      expect(pacienteActualizado.correoExtension).toBe("gmail.com");
+      expect(solicitudesPacienteActualizado[0].numeroPaciente.numero).toBeFalsy();
+      expect(solicitudesPacienteActualizado[0].numeroPaciente.codigoEstablecimiento).toBeFalsy();
+      expect(solicitudesPacienteActualizado[0].numeroPaciente.nombreEstablecimiento).toBe("Hospital Regional de Antofagasta");
+      expect(solicitudesPacienteActualizado[0].direccion).toStrictEqual("CHHUU");
+      expect(solicitudesPacienteActualizado[0].direccionNumero).toStrictEqual("444442");
+      expect(solicitudesPacienteActualizado[0].detallesDireccion).toStrictEqual("40Y");
+      expect(solicitudesPacienteActualizado[0].direccionPoblacion).toStrictEqual("GRANVÍ");
+      expect(solicitudesPacienteActualizado[0].codigoComuna).toStrictEqual("01    ");
+      expect(solicitudesPacienteActualizado[0].codigoCiudad).toStrictEqual("03 ");
+      expect(solicitudesPacienteActualizado[0].codigoRegion).toStrictEqual("01 ");
+      expect(solicitudesPacienteActualizado[0].telefonoFijo).toStrictEqual("123456789");
+      expect(solicitudesPacienteActualizado[0].telefonoMovil).toStrictEqual("12345678");
+      expect(solicitudesPacienteActualizado[0].correoCuerpo).toBe("niicoleperez");
+      expect(solicitudesPacienteActualizado[0].correoExtension).toBe("gmail.com");
+
+      expect(solicitudesPacienteActualizado[1].numeroPaciente.numero).toBeFalsy();
+      expect(solicitudesPacienteActualizado[1].numeroPaciente.codigoEstablecimiento).toBeFalsy();
+      expect(solicitudesPacienteActualizado[1].numeroPaciente.nombreEstablecimiento).toBe("Hospital de Calama");
+      expect(solicitudesPacienteActualizado[1].direccion).toStrictEqual("CHHUU");
+      expect(solicitudesPacienteActualizado[1].direccionNumero).toStrictEqual("444442");
+      expect(solicitudesPacienteActualizado[1].detallesDireccion).toStrictEqual("40Y");
+      expect(solicitudesPacienteActualizado[1].direccionPoblacion).toStrictEqual("GRANVÍ");
+      expect(solicitudesPacienteActualizado[1].codigoComuna).toStrictEqual("01    ");
+      expect(solicitudesPacienteActualizado[1].codigoCiudad).toStrictEqual("03 ");
+      expect(solicitudesPacienteActualizado[1].codigoRegion).toStrictEqual("01 ");
+      expect(solicitudesPacienteActualizado[1].telefonoFijo).toStrictEqual("123456789");
+      expect(solicitudesPacienteActualizado[1].telefonoMovil).toStrictEqual("12345678");
+      expect(solicitudesPacienteActualizado[1].correoCuerpo).toBe("niicoleperez");
+      expect(solicitudesPacienteActualizado[1].correoExtension).toBe("gmail.com");
 
       paciente = await Pacientes.findById("6101834e912f6209f4851fdb");
       expect(paciente.datosContactoActualizados).toBeTruthy();
@@ -317,8 +332,8 @@ describe("Endpoints", () => {
         .set("Authorization", token)
         .send(pacienteActualizar);
 
-      const pacienteActualizado = await PacientesActualizados.findOne({
-        numerosPaciente: paciente.numerosPaciente,
+      const pacienteActualizado = await PacientesActualizados.find({
+        numeroPaciente: { $in: paciente.numerosPaciente },
       });
 
       const mensaje = await getMensajes("badRequest");
@@ -333,7 +348,7 @@ describe("Endpoints", () => {
         },
       });
 
-      expect(pacienteActualizado).toBeFalsy();
+      expect(pacienteActualizado).toStrictEqual([]);
 
       done();
     });
@@ -365,8 +380,8 @@ describe("Endpoints", () => {
         .set("Authorization", token)
         .send(pacienteActualizar);
 
-      const pacienteActualizado = await PacientesActualizados.findOne({
-        numerosPaciente: paciente.numerosPaciente,
+      const pacienteActualizado = await PacientesActualizados.find({
+        numeroPaciente: { $in: paciente.numerosPaciente },
       });
 
       const mensaje = await getMensajes("badRequest");
@@ -381,7 +396,7 @@ describe("Endpoints", () => {
         },
       });
 
-      expect(pacienteActualizado).toBeFalsy();
+      expect(pacienteActualizado).toStrictEqual([]);
 
       done();
     });
@@ -413,8 +428,8 @@ describe("Endpoints", () => {
         .set("Authorization", token)
         .send(pacienteActualizar);
 
-      const pacienteActualizado = await PacientesActualizados.findOne({
-        numerosPaciente: paciente.numerosPaciente,
+      const pacienteActualizado = await PacientesActualizados.find({
+        numeroPaciente: { $in: paciente.numerosPaciente },
       });
 
       const mensaje = await getMensajes("badRequest");
@@ -429,7 +444,7 @@ describe("Endpoints", () => {
         },
       });
 
-      expect(pacienteActualizado).toBeFalsy();
+      expect(pacienteActualizado).toStrictEqual([]);
 
       done();
     });
@@ -624,7 +639,7 @@ describe("Endpoints", () => {
       );
       const pacienteActualizar = {
         idPaciente:paciente._id,
-        numerosPaciente: paciente.numerosPaciente,
+        numeroPaciente: paciente.numerosPaciente[0],
         direccion: "Calle Nueva 123",
         direccionNumero: "10",
         detallesDireccion: "",

@@ -45,18 +45,24 @@ exports.getInformacionPaciente = async (req, res) => {
 
 exports.postDatosPaciente = async (req, res) => {
   try {
-    await PacientesActualizados.deleteOne({
+    await PacientesActualizados.deleteMany({
       idPaciente: req.idPaciente,
     });
+
     const pacienteAActualizar = req.body;
     pacienteAActualizar.idPaciente = req.idPaciente;
-    pacienteAActualizar.numerosPaciente = req.numerosPaciente;
     pacienteAActualizar.direccion = pacienteAActualizar.direccion.toUpperCase();
     pacienteAActualizar.detallesDireccion =
       pacienteAActualizar.detallesDireccion.toUpperCase();
     pacienteAActualizar.direccionPoblacion =
       pacienteAActualizar.direccionPoblacion.toUpperCase();
-    await PacientesActualizados.create(pacienteAActualizar);
+
+    //Se crea una actualización para cada hospital.
+    for (let numero of req.numerosPaciente){
+      pacienteAActualizar.numeroPaciente = numero;
+      await PacientesActualizados.create(pacienteAActualizar);
+    };
+
     await Pacientes.updateOne(
       {
         _id: req.idPaciente,

@@ -19,6 +19,7 @@ router.get(
 router.post(
   "/actualizar-datos",
   isAuthenticated,
+  validarSiPacienteExiste,
   validarCorreo,
   validarTelefono,
   validarUbicacion,
