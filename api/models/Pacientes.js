@@ -8,8 +8,8 @@ const Pacientes = mongoose.model(
       numerosPaciente: [
         {
           _id: false,
-          numero: {type: Number, require: true, unique: true, select: false},
-          codigoEstablecimiento: {type: String, require: true, unique: true, select: false},
+          numero: {type: Number, require: true, select: false},
+          codigoEstablecimiento: {type: String, require: true, select: false},
           nombreEstablecimiento: String,
         }
       ],
@@ -33,7 +33,7 @@ const Pacientes = mongoose.model(
       nombreSocial: String,
     },
     { timestamps: true }
-  )
+  ).index({'numerosPaciente.numero':1,'numerosPaciente.codigoEstablecimiento':1},{unique: true})
 );
 
 module.exports = Pacientes;
