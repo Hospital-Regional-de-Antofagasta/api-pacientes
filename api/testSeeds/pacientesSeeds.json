@@ -1,24 +1,7 @@
 [
   {
     "_id": "6101834e912f6209f4851fdc",
-    "numerosPaciente": [
-      {
-        "numero": 1,
-        "codigoEstablecimiento": "E01",
-        "hospital": {
-          "E01": 1
-        },
-        "nombreEstablecimiento": "Hospital Regional de Antofagasta"
-      },
-      {
-        "numero": 5,
-        "codigoEstablecimiento": "E02",
-        "hospital": {
-          "E02": 1
-        },
-        "nombreEstablecimiento": "Hospital de Calama"
-      }
-    ],
+    "numeroPaciente": 1,
     "rut": "10771131-7",
     "apellidoPaterno": "LAZO",
     "apellidoMaterno": "ZAMBRA",
@@ -39,24 +22,7 @@
   },
   {
     "_id": "6101834e912f6209f4851fdd",
-    "numerosPaciente": [
-      {
-        "numero": 3,
-        "codigoEstablecimiento": "E01",
-        "hospital": {
-          "E01": 1
-        },
-        "nombreEstablecimiento": "Hospital Regional de Antofagasta"
-      },
-      {
-        "numero": 2,
-        "codigoEstablecimiento": "E03",
-        "hospital": {
-          "E03": 1
-        },
-        "nombreEstablecimiento": "Hospital de Mejillones"
-      }
-    ],
+    "numeroPaciente": 3,
     "rut": "17724699-9",
     "apellidoPaterno": "RIVERA",
     "apellidoMaterno": "ARANCIBIA",
@@ -77,24 +43,7 @@
   },
   {
     "_id": "6101834e912f6209f4851fdb",
-    "numerosPaciente": [
-      {
-        "numero": 4,
-        "codigoEstablecimiento": "E01",
-        "hospital": {
-          "E01": 1
-        },
-        "nombreEstablecimiento": "Hospital Regional de Antofagasta"
-      },
-      {
-        "numero": 14,
-        "codigoEstablecimiento": "E02",
-        "hospital": {
-          "E02": 1
-        },
-        "nombreEstablecimiento": "Hospital de Calama"
-      }
-    ],
+    "numeroPaciente": 4,
     "rut": "18502151-3",
     "apellidoPaterno": "RIVERA",
     "apellidoMaterno": "ARANCIBIA",

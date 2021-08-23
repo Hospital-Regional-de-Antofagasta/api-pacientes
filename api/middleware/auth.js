@@ -19,9 +19,9 @@ const isAuthenticated = async (req, res, next) => {
         .send({ respuesta: await getMensajes("forbiddenAccess") });
     }
 
-    const { _id, numerosPaciente } = decoded;
+    const { _id, numeroPaciente } = decoded;
     req.idPaciente = _id;
-    req.numerosPaciente = numerosPaciente;
+    req.numeroPaciente = numeroPaciente;
 
     next();
   });

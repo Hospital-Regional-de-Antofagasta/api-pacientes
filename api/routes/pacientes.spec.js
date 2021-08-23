@@ -63,24 +63,7 @@ describe("Endpoints", () => {
       token = jwt.sign(
         {
           _id: "000000000000",
-          numerosPaciente: [
-            {
-              numero: 2,
-              codigoEstablecimiento: "E01",
-              hospital: {
-                E01: 1
-              },
-              nombreEstablecimiento: "Hospital Regional de Antofagasta",
-            },
-            {
-              numero: 9,
-              codigoEstablecimiento: "E02",
-              hospital: {
-                E02: 1
-              },
-              nombreEstablecimiento: "Hospital de Calama",
-            },
-          ],
+          numeroPaciente: 2,
         },
         secreto
       );
@@ -99,7 +82,7 @@ describe("Endpoints", () => {
       token = jwt.sign(
         {
           _id: paciente._id,
-          numerosPaciente: paciente.numerosPaciente,
+          numeroPaciente: paciente.numeroPaciente,
         },
         secreto
       );
@@ -133,7 +116,7 @@ describe("Endpoints", () => {
       token = jwt.sign(
         {
           _id: paciente._id,
-          numerosPaciente: paciente.numerosPaciente,
+          numeroPaciente: paciente.numeroPaciente,
         },
         secreto
       );
@@ -185,24 +168,7 @@ describe("Endpoints", () => {
       token = jwt.sign(
         {
           _id: "000000000000",
-          numerosPaciente: [
-            {
-              numero: 2,
-              codigoEstablecimiento: "E01",
-              hospital: {
-                E01: 1
-              },
-              nombreEstablecimiento: "Hospital Regional de Antofagasta",
-            },
-            {
-              numero: 9,
-              codigoEstablecimiento: "E02",
-              hospital: {
-                E02: 1
-              },
-              nombreEstablecimiento: "Hospital de Calama",
-            },
-          ],
+          numeroPaciente: 2,
         },
         secreto
       );
@@ -243,7 +209,7 @@ describe("Endpoints", () => {
       token = jwt.sign(
         {
           _id: paciente._id,
-          numerosPaciente: paciente.numerosPaciente,
+          numeroPaciente: paciente.numeroPaciente,
         },
         secreto
       );
@@ -266,7 +232,7 @@ describe("Endpoints", () => {
         .send(pacienteActualizar);
 
       const solicitudesPacienteActualizado = await PacientesActualizados.find({
-        numeroPaciente: { $in: paciente.numerosPaciente },
+        numeroPaciente: paciente.numeroPaciente,
       });
       const mensaje = await getMensajes("solicitudCreada");
 
@@ -279,38 +245,42 @@ describe("Endpoints", () => {
           icono: mensaje.icono,
         },
       });
-      
+
       //Probar que el paciente está en la colección de actualizados.
-      expect(solicitudesPacienteActualizado[0].numeroPaciente.numero).toBeFalsy();
-      expect(solicitudesPacienteActualizado[0].numeroPaciente.codigoEstablecimiento).toBeFalsy();
-      expect(solicitudesPacienteActualizado[0].numeroPaciente.nombreEstablecimiento).toBe("Hospital Regional de Antofagasta");
-      expect(solicitudesPacienteActualizado[0].direccion).toStrictEqual("CHHUU");
-      expect(solicitudesPacienteActualizado[0].direccionNumero).toStrictEqual("444442");
-      expect(solicitudesPacienteActualizado[0].detallesDireccion).toStrictEqual("40Y");
-      expect(solicitudesPacienteActualizado[0].direccionPoblacion).toStrictEqual("GRANVÍ");
-      expect(solicitudesPacienteActualizado[0].codigoComuna).toStrictEqual("01    ");
-      expect(solicitudesPacienteActualizado[0].codigoCiudad).toStrictEqual("03 ");
-      expect(solicitudesPacienteActualizado[0].codigoRegion).toStrictEqual("01 ");
-      expect(solicitudesPacienteActualizado[0].telefonoFijo).toStrictEqual("123456789");
-      expect(solicitudesPacienteActualizado[0].telefonoMovil).toStrictEqual("12345678");
-      expect(solicitudesPacienteActualizado[0].correoCuerpo).toBe("niicoleperez");
-      expect(solicitudesPacienteActualizado[0].correoExtension).toBe("gmail.com");
-
-      expect(solicitudesPacienteActualizado[1].numeroPaciente.numero).toBeFalsy();
-      expect(solicitudesPacienteActualizado[1].numeroPaciente.codigoEstablecimiento).toBeFalsy();
-      expect(solicitudesPacienteActualizado[1].numeroPaciente.nombreEstablecimiento).toBe("Hospital de Calama");
-      expect(solicitudesPacienteActualizado[1].direccion).toStrictEqual("CHHUU");
-      expect(solicitudesPacienteActualizado[1].direccionNumero).toStrictEqual("444442");
-      expect(solicitudesPacienteActualizado[1].detallesDireccion).toStrictEqual("40Y");
-      expect(solicitudesPacienteActualizado[1].direccionPoblacion).toStrictEqual("GRANVÍ");
-      expect(solicitudesPacienteActualizado[1].codigoComuna).toStrictEqual("01    ");
-      expect(solicitudesPacienteActualizado[1].codigoCiudad).toStrictEqual("03 ");
-      expect(solicitudesPacienteActualizado[1].codigoRegion).toStrictEqual("01 ");
-      expect(solicitudesPacienteActualizado[1].telefonoFijo).toStrictEqual("123456789");
-      expect(solicitudesPacienteActualizado[1].telefonoMovil).toStrictEqual("12345678");
-      expect(solicitudesPacienteActualizado[1].correoCuerpo).toBe("niicoleperez");
-      expect(solicitudesPacienteActualizado[1].correoExtension).toBe("gmail.com");
-
+      expect(solicitudesPacienteActualizado[0].numeroPaciente).toBeFalsy();
+      expect(solicitudesPacienteActualizado[0].direccion).toStrictEqual(
+        "CHHUU"
+      );
+      expect(solicitudesPacienteActualizado[0].direccionNumero).toStrictEqual(
+        "444442"
+      );
+      expect(solicitudesPacienteActualizado[0].detallesDireccion).toStrictEqual(
+        "40Y"
+      );
+      expect(
+        solicitudesPacienteActualizado[0].direccionPoblacion
+      ).toStrictEqual("GRANVÍ");
+      expect(solicitudesPacienteActualizado[0].codigoComuna).toStrictEqual(
+        "01    "
+      );
+      expect(solicitudesPacienteActualizado[0].codigoCiudad).toStrictEqual(
+        "03 "
+      );
+      expect(solicitudesPacienteActualizado[0].codigoRegion).toStrictEqual(
+        "01 "
+      );
+      expect(solicitudesPacienteActualizado[0].telefonoFijo).toStrictEqual(
+        "123456789"
+      );
+      expect(solicitudesPacienteActualizado[0].telefonoMovil).toStrictEqual(
+        "12345678"
+      );
+      expect(solicitudesPacienteActualizado[0].correoCuerpo).toBe(
+        "niicoleperez"
+      );
+      expect(solicitudesPacienteActualizado[0].correoExtension).toBe(
+        "gmail.com"
+      );
       paciente = await Pacientes.findById("6101834e912f6209f4851fdb");
       expect(paciente.datosContactoActualizados).toBeTruthy();
 
@@ -321,7 +291,7 @@ describe("Endpoints", () => {
       token = jwt.sign(
         {
           _id: paciente._id,
-          numerosPaciente: paciente.numerosPaciente,
+          numeroPaciente: paciente.numeroPaciente,
         },
         secreto
       );
@@ -345,7 +315,7 @@ describe("Endpoints", () => {
         .send(pacienteActualizar);
 
       const pacienteActualizado = await PacientesActualizados.find({
-        numeroPaciente: { $in: paciente.numerosPaciente },
+        numeroPaciente: paciente.numeroPaciente,
       });
 
       const mensaje = await getMensajes("badRequest");
@@ -369,7 +339,7 @@ describe("Endpoints", () => {
       token = jwt.sign(
         {
           _id: paciente._id,
-          numerosPaciente: paciente.numerosPaciente,
+          numeroPaciente: paciente.numeroPaciente,
         },
         secreto
       );
@@ -393,7 +363,7 @@ describe("Endpoints", () => {
         .send(pacienteActualizar);
 
       const pacienteActualizado = await PacientesActualizados.find({
-        numeroPaciente: { $in: paciente.numerosPaciente },
+        numeroPaciente: paciente.numeroPaciente,
       });
 
       const mensaje = await getMensajes("badRequest");
@@ -417,7 +387,7 @@ describe("Endpoints", () => {
       token = jwt.sign(
         {
           _id: paciente._id,
-          numerosPaciente: paciente.numerosPaciente,
+          numeroPaciente: paciente.numeroPaciente,
         },
         secreto
       );
@@ -441,7 +411,7 @@ describe("Endpoints", () => {
         .send(pacienteActualizar);
 
       const pacienteActualizado = await PacientesActualizados.find({
-        numeroPaciente: { $in: paciente.numerosPaciente },
+        numeroPaciente: paciente.numeroPaciente,
       });
 
       const mensaje = await getMensajes("badRequest");
@@ -485,24 +455,7 @@ describe("Endpoints", () => {
       token = jwt.sign(
         {
           _id: "000000000000",
-          numerosPaciente: [
-            {
-              numero: 2,
-              codigoEstablecimiento: "E01",
-              hospital: {
-                E01: 1
-              },
-              nombreEstablecimiento: "Hospital Regional de Antofagasta",
-            },
-            {
-              numero: 9,
-              codigoEstablecimiento: "E02",
-              hospital: {
-                E02: 1
-              },
-              nombreEstablecimiento: "Hospital de Calama",
-            },
-          ],
+          numeroPaciente: 2,
         },
         secreto
       );
@@ -529,7 +482,7 @@ describe("Endpoints", () => {
       token = jwt.sign(
         {
           _id: paciente._id,
-          numerosPaciente: paciente.numerosPaciente,
+          numeroPaciente: paciente.numeroPaciente,
         },
         secreto
       );
@@ -557,7 +510,7 @@ describe("Endpoints", () => {
       token = jwt.sign(
         {
           _id: paciente._id,
-          numerosPaciente: paciente.numerosPaciente,
+          numeroPaciente: paciente.numeroPaciente,
         },
         secreto
       );
@@ -595,24 +548,7 @@ describe("Endpoints", () => {
       token = jwt.sign(
         {
           _id: "000000000000",
-          numerosPaciente: [
-            {
-              numero: 2,
-              codigoEstablecimiento: "E01",
-              hospital: {
-                E01: 1
-              },
-              nombreEstablecimiento: "Hospital Regional de Antofagasta",
-            },
-            {
-              numero: 9,
-              codigoEstablecimiento: "E02",
-              hospital: {
-                E02: 1
-              },
-              nombreEstablecimiento: "Hospital de Calama",
-            },
-          ],
+          numeroPaciente: 2,
         },
         secreto
       );
@@ -639,7 +575,7 @@ describe("Endpoints", () => {
       token = jwt.sign(
         {
           _id: paciente._id,
-          numerosPaciente: paciente.numerosPaciente,
+          numeroPaciente: paciente.numeroPaciente,
         },
         secreto
       );
@@ -657,13 +593,13 @@ describe("Endpoints", () => {
       token = jwt.sign(
         {
           _id: paciente._id,
-          numerosPaciente: paciente.numerosPaciente,
+          numeroPaciente: paciente.numeroPaciente,
         },
         secreto
       );
       const pacienteActualizar = {
-        idPaciente:paciente._id,
-        numeroPaciente: paciente.numerosPaciente[0],
+        idPaciente: paciente._id,
+        numeroPaciente: paciente.numeroPaciente,
         direccion: "Calle Nueva 123",
         direccionNumero: "10",
         detallesDireccion: "",

@@ -10,7 +10,7 @@ exports.getInformacionPaciente = async (req, res) => {
       return;
     }
     const pacienteInfo = {
-      numerosPaciente: paciente.numerosPaciente,
+      numeroPaciente: paciente.numeroPaciente,
       rut: paciente.rut,
       nombre: paciente.nombre,
       nombreSocial: paciente.nombreSocial,
@@ -56,13 +56,8 @@ exports.postDatosPaciente = async (req, res) => {
       pacienteAActualizar.detallesDireccion.toUpperCase();
     pacienteAActualizar.direccionPoblacion =
       pacienteAActualizar.direccionPoblacion.toUpperCase();
-
-    //Se crea una actualización para cada hospital.
-    for (let numero of req.numerosPaciente){
-      pacienteAActualizar.numeroPaciente = numero;
-      await PacientesActualizados.create(pacienteAActualizar);
-    };
-
+    pacienteAActualizar.numeroPaciente = req.numeroPaciente;
+    await PacientesActualizados.create(pacienteAActualizar); 
     await Pacientes.updateOne(
       {
         _id: req.idPaciente,
