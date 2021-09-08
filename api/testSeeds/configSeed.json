@@ -36,6 +36,12 @@
         "mensaje": "Ya tiene una solicitud en curso. -test",
         "color": " -test",
         "icono": " -test"
+      },
+      "esValidacionDatosContactoNoConfirmados": {
+        "titulo": "Confirmación Pendiente -test",
+        "mensaje": "Es necesario que confirme que su información de contacto está correcta para poder realizar esta acción. -test",
+        "color": " -test",
+        "icono": " -test"
       }
     },
     "version": 1

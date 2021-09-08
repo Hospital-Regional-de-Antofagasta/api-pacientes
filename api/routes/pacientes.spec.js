@@ -477,7 +477,7 @@ describe("Endpoints", () => {
 
       done();
     });
-    it("Should verify paciente without confirmed datos contacto", async (done) => {
+    it("Should verify paciente without datos contacto confirmados", async (done) => {
       const paciente = await Pacientes.findById("6101834e912f6209f4851fdb");
       token = jwt.sign(
         {
@@ -505,7 +505,35 @@ describe("Endpoints", () => {
 
       done();
     });
-    it("Should verify paciente with confirmed datos contacto", async (done) => {
+    it("Should verify paciente without datos contacto confirmados si es validacion", async (done) => {
+      const paciente = await Pacientes.findById("6101834e912f6209f4851fdb");
+      token = jwt.sign(
+        {
+          _id: paciente._id,
+          numeroPaciente: paciente.numeroPaciente,
+        },
+        secreto
+      );
+      const respuesta = await request
+        .get("/v1/pacientes/verificar-si-datos-contacto-confirmados?esValidacion=true")
+        .set("Authorization", token);
+
+      const mensaje = await getMensajes("esValidacionDatosContactoNoConfirmados");
+
+      expect(respuesta.status).toBe(200);
+      expect(respuesta.body).toEqual({
+        datosContactoConfirmados: false,
+        respuesta: {
+          titulo: mensaje.titulo,
+          mensaje: mensaje.mensaje,
+          color: mensaje.color,
+          icono: mensaje.icono,
+        },
+      });
+
+      done();
+    });
+    it("Should verify paciente with datos contacto confirmados", async (done) => {
       const paciente = await Pacientes.findById("6101834e912f6209f4851fdd");
       token = jwt.sign(
         {
@@ -516,6 +544,24 @@ describe("Endpoints", () => {
       );
       const respuesta = await request
         .get("/v1/pacientes/verificar-si-datos-contacto-confirmados")
+        .set("Authorization", token);
+
+      expect(respuesta.status).toBe(200);
+      expect(respuesta.body).toEqual({ datosContactoConfirmados: true });
+
+      done();
+    });
+    it("Should verify paciente with datos contacto confirmados si es validacion", async (done) => {
+      const paciente = await Pacientes.findById("6101834e912f6209f4851fdd");
+      token = jwt.sign(
+        {
+          _id: paciente._id,
+          numeroPaciente: paciente.numeroPaciente,
+        },
+        secreto
+      );
+      const respuesta = await request
+        .get("/v1/pacientes/verificar-si-datos-contacto-confirmados?esValidacion=true")
         .set("Authorization", token);
 
       expect(respuesta.status).toBe(200);

@@ -81,12 +81,19 @@ exports.postDatosPaciente = async (req, res) => {
 
 exports.getSiDatosContactoConfirmados = async (req, res) => {
   try {
+    const { esValidacion } = req.query;
     const paciente = await Pacientes.findById(req.idPaciente).exec();
-    if (!paciente.datosContactoActualizados)
+    if (!paciente.datosContactoActualizados){
+      if (esValidacion)
+        return res.status(200).send({
+          datosContactoConfirmados: paciente.datosContactoActualizados,
+          respuesta: await getMensajes("esValidacionDatosContactoNoConfirmados"),
+        });
       return res.status(200).send({
         datosContactoConfirmados: paciente.datosContactoActualizados,
         respuesta: await getMensajes("datosContactoNoConfirmados"),
       });
+    }
     res
       .status(200)
       .send({ datosContactoConfirmados: paciente.datosContactoActualizados });
