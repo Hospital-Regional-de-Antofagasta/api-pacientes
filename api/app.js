@@ -18,6 +18,10 @@ mongoose.connect(connection, {
 
 app.use("/v1/pacientes", pacientes);
 
+app.get("/v1/pacientes/health", (req, res) => {
+  res.status(200).send("ready");
+});
+
 if (require.main === module) { // true if file is executed
   process.on("SIGINT",function (){
     process.exit();
