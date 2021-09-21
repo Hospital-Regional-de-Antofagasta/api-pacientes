@@ -16,11 +16,11 @@ mongoose.connect(connection, {
   useUnifiedTopology: true,
 });
 
-app.use("/v1/pacientes", pacientes);
-
 app.get("/v1/pacientes/health", (req, res) => {
   res.status(200).send("ready");
 });
+
+app.use("/v1/pacientes", pacientes);
 
 if (require.main === module) { // true if file is executed
   process.on("SIGINT",function (){
