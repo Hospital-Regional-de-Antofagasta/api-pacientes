@@ -84,7 +84,7 @@ exports.getSiDatosContactoConfirmados = async (req, res) => {
     const { esValidacion } = req.query;
     const paciente = await Pacientes.findById(req.idPaciente).exec();
     if (!paciente.datosContactoActualizados){
-      if (esValidacion)
+      if (esValidacion === "true")
         return res.status(200).send({
           datosContactoConfirmados: paciente.datosContactoActualizados,
           respuesta: await getMensajes("esValidacionDatosContactoNoConfirmados"),
