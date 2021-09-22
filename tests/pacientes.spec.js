@@ -1,14 +1,14 @@
-const app = require("../app");
+const app = require("../api/app");
 const mongoose = require("mongoose");
 const jwt = require("jsonwebtoken");
 const supertest = require("supertest");
-const Pacientes = require("../models/Pacientes");
-const PacientesActualizados = require("../models/PacientesActualizados");
-const pacientesSeeds = require("../testSeeds/pacientesSeeds.json");
-const { getMensajes } = require("../config");
-const ConfigApiPacientes = require("../models/ConfigApiPacientes");
-const configSeed = require("../testSeeds/configSeed.json");
-const { find } = require("../models/Pacientes");
+const Pacientes = require("../api/models/Pacientes");
+const PacientesActualizados = require("../api/models/PacientesActualizados");
+const pacientesSeeds = require("./testSeeds/pacientesSeeds.json");
+const { getMensajes } = require("../api/config");
+const ConfigApiPacientes = require("../api/models/ConfigApiPacientes");
+const configSeed = require("./testSeeds/configSeed.json");
+const { find } = require("../api/models/Pacientes");
 
 const request = supertest(app);
 const secreto = process.env.JWT_SECRET;
@@ -18,7 +18,7 @@ beforeEach(async (done) => {
   //Cerrar la conexión que se crea en el index.
   await mongoose.disconnect();
   //Conectar a la base de datos de prueba.
-  await mongoose.connect(`${process.env.MONGO_URI_TEST}pacientes_test`, {
+  await mongoose.connect(`${process.env.MONGO_URI}/pacientes_test`, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
   });
