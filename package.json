@@ -37,6 +37,6 @@
     "express": "^4.17.1",
     "express-boom": "^3.0.0",
     "jsonwebtoken": "^8.5.1",
-    "mongoose": "^5.12.15"
+    "mongoose": "^6.0.11"
   }
 }
