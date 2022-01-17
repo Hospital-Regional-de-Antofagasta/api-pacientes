@@ -6,30 +6,9 @@ exports.getInformacionPaciente = async (req, res) => {
   try {
     const paciente = await Pacientes.findById(req.idPaciente).exec();
     if (paciente == null) {
-      res.sendStatus(200);
-      return;
+      return res.sendStatus(200);
     }
-    const pacienteInfo = {
-      numeroPaciente: paciente.numeroPaciente,
-      rut: paciente.rut,
-      nombre: paciente.nombre,
-      nombreSocial: paciente.nombreSocial,
-      apellidoPaterno: paciente.apellidoPaterno,
-      apellidoMaterno: paciente.apellidoMaterno,
-      direccion: paciente.direccion,
-      direccionNumero: paciente.direccionNumero,
-      detallesDireccion: paciente.detallesDireccion,
-      direccionPoblacion: paciente.direccionPoblacion,
-      codigoComuna: paciente.codigoComuna,
-      codigoCiudad: paciente.codigoCiudad,
-      codigoRegion: paciente.codigoRegion,
-      telefonoFijo: paciente.telefonoFijo,
-      telefonoMovil: paciente.telefonoMovil,
-      correoCuerpo: paciente.correoCuerpo,
-      correoExtension: paciente.correoExtension,
-      datosContactoActualizados: paciente.datosContactoActualizados,
-    };
-    res.status(200).send(pacienteInfo);
+    res.status(200).send(paciente);
   } catch (error) {
     if (process.env.NODE_ENV === "dev")
       return res.status(500).send({
@@ -57,7 +36,7 @@ exports.postDatosPaciente = async (req, res) => {
     pacienteAActualizar.direccionPoblacion =
       pacienteAActualizar.direccionPoblacion.toUpperCase();
     pacienteAActualizar.numeroPaciente = req.numeroPaciente;
-    await PacientesActualizados.create(pacienteAActualizar); 
+    await PacientesActualizados.create(pacienteAActualizar);
     await Pacientes.updateOne(
       {
         _id: req.idPaciente,
@@ -83,11 +62,13 @@ exports.getSiDatosContactoConfirmados = async (req, res) => {
   try {
     const { esValidacion } = req.query;
     const paciente = await Pacientes.findById(req.idPaciente).exec();
-    if (!paciente.datosContactoActualizados){
+    if (!paciente.datosContactoActualizados) {
       if (esValidacion === "true")
         return res.status(200).send({
           datosContactoConfirmados: paciente.datosContactoActualizados,
-          respuesta: await getMensajes("esValidacionDatosContactoNoConfirmados"),
+          respuesta: await getMensajes(
+            "esValidacionDatosContactoNoConfirmados"
+          ),
         });
       return res.status(200).send({
         datosContactoConfirmados: paciente.datosContactoActualizados,

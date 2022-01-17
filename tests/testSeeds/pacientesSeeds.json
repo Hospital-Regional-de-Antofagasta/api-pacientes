@@ -1,14 +1,14 @@
 [
   {
     "_id": "6101834e912f6209f4851fdc",
-    "numeroPaciente": 1,
     "rut": "10771131-7",
+    "nombreSocial": null,
+    "nombre": "JACQUELINE CLOTILDE",
     "apellidoPaterno": "LAZO",
     "apellidoMaterno": "ZAMBRA",
-    "nombre": "JACQUELINE CLOTILDE",
-    "direccion": "",
-    "direccionNumero": "",
     "detallesDireccion": " ",
+    "direccionNumero": "",
+    "direccion": "",
     "direccionPoblacion": "",
     "codigoComuna": "01",
     "codigoCiudad": "03",
@@ -17,19 +17,19 @@
     "telefonoMovil": "",
     "correoCuerpo": "",
     "correoExtension": "",
-    "datosContactoActualizados": false,
-    "nombreSocial": null
+    "codigosEstablecimientos": ["HRA"],
+    "datosContactoActualizados": false
   },
   {
     "_id": "6101834e912f6209f4851fdd",
-    "numeroPaciente": 3,
     "rut": "17724699-9",
+    "nombreSocial": "name",
+    "nombre": "JOHANA GABRIEL",
     "apellidoPaterno": "RIVERA",
     "apellidoMaterno": "ARANCIBIA",
-    "nombre": "JOHANA GABRIEL",
-    "direccion": "",
-    "direccionNumero": "",
     "detallesDireccion": " ",
+    "direccionNumero": "",
+    "direccion": "",
     "direccionPoblacion": "",
     "codigoComuna": "01",
     "codigoCiudad": "03",
@@ -38,19 +38,19 @@
     "telefonoMovil": "",
     "correoCuerpo": "",
     "correoExtension": "",
-    "datosContactoActualizados": true,
-    "nombreSocial": "name"
+    "codigosEstablecimientos": ["HRA"],
+    "datosContactoActualizados": true
   },
   {
     "_id": "6101834e912f6209f4851fdb",
-    "numeroPaciente": 4,
-    "rut": "18502151-3",
+    "rut": "33333333-3",
+    "nombreSocial": null,
+    "nombre": "CAROLINA DEL PILAR",
     "apellidoPaterno": "RIVERA",
     "apellidoMaterno": "ARANCIBIA",
-    "nombre": "CAROLINA DEL PILAR",
-    "direccion": " ",
-    "direccionNumero": " ",
     "detallesDireccion": " ",
+    "direccionNumero": " ",
+    "direccion": " ",
     "direccionPoblacion": "VILLA CASPAÑA",
     "codigoComuna": "0",
     "codigoCiudad": "0",
@@ -59,7 +59,7 @@
     "telefonoMovil": " 94924483",
     "correoCuerpo": null,
     "correoExtension": null,
-    "datosContactoActualizados": false,
-    "nombreSocial": null
+    "codigosEstablecimientos": ["HRA"],
+    "datosContactoActualizados": false
   }
 ]
