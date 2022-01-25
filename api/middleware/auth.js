@@ -21,7 +21,7 @@ const isAuthenticated = async (req, res, next) => {
 
     const { _id, rut } = decoded;
     req.idPaciente = _id;
-    req.rut = rut;
+    req.rutPaciente = rut;
 
     next();
   });
