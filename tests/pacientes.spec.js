@@ -719,7 +719,7 @@ describe("Endpoints", () => {
         .post("/v1/pacientes/conocimiento-deuda")
         .set("Authorization", token);
 
-      const mensaje = await getMensajes("ConocimientoDeudaRegistrado");
+      const mensaje = await getMensajes("conocimientoDeudaRegistrado");
 
       expect(respuesta.status).toBe(200);
       expect(respuesta.body).toEqual({

@@ -39,7 +39,7 @@ const mensajesPorDefecto = {
     color: "",
     icono: "",
   },
-  ConocimientoDeudaRegistrado: {
+  conocimientoDeudaRegistrado: {
     titulo: "Conocimiento Deuda Registrado",
     mensaje: "Conocimiento de deuda Registrado correctamente.",
     color: "",

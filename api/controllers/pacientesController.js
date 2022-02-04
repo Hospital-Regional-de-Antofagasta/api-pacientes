@@ -95,7 +95,7 @@ exports.postConocimientoDeuda = async (req, res) => {
 
     await ConocimientoDeuda.create(conocimientoDeuda);
 
-    res.status(200).send({ respuesta: await getMensajes("ConocimientoDeudaRegistrado") });
+    res.status(200).send({ respuesta: await getMensajes("conocimientoDeudaRegistrado") });
   } catch (error) {
     await manejarError(error, req, res)
   }
