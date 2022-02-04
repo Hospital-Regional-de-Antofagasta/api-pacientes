@@ -41,4 +41,11 @@ router.get(
   pacientesController.getSolicitudPendientePaciente
 );
 
+router.post(
+  "/conocimiento-deuda",
+  isAuthenticated,
+  validarSiPacienteExiste,
+  pacientesController.postConocimientoDeuda
+);
+
 module.exports = router;

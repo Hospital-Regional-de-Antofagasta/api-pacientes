@@ -3,8 +3,9 @@ const mongoose = require("mongoose");
 const jwt = require("jsonwebtoken");
 const supertest = require("supertest");
 const Pacientes = require("../api/models/Pacientes");
-const PacientesActualizados = require("../api/models/PacientesActualizados");
 const pacientesSeeds = require("./testSeeds/pacientesSeeds.json");
+const PacientesActualizados = require("../api/models/PacientesActualizados");
+const ConocimientoDeuda = require("../api/models/ConocimientoDeuda");
 const { getMensajes } = require("../api/config");
 const ConfigApiPacientes = require("../api/models/ConfigApiPacientes");
 const configSeed = require("./testSeeds/configSeed.json");
@@ -27,6 +28,7 @@ afterEach(async () => {
   await Pacientes.deleteMany();
   await PacientesActualizados.deleteMany();
   await ConfigApiPacientes.deleteMany();
+  await ConocimientoDeuda.deleteMany();
   await mongoose.connection.close();
 });
 
@@ -642,6 +644,99 @@ describe("Endpoints", () => {
           icono: mensaje.icono,
         },
       });
+    });
+  });
+  describe("POST /v1/pacientes/conocimiento-deuda", () => {
+    it("Should not register conocimiento de deuda without token", async () => {
+      const respuesta = await request.post("/v1/pacientes/conocimiento-deuda");
+
+      const mensaje = await getMensajes("forbiddenAccess");
+
+      expect(respuesta.status).toBe(401);
+      expect(respuesta.body).toEqual({
+        respuesta: {
+          titulo: mensaje.titulo,
+          mensaje: mensaje.mensaje,
+          color: mensaje.color,
+          icono: mensaje.icono,
+        },
+      });
+    });
+    it("Should not register conocimiento de deuda with invalid token", async () => {
+      const respuesta = await request
+        .post("/v1/pacientes/conocimiento-deuda")
+        .set("Authorization", "no-token");
+
+      const mensaje = await getMensajes("forbiddenAccess");
+
+      expect(respuesta.status).toBe(401);
+      expect(respuesta.body).toEqual({
+        respuesta: {
+          titulo: mensaje.titulo,
+          mensaje: mensaje.mensaje,
+          color: mensaje.color,
+          icono: mensaje.icono,
+        },
+      });
+    });
+    it("Should not register conocimiento de deuda for non existing paciente", async () => {
+      token = jwt.sign(
+        {
+          _id: "000000000000",
+          rut: "22222222-2",
+        },
+        secreto
+      );
+
+      const respuesta = await request
+        .post("/v1/pacientes/conocimiento-deuda")
+        .set("Authorization", token);
+
+      const mensaje = await getMensajes("badRequest");
+
+      expect(respuesta.status).toBe(400);
+      expect(respuesta.body).toEqual({
+        respuesta: {
+          titulo: mensaje.titulo,
+          mensaje: mensaje.mensaje,
+          color: mensaje.color,
+          icono: mensaje.icono,
+        },
+      });
+    });
+    it("Should register conocimiento de deuda", async () => {
+      const paciente = await Pacientes.findById("6101834e912f6209f4851fdd").select("_id rut").exec();
+
+      token = jwt.sign(
+        {
+          _id: paciente._id,
+          rut: paciente.rut,
+        },
+        secreto
+      );
+
+      const respuesta = await request
+        .post("/v1/pacientes/conocimiento-deuda")
+        .set("Authorization", token);
+
+      const mensaje = await getMensajes("ConocimientoDeudaRegistrado");
+
+      expect(respuesta.status).toBe(200);
+      expect(respuesta.body).toEqual({
+        respuesta: {
+          titulo: mensaje.titulo,
+          mensaje: mensaje.mensaje,
+          color: mensaje.color,
+          icono: mensaje.icono,
+        },
+      });
+
+      const conocimientoDeuda = await ConocimientoDeuda.findOne({
+        idPaciente: paciente._id,
+      }).exec();
+
+      expect(conocimientoDeuda.fecha).toBeTruthy();
+      expect(conocimientoDeuda.rutPaciente).toBe(paciente.rut);
     });
   });
 });
