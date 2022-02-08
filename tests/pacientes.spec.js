@@ -133,6 +133,40 @@ describe("Endpoints", () => {
       expect(pacienteObtenido.codigosEstablecimientos).toEqual(["HRA"]);
       expect(pacienteObtenido.datosContactoActualizados).toBeTruthy();
     });
+    it("Intenta obtener la información de un paciente con token, por rut (El paciente si existe y con nombre social)", async () => {
+      const paciente = await Pacientes.findById("6101834e912f6209f4851fdd").select("_id rut").exec();
+      token = jwt.sign(
+        {
+          _id: paciente._id,
+          rut: paciente.rut,
+        },
+        secreto
+      );
+      const respuesta = await request
+        .get("/v1/pacientes/informacion?filter=rut")
+        .set("Authorization", token);
+      expect(respuesta.status).toBe(200);
+      //Probar que el paciente es el esperado.
+      const pacienteObtenido = respuesta.body;
+      expect(pacienteObtenido.rut).toBeFalsy();
+      expect(pacienteObtenido.nombre).toStrictEqual("JOHANA GABRIEL");
+      expect(pacienteObtenido.nombreSocial).toStrictEqual("name");
+      expect(pacienteObtenido.apellidoPaterno).toStrictEqual("RIVERA");
+      expect(pacienteObtenido.apellidoMaterno).toStrictEqual("ARANCIBIA");
+      expect(pacienteObtenido.direccion).toStrictEqual("");
+      expect(pacienteObtenido.direccionNumero).toStrictEqual("");
+      expect(pacienteObtenido.detallesDireccion).toStrictEqual(" ");
+      expect(pacienteObtenido.direccionPoblacion).toStrictEqual("");
+      expect(pacienteObtenido.codigoComuna).toStrictEqual("01");
+      expect(pacienteObtenido.codigoCiudad).toStrictEqual("03");
+      expect(pacienteObtenido.codigoRegion).toStrictEqual("01");
+      expect(pacienteObtenido.telefonoFijo).toStrictEqual("");
+      expect(pacienteObtenido.telefonoMovil).toStrictEqual("");
+      expect(pacienteObtenido.correoCuerpo).toStrictEqual("");
+      expect(pacienteObtenido.correoExtension).toStrictEqual("");
+      expect(pacienteObtenido.codigosEstablecimientos).toEqual(["HRA"]);
+      expect(pacienteObtenido.datosContactoActualizados).toBeTruthy();
+    });
   });
   describe("POST /v1/pacientes/actualizar-datos", () => {
     it("Intenta actualizar los datos de un paciente sin token", async () => {
@@ -739,4 +773,5 @@ describe("Endpoints", () => {
       expect(conocimientoDeuda.rutPaciente).toBe(paciente.rut);
     });
   });
+  // describe("GET /v1/pacientes/es-paciente/:rutPaciente")
 });
