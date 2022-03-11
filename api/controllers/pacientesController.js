@@ -6,8 +6,8 @@ const { manejarError } = require("../utils/errorController");
 
 exports.getInformacionPaciente = async (req, res) => {
   try {
-    let filter = { _id: req.idPaciente }
-    if(req.query.filter === "rut") filter = { rut: req.rutPaciente }
+    let filter = { _id: req.idPaciente };
+    if (req.query.filter === "rut") filter = { rut: req.rutPaciente };
 
     const paciente = await Pacientes.findOne(filter).exec();
     if (!paciente) return res.sendStatus(200);
@@ -36,7 +36,8 @@ exports.postDatosPaciente = async (req, res) => {
       {
         _id: req.idPaciente,
       },
-      { datosContactoActualizados: true }
+      { datosContactoActualizados: true },
+      { runValidators: true }
     ).exec();
 
     res.status(201).send({ respuesta: await getMensajes("solicitudCreada") });
