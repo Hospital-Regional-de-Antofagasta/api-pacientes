@@ -224,7 +224,7 @@ describe("Endpoints", () => {
       });
     });
     it("Should update datos de un paciente", async () => {
-      let paciente = await Pacientes.findById("6101834e912f6209f4851fdb");
+      let paciente = await Pacientes.findById("6101834e912f6209f4851fdb").select("_id rut");
       token = jwt.sign(
         {
           _id: paciente._id,
@@ -638,7 +638,7 @@ describe("Endpoints", () => {
       expect(respuesta.body).toEqual({ solicitudDuplicada: false });
     });
     it("Should verify with existing solicitud de actualizar datos", async () => {
-      const paciente = await Pacientes.findById("6101834e912f6209f4851fdb");
+      const paciente = await Pacientes.findById("6101834e912f6209f4851fdb").select("_id rut");
       token = jwt.sign(
         {
           _id: paciente._id,
@@ -660,6 +660,7 @@ describe("Endpoints", () => {
         telefonoMovil: "094924483",
         correoCuerpo: "correo",
         correoExtension: "correo.com",
+        codigoEstablecimiento: "HRA"
       };
       await PacientesActualizados.create(pacienteActualizar);
       const respuesta = await request

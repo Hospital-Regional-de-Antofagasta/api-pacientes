@@ -6,7 +6,7 @@ const PacientesActualizados = mongoose.model(
   new Schema(
     {
       idPaciente: String,
-      rut: { type: String, require: true, select: false },
+      rut: { type: String, required: true, select: false },
       direccion: String,
       direccionNumero: String,
       detallesDireccion: String,
@@ -18,7 +18,7 @@ const PacientesActualizados = mongoose.model(
       telefonoMovil: String,
       correoCuerpo: String,
       correoExtension: String,
-      codigoEstablecimiento: { type: String, require: true },
+      codigoEstablecimiento: { type: String, required: true },
     },
     { timestamps: true }
   )

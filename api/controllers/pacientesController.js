@@ -30,14 +30,13 @@ exports.postDatosPaciente = async (req, res) => {
       pacienteAActualizar.detallesDireccion.toUpperCase();
     pacienteAActualizar.direccionPoblacion =
       pacienteAActualizar.direccionPoblacion.toUpperCase();
-    pacienteAActualizar.numeroPaciente = req.numeroPaciente;
+    pacienteAActualizar.rut = req.rutPaciente;
     await PacientesActualizados.create(pacienteAActualizar);
     await Pacientes.updateOne(
       {
         _id: req.idPaciente,
       },
-      { datosContactoActualizados: true },
-      { runValidators: true }
+      { datosContactoActualizados: true }
     ).exec();
 
     res.status(201).send({ respuesta: await getMensajes("solicitudCreada") });
