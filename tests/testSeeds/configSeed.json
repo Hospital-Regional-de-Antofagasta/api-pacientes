@@ -42,12 +42,6 @@
         "mensaje": "Es necesario que confirme que su información de contacto está correcta para poder realizar esta acción. -test",
         "color": " -test",
         "icono": " -test"
-      },
-      "ConocimientoDeudaRegistrado": {
-        "titulo": "Conocimiento Deuda Registrado -test",
-        "mensaje": "Conocimiento de deuda Registrado correctamente. -test",
-        "color": " -test",
-        "icono": " -test"
       }
     },
     "version": 1

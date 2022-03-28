@@ -1,6 +1,6 @@
 const Pacientes = require("../models/Pacientes");
 const PacientesActualizados = require("../models/PacientesActualizados");
-const ConocimientoDeuda = require("../models/ConocimientoDeuda");
+// const ConocimientoDeuda = require("../models/ConocimientoDeuda");
 const { getMensajes } = require("../config");
 const { manejarError } = require("../utils/errorController");
 
@@ -86,20 +86,20 @@ exports.getSolicitudPendientePaciente = async (req, res) => {
   }
 };
 
-exports.postConocimientoDeuda = async (req, res) => {
-  try {
-    const conocimientoDeuda = {
-      idPaciente: req.idPaciente,
-      rutPaciente: req.rutPaciente,
-      fecha: new Date(),
-    };
+// exports.postConocimientoDeuda = async (req, res) => {
+//   try {
+//     const conocimientoDeuda = {
+//       idPaciente: req.idPaciente,
+//       rutPaciente: req.rutPaciente,
+//       fecha: new Date(),
+//     };
 
-    await ConocimientoDeuda.create(conocimientoDeuda);
+//     await ConocimientoDeuda.create(conocimientoDeuda);
 
-    res
-      .status(200)
-      .send({ respuesta: await getMensajes("conocimientoDeudaRegistrado") });
-  } catch (error) {
-    await manejarError(error, req, res);
-  }
-};
+//     res
+//       .status(200)
+//       .send({ respuesta: await getMensajes("conocimientoDeudaRegistrado") });
+//   } catch (error) {
+//     await manejarError(error, req, res);
+//   }
+// };

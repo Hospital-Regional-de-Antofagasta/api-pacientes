@@ -47,12 +47,12 @@ const ConfigApiPacientes = mongoose.model(
         color: String,
         icono: String,
       },
-      conocimientoDeudaRegistrado: {
-        titulo: String,
-        mensaje: String,
-        color: String,
-        icono: String,
-      },
+      // conocimientoDeudaRegistrado: {
+      //   titulo: String,
+      //   mensaje: String,
+      //   color: String,
+      //   icono: String,
+      // },
     },
     version: Number,
   })
