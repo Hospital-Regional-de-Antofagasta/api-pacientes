@@ -3,46 +3,38 @@ const mongoose = require("mongoose");
 const jwt = require("jsonwebtoken");
 const supertest = require("supertest");
 const Pacientes = require("../api/models/Pacientes");
-const PacientesActualizados = require("../api/models/PacientesActualizados");
 const pacientesSeeds = require("./testSeeds/pacientesSeeds.json");
+const PacientesActualizados = require("../api/models/PacientesActualizados");
+// const ConocimientoDeuda = require("../api/models/ConocimientoDeuda");
 const { getMensajes } = require("../api/config");
 const ConfigApiPacientes = require("../api/models/ConfigApiPacientes");
 const configSeed = require("./testSeeds/configSeed.json");
-const { find } = require("../api/models/Pacientes");
 
 const request = supertest(app);
 const secreto = process.env.JWT_SECRET;
 let token;
 
-beforeEach(async (done) => {
-  //Cerrar la conexión que se crea en el index.
+beforeEach(async () => {
   await mongoose.disconnect();
-  //Conectar a la base de datos de prueba.
   await mongoose.connect(`${process.env.MONGO_URI}/pacientes_test`, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
   });
-  //Cargar los seeds a la base de datos.
   await Pacientes.create(pacientesSeeds);
   await ConfigApiPacientes.create(configSeed);
-
-  done();
 });
 
-afterEach(async (done) => {
-  //Borrar el contenido de la colección en la base de datos despues de la pruebas.
+afterEach(async () => {
   await Pacientes.deleteMany();
   await PacientesActualizados.deleteMany();
   await ConfigApiPacientes.deleteMany();
-  //Cerrar la conexión a la base de datos despues de la pruebas.
+  // await ConocimientoDeuda.deleteMany();
   await mongoose.connection.close();
-
-  done();
 });
 
 describe("Endpoints", () => {
   describe("GET /v1/pacientes/informacion", () => {
-    it("Intenta obtener la información de un paciente sin token", async (done) => {
+    it("Intenta obtener la información de un paciente sin token", async () => {
       const respuesta = await request.get("/v1/pacientes/informacion");
 
       const mensaje = await getMensajes("forbiddenAccess");
@@ -56,14 +48,12 @@ describe("Endpoints", () => {
           icono: mensaje.icono,
         },
       });
-
-      done();
     });
-    it("Intenta obtener la información de un paciente con token (El paciente no existe)", async (done) => {
+    it("Intenta obtener la información de un paciente con token (El paciente no existe)", async () => {
       token = jwt.sign(
         {
           _id: "000000000000",
-          numeroPaciente: 2,
+          rut: "22222222-2",
         },
         secreto
       );
@@ -74,15 +64,13 @@ describe("Endpoints", () => {
       //Probar que el objeto está vacío.
       const pacienteVacio = respuesta.body;
       expect(pacienteVacio).toStrictEqual({});
-
-      done();
     });
-    it("Intenta obtener la información de un paciente con token (El paciente si existe)", async (done) => {
+    it("Intenta obtener la información de un paciente con token (El paciente si existe)", async () => {
       const paciente = await Pacientes.findById("6101834e912f6209f4851fdc");
       token = jwt.sign(
         {
           _id: paciente._id,
-          numeroPaciente: paciente.numeroPaciente,
+          rut: paciente.rut,
         },
         secreto
       );
@@ -92,7 +80,7 @@ describe("Endpoints", () => {
       expect(respuesta.status).toBe(200);
       //Probar que el paciente es el esperado.
       const pacienteObtenido = respuesta.body;
-      expect(pacienteObtenido.rut).toStrictEqual("10771131-7");
+      expect(pacienteObtenido.rut).toBeFalsy();
       expect(pacienteObtenido.nombre).toStrictEqual("JACQUELINE CLOTILDE");
       expect(pacienteObtenido.nombreSocial).toBeFalsy();
       expect(pacienteObtenido.apellidoPaterno).toStrictEqual("LAZO");
@@ -108,15 +96,15 @@ describe("Endpoints", () => {
       expect(pacienteObtenido.telefonoMovil).toStrictEqual("");
       expect(pacienteObtenido.correoCuerpo).toStrictEqual("");
       expect(pacienteObtenido.correoExtension).toStrictEqual("");
+      expect(pacienteObtenido.codigosEstablecimientos).toEqual(["HRA"]);
       expect(pacienteObtenido.datosContactoActualizados).toBeFalsy();
-      done();
     });
-    it("Intenta obtener la información de un paciente con token (El paciente si existe y con nombre social)", async (done) => {
+    it("Intenta obtener la información de un paciente con token (El paciente si existe y con nombre social)", async () => {
       const paciente = await Pacientes.findById("6101834e912f6209f4851fdd");
       token = jwt.sign(
         {
           _id: paciente._id,
-          numeroPaciente: paciente.numeroPaciente,
+          rut: paciente.rut,
         },
         secreto
       );
@@ -126,7 +114,7 @@ describe("Endpoints", () => {
       expect(respuesta.status).toBe(200);
       //Probar que el paciente es el esperado.
       const pacienteObtenido = respuesta.body;
-      expect(pacienteObtenido.rut).toStrictEqual("17724699-9");
+      expect(pacienteObtenido.rut).toBeFalsy();
       expect(pacienteObtenido.nombre).toStrictEqual("JOHANA GABRIEL");
       expect(pacienteObtenido.nombreSocial).toStrictEqual("name");
       expect(pacienteObtenido.apellidoPaterno).toStrictEqual("RIVERA");
@@ -142,12 +130,46 @@ describe("Endpoints", () => {
       expect(pacienteObtenido.telefonoMovil).toStrictEqual("");
       expect(pacienteObtenido.correoCuerpo).toStrictEqual("");
       expect(pacienteObtenido.correoExtension).toStrictEqual("");
+      expect(pacienteObtenido.codigosEstablecimientos).toEqual(["HRA"]);
       expect(pacienteObtenido.datosContactoActualizados).toBeTruthy();
-      done();
+    });
+    it("Intenta obtener la información de un paciente con token, por rut (El paciente si existe y con nombre social)", async () => {
+      const paciente = await Pacientes.findById("6101834e912f6209f4851fdd").select("_id rut").exec();
+      token = jwt.sign(
+        {
+          _id: paciente._id,
+          rut: paciente.rut,
+        },
+        secreto
+      );
+      const respuesta = await request
+        .get("/v1/pacientes/informacion?filter=rut")
+        .set("Authorization", token);
+      expect(respuesta.status).toBe(200);
+      //Probar que el paciente es el esperado.
+      const pacienteObtenido = respuesta.body;
+      expect(pacienteObtenido.rut).toBeFalsy();
+      expect(pacienteObtenido.nombre).toStrictEqual("JOHANA GABRIEL");
+      expect(pacienteObtenido.nombreSocial).toStrictEqual("name");
+      expect(pacienteObtenido.apellidoPaterno).toStrictEqual("RIVERA");
+      expect(pacienteObtenido.apellidoMaterno).toStrictEqual("ARANCIBIA");
+      expect(pacienteObtenido.direccion).toStrictEqual("");
+      expect(pacienteObtenido.direccionNumero).toStrictEqual("");
+      expect(pacienteObtenido.detallesDireccion).toStrictEqual(" ");
+      expect(pacienteObtenido.direccionPoblacion).toStrictEqual("");
+      expect(pacienteObtenido.codigoComuna).toStrictEqual("01");
+      expect(pacienteObtenido.codigoCiudad).toStrictEqual("03");
+      expect(pacienteObtenido.codigoRegion).toStrictEqual("01");
+      expect(pacienteObtenido.telefonoFijo).toStrictEqual("");
+      expect(pacienteObtenido.telefonoMovil).toStrictEqual("");
+      expect(pacienteObtenido.correoCuerpo).toStrictEqual("");
+      expect(pacienteObtenido.correoExtension).toStrictEqual("");
+      expect(pacienteObtenido.codigosEstablecimientos).toEqual(["HRA"]);
+      expect(pacienteObtenido.datosContactoActualizados).toBeTruthy();
     });
   });
   describe("POST /v1/pacientes/actualizar-datos", () => {
-    it("Intenta actualizar los datos de un paciente sin token", async (done) => {
+    it("Intenta actualizar los datos de un paciente sin token", async () => {
       const respuesta = await request.post("/v1/pacientes/actualizar-datos");
 
       const mensaje = await getMensajes("forbiddenAccess");
@@ -161,14 +183,12 @@ describe("Endpoints", () => {
           icono: mensaje.icono,
         },
       });
-
-      done();
     });
-    it("Intenta actualizar los datos de un paciente con token (El paciente no existe)", async (done) => {
+    it("Intenta actualizar los datos de un paciente con token (El paciente no existe)", async () => {
       token = jwt.sign(
         {
           _id: "000000000000",
-          numeroPaciente: 2,
+          rut: "22222222-2",
         },
         secreto
       );
@@ -184,6 +204,7 @@ describe("Endpoints", () => {
         telefonoMovil: "94924483",
         correoCuerpo: "correo",
         correoExtension: "correo.com",
+        codigoEstablecimiento: "HRA",
       };
       const respuesta = await request
         .post("/v1/pacientes/actualizar-datos")
@@ -201,15 +222,13 @@ describe("Endpoints", () => {
           icono: mensaje.icono,
         },
       });
-
-      done();
     });
-    it("Should update datos de un paciente", async (done) => {
-      let paciente = await Pacientes.findById("6101834e912f6209f4851fdb");
+    it("Should update datos de un paciente", async () => {
+      let paciente = await Pacientes.findById("6101834e912f6209f4851fdb").select("_id rut");
       token = jwt.sign(
         {
           _id: paciente._id,
-          numeroPaciente: paciente.numeroPaciente,
+          rut: paciente.rut,
         },
         secreto
       );
@@ -225,6 +244,7 @@ describe("Endpoints", () => {
         telefonoMovil: "12345678",
         correoCuerpo: "niicoleperez",
         correoExtension: "gmail.com",
+        codigoEstablecimiento: "HRA",
       };
       const respuesta = await request
         .post("/v1/pacientes/actualizar-datos")
@@ -232,7 +252,7 @@ describe("Endpoints", () => {
         .send(pacienteActualizar);
 
       const solicitudesPacienteActualizado = await PacientesActualizados.find({
-        numeroPaciente: paciente.numeroPaciente,
+        rut: paciente.rut,
       });
       const mensaje = await getMensajes("solicitudCreada");
 
@@ -247,7 +267,7 @@ describe("Endpoints", () => {
       });
 
       //Probar que el paciente está en la colección de actualizados.
-      expect(solicitudesPacienteActualizado[0].numeroPaciente).toBeFalsy();
+      expect(solicitudesPacienteActualizado[0].rut).toBeFalsy();
       expect(solicitudesPacienteActualizado[0].direccion).toStrictEqual(
         "CHHUU"
       );
@@ -281,17 +301,18 @@ describe("Endpoints", () => {
       expect(solicitudesPacienteActualizado[0].correoExtension).toBe(
         "gmail.com"
       );
+      expect(solicitudesPacienteActualizado[0].codigoEstablecimiento).toBe(
+        "HRA"
+      );
       paciente = await Pacientes.findById("6101834e912f6209f4851fdb");
       expect(paciente.datosContactoActualizados).toBeTruthy();
-
-      done();
     });
-    it("Should not update datos de contacto del paciente si el correo es vacio", async (done) => {
+    it("Should not update datos de contacto del paciente si el correo es vacio", async () => {
       const paciente = await Pacientes.findById("6101834e912f6209f4851fdb");
       token = jwt.sign(
         {
           _id: paciente._id,
-          numeroPaciente: paciente.numeroPaciente,
+          rut: paciente.rut,
         },
         secreto
       );
@@ -315,7 +336,7 @@ describe("Endpoints", () => {
         .send(pacienteActualizar);
 
       const pacienteActualizado = await PacientesActualizados.find({
-        numeroPaciente: paciente.numeroPaciente,
+        rut: paciente.rut,
       });
 
       const mensaje = await getMensajes("badRequest");
@@ -331,15 +352,13 @@ describe("Endpoints", () => {
       });
 
       expect(pacienteActualizado).toStrictEqual([]);
-
-      done();
     });
-    it("Should not update datos de contacto del paciente si el correo es invalido", async (done) => {
+    it("Should not update datos de contacto del paciente si el correo es invalido", async () => {
       const paciente = await Pacientes.findById("6101834e912f6209f4851fdb");
       token = jwt.sign(
         {
           _id: paciente._id,
-          numeroPaciente: paciente.numeroPaciente,
+          rut: paciente.rut,
         },
         secreto
       );
@@ -363,7 +382,7 @@ describe("Endpoints", () => {
         .send(pacienteActualizar);
 
       const pacienteActualizado = await PacientesActualizados.find({
-        numeroPaciente: paciente.numeroPaciente,
+        rut: paciente.rut,
       });
 
       const mensaje = await getMensajes("badRequest");
@@ -379,15 +398,13 @@ describe("Endpoints", () => {
       });
 
       expect(pacienteActualizado).toStrictEqual([]);
-
-      done();
     });
-    it("Should not update datos de contacto del paciente si ambos telefonos son vacios", async (done) => {
+    it("Should not update datos de contacto del paciente si ambos telefonos son vacios", async () => {
       const paciente = await Pacientes.findById("6101834e912f6209f4851fdb");
       token = jwt.sign(
         {
           _id: paciente._id,
-          numeroPaciente: paciente.numeroPaciente,
+          rut: paciente.rut,
         },
         secreto
       );
@@ -411,7 +428,7 @@ describe("Endpoints", () => {
         .send(pacienteActualizar);
 
       const pacienteActualizado = await PacientesActualizados.find({
-        numeroPaciente: paciente.numeroPaciente,
+        rut: paciente.rut,
       });
 
       const mensaje = await getMensajes("badRequest");
@@ -427,12 +444,10 @@ describe("Endpoints", () => {
       });
 
       expect(pacienteActualizado).toStrictEqual([]);
-
-      done();
     });
   });
   describe("GET /v1/pacientes/verificar-si-datos-contacto-confirmados", () => {
-    it("Should not verify without token", async (done) => {
+    it("Should not verify without token", async () => {
       const respuesta = await request
         .get("/v1/pacientes/verificar-si-datos-contacto-confirmados")
         .set("Authorization", "no-token");
@@ -448,14 +463,12 @@ describe("Endpoints", () => {
           icono: mensaje.icono,
         },
       });
-
-      done();
     });
-    it("Should not verify if paciente does not exists", async (done) => {
+    it("Should not verify if paciente does not exists", async () => {
       token = jwt.sign(
         {
           _id: "000000000000",
-          numeroPaciente: 2,
+          rut: "22222222-2",
         },
         secreto
       );
@@ -474,15 +487,13 @@ describe("Endpoints", () => {
           icono: mensaje.icono,
         },
       });
-
-      done();
     });
-    it("Should verify paciente without datos contacto confirmados", async (done) => {
+    it("Should verify paciente without datos contacto confirmados", async () => {
       const paciente = await Pacientes.findById("6101834e912f6209f4851fdb");
       token = jwt.sign(
         {
           _id: paciente._id,
-          numeroPaciente: paciente.numeroPaciente,
+          rut: paciente.rut,
         },
         secreto
       );
@@ -502,23 +513,25 @@ describe("Endpoints", () => {
           icono: mensaje.icono,
         },
       });
-
-      done();
     });
-    it("Should verify paciente without datos contacto confirmados si es validacion", async (done) => {
+    it("Should verify paciente without datos contacto confirmados si es validacion", async () => {
       const paciente = await Pacientes.findById("6101834e912f6209f4851fdb");
       token = jwt.sign(
         {
           _id: paciente._id,
-          numeroPaciente: paciente.numeroPaciente,
+          rut: paciente.rut,
         },
         secreto
       );
       const respuesta = await request
-        .get("/v1/pacientes/verificar-si-datos-contacto-confirmados?esValidacion=true")
+        .get(
+          "/v1/pacientes/verificar-si-datos-contacto-confirmados?esValidacion=true"
+        )
         .set("Authorization", token);
 
-      const mensaje = await getMensajes("esValidacionDatosContactoNoConfirmados");
+      const mensaje = await getMensajes(
+        "esValidacionDatosContactoNoConfirmados"
+      );
 
       expect(respuesta.status).toBe(200);
       expect(respuesta.body).toEqual({
@@ -530,15 +543,13 @@ describe("Endpoints", () => {
           icono: mensaje.icono,
         },
       });
-
-      done();
     });
-    it("Should verify paciente with datos contacto confirmados", async (done) => {
+    it("Should verify paciente with datos contacto confirmados", async () => {
       const paciente = await Pacientes.findById("6101834e912f6209f4851fdd");
       token = jwt.sign(
         {
           _id: paciente._id,
-          numeroPaciente: paciente.numeroPaciente,
+          rut: paciente.rut,
         },
         secreto
       );
@@ -548,30 +559,28 @@ describe("Endpoints", () => {
 
       expect(respuesta.status).toBe(200);
       expect(respuesta.body).toEqual({ datosContactoConfirmados: true });
-
-      done();
     });
-    it("Should verify paciente with datos contacto confirmados si es validacion", async (done) => {
+    it("Should verify paciente with datos contacto confirmados si es validacion", async () => {
       const paciente = await Pacientes.findById("6101834e912f6209f4851fdd");
       token = jwt.sign(
         {
           _id: paciente._id,
-          numeroPaciente: paciente.numeroPaciente,
+          rut: paciente.rut,
         },
         secreto
       );
       const respuesta = await request
-        .get("/v1/pacientes/verificar-si-datos-contacto-confirmados?esValidacion=true")
+        .get(
+          "/v1/pacientes/verificar-si-datos-contacto-confirmados?esValidacion=true"
+        )
         .set("Authorization", token);
 
       expect(respuesta.status).toBe(200);
       expect(respuesta.body).toEqual({ datosContactoConfirmados: true });
-
-      done();
     });
   });
   describe("GET /v1/pacientes/verificar-solicitud-duplicada", () => {
-    it("Should not verify without token", async (done) => {
+    it("Should not verify without token", async () => {
       const respuesta = await request
         .get("/v1/pacientes/verificar-solicitud-duplicada")
         .set("Authorization", "no-token");
@@ -587,14 +596,12 @@ describe("Endpoints", () => {
           icono: mensaje.icono,
         },
       });
-
-      done();
     });
-    it("Should not verify if paciente does not exists", async (done) => {
+    it("Should not verify if paciente does not exists", async () => {
       token = jwt.sign(
         {
           _id: "000000000000",
-          numeroPaciente: 2,
+          rut: "22222222-2",
         },
         secreto
       );
@@ -613,15 +620,13 @@ describe("Endpoints", () => {
           icono: mensaje.icono,
         },
       });
-
-      done();
     });
-    it("Should verify without existing solicitud de actualizar datos", async (done) => {
+    it("Should verify without existing solicitud de actualizar datos", async () => {
       const paciente = await Pacientes.findById("6101834e912f6209f4851fdb");
       token = jwt.sign(
         {
           _id: paciente._id,
-          numeroPaciente: paciente.numeroPaciente,
+          rut: paciente.rut,
         },
         secreto
       );
@@ -631,21 +636,19 @@ describe("Endpoints", () => {
 
       expect(respuesta.status).toBe(200);
       expect(respuesta.body).toEqual({ solicitudDuplicada: false });
-
-      done();
     });
-    it("Should verify with existing solicitud de actualizar datos", async (done) => {
-      const paciente = await Pacientes.findById("6101834e912f6209f4851fdb");
+    it("Should verify with existing solicitud de actualizar datos", async () => {
+      const paciente = await Pacientes.findById("6101834e912f6209f4851fdb").select("_id rut");
       token = jwt.sign(
         {
           _id: paciente._id,
-          numeroPaciente: paciente.numeroPaciente,
+          rut: paciente.rut,
         },
         secreto
       );
       const pacienteActualizar = {
         idPaciente: paciente._id,
-        numeroPaciente: paciente.numeroPaciente,
+        rut: paciente.rut,
         direccion: "Calle Nueva 123",
         direccionNumero: "10",
         detallesDireccion: "",
@@ -657,6 +660,7 @@ describe("Endpoints", () => {
         telefonoMovil: "094924483",
         correoCuerpo: "correo",
         correoExtension: "correo.com",
+        codigoEstablecimiento: "HRA"
       };
       await PacientesActualizados.create(pacienteActualizar);
       const respuesta = await request
@@ -675,8 +679,100 @@ describe("Endpoints", () => {
           icono: mensaje.icono,
         },
       });
-
-      done();
     });
   });
+  // describe("POST /v1/pacientes/conocimiento-deuda", () => {
+  //   it("Should not register conocimiento de deuda without token", async () => {
+  //     const respuesta = await request.post("/v1/pacientes/conocimiento-deuda");
+
+  //     const mensaje = await getMensajes("forbiddenAccess");
+
+  //     expect(respuesta.status).toBe(401);
+  //     expect(respuesta.body).toEqual({
+  //       respuesta: {
+  //         titulo: mensaje.titulo,
+  //         mensaje: mensaje.mensaje,
+  //         color: mensaje.color,
+  //         icono: mensaje.icono,
+  //       },
+  //     });
+  //   });
+  //   it("Should not register conocimiento de deuda with invalid token", async () => {
+  //     const respuesta = await request
+  //       .post("/v1/pacientes/conocimiento-deuda")
+  //       .set("Authorization", "no-token");
+
+  //     const mensaje = await getMensajes("forbiddenAccess");
+
+  //     expect(respuesta.status).toBe(401);
+  //     expect(respuesta.body).toEqual({
+  //       respuesta: {
+  //         titulo: mensaje.titulo,
+  //         mensaje: mensaje.mensaje,
+  //         color: mensaje.color,
+  //         icono: mensaje.icono,
+  //       },
+  //     });
+  //   });
+  //   it("Should not register conocimiento de deuda for non existing paciente", async () => {
+  //     token = jwt.sign(
+  //       {
+  //         _id: "000000000000",
+  //         rut: "22222222-2",
+  //       },
+  //       secreto
+  //     );
+
+  //     const respuesta = await request
+  //       .post("/v1/pacientes/conocimiento-deuda")
+  //       .set("Authorization", token);
+
+  //     const mensaje = await getMensajes("badRequest");
+
+  //     expect(respuesta.status).toBe(400);
+  //     expect(respuesta.body).toEqual({
+  //       respuesta: {
+  //         titulo: mensaje.titulo,
+  //         mensaje: mensaje.mensaje,
+  //         color: mensaje.color,
+  //         icono: mensaje.icono,
+  //       },
+  //     });
+  //   });
+  //   it("Should register conocimiento de deuda", async () => {
+  //     const paciente = await Pacientes.findById("6101834e912f6209f4851fdd").select("_id rut").exec();
+
+  //     token = jwt.sign(
+  //       {
+  //         _id: paciente._id,
+  //         rut: paciente.rut,
+  //       },
+  //       secreto
+  //     );
+
+  //     const respuesta = await request
+  //       .post("/v1/pacientes/conocimiento-deuda")
+  //       .set("Authorization", token);
+
+  //     const mensaje = await getMensajes("conocimientoDeudaRegistrado");
+
+  //     expect(respuesta.status).toBe(200);
+  //     expect(respuesta.body).toEqual({
+  //       respuesta: {
+  //         titulo: mensaje.titulo,
+  //         mensaje: mensaje.mensaje,
+  //         color: mensaje.color,
+  //         icono: mensaje.icono,
+  //       },
+  //     });
+
+  //     const conocimientoDeuda = await ConocimientoDeuda.findOne({
+  //       idPaciente: paciente._id,
+  //     }).exec();
+
+  //     expect(conocimientoDeuda.fecha).toBeTruthy();
+  //     expect(conocimientoDeuda.rutPaciente).toBe(paciente.rut);
+  //   });
+  // });
+  // describe("GET /v1/pacientes/es-paciente/:rutPaciente")
 });

@@ -1,45 +1,19 @@
 const Pacientes = require("../models/Pacientes");
 const PacientesActualizados = require("../models/PacientesActualizados");
+// const ConocimientoDeuda = require("../models/ConocimientoDeuda");
 const { getMensajes } = require("../config");
+const { manejarError } = require("../utils/errorController");
 
 exports.getInformacionPaciente = async (req, res) => {
   try {
-    const paciente = await Pacientes.findById(req.idPaciente).exec();
-    if (paciente == null) {
-      res.sendStatus(200);
-      return;
-    }
-    const pacienteInfo = {
-      numeroPaciente: paciente.numeroPaciente,
-      rut: paciente.rut,
-      nombre: paciente.nombre,
-      nombreSocial: paciente.nombreSocial,
-      apellidoPaterno: paciente.apellidoPaterno,
-      apellidoMaterno: paciente.apellidoMaterno,
-      direccion: paciente.direccion,
-      direccionNumero: paciente.direccionNumero,
-      detallesDireccion: paciente.detallesDireccion,
-      direccionPoblacion: paciente.direccionPoblacion,
-      codigoComuna: paciente.codigoComuna,
-      codigoCiudad: paciente.codigoCiudad,
-      codigoRegion: paciente.codigoRegion,
-      telefonoFijo: paciente.telefonoFijo,
-      telefonoMovil: paciente.telefonoMovil,
-      correoCuerpo: paciente.correoCuerpo,
-      correoExtension: paciente.correoExtension,
-      datosContactoActualizados: paciente.datosContactoActualizados,
-    };
-    res.status(200).send(pacienteInfo);
+    let filter = { _id: req.idPaciente };
+    if (req.query.filter === "rut") filter = { rut: req.rutPaciente };
+
+    const paciente = await Pacientes.findOne(filter).exec();
+    if (!paciente) return res.sendStatus(200);
+    res.status(200).send(paciente);
   } catch (error) {
-    if (process.env.NODE_ENV === "dev")
-      return res.status(500).send({
-        respuesta: await getMensajes("serverError"),
-        detalles_error: {
-          nombre: error.name,
-          mensaje: error.message,
-        },
-      });
-    res.status(500).send({ respuesta: await getMensajes("serverError") });
+    await manejarError(error, req, res);
   }
 };
 
@@ -56,8 +30,8 @@ exports.postDatosPaciente = async (req, res) => {
       pacienteAActualizar.detallesDireccion.toUpperCase();
     pacienteAActualizar.direccionPoblacion =
       pacienteAActualizar.direccionPoblacion.toUpperCase();
-    pacienteAActualizar.numeroPaciente = req.numeroPaciente;
-    await PacientesActualizados.create(pacienteAActualizar); 
+    pacienteAActualizar.rut = req.rutPaciente;
+    await PacientesActualizados.create(pacienteAActualizar);
     await Pacientes.updateOne(
       {
         _id: req.idPaciente,
@@ -67,15 +41,7 @@ exports.postDatosPaciente = async (req, res) => {
 
     res.status(201).send({ respuesta: await getMensajes("solicitudCreada") });
   } catch (error) {
-    if (process.env.NODE_ENV === "dev")
-      return res.status(500).send({
-        respuesta: await getMensajes("serverError"),
-        detalles_error: {
-          nombre: error.name,
-          mensaje: error.message,
-        },
-      });
-    res.status(500).send({ respuesta: await getMensajes("serverError") });
+    await manejarError(error, req, res);
   }
 };
 
@@ -83,11 +49,13 @@ exports.getSiDatosContactoConfirmados = async (req, res) => {
   try {
     const { esValidacion } = req.query;
     const paciente = await Pacientes.findById(req.idPaciente).exec();
-    if (!paciente.datosContactoActualizados){
+    if (!paciente.datosContactoActualizados) {
       if (esValidacion === "true")
         return res.status(200).send({
           datosContactoConfirmados: paciente.datosContactoActualizados,
-          respuesta: await getMensajes("esValidacionDatosContactoNoConfirmados"),
+          respuesta: await getMensajes(
+            "esValidacionDatosContactoNoConfirmados"
+          ),
         });
       return res.status(200).send({
         datosContactoConfirmados: paciente.datosContactoActualizados,
@@ -98,15 +66,7 @@ exports.getSiDatosContactoConfirmados = async (req, res) => {
       .status(200)
       .send({ datosContactoConfirmados: paciente.datosContactoActualizados });
   } catch (error) {
-    if (process.env.NODE_ENV === "dev")
-      return res.status(500).send({
-        respuesta: await getMensajes("serverError"),
-        detalles_error: {
-          nombre: error.name,
-          mensaje: error.message,
-        },
-      });
-    res.status(500).send({ respuesta: await getMensajes("serverError") });
+    await manejarError(error, req, res);
   }
 };
 
@@ -122,14 +82,24 @@ exports.getSolicitudPendientePaciente = async (req, res) => {
       });
     res.status(200).send({ solicitudDuplicada: false });
   } catch (error) {
-    if (process.env.NODE_ENV === "dev")
-      return res.status(500).send({
-        respuesta: await getMensajes("serverError"),
-        detalles_error: {
-          nombre: error.name,
-          mensaje: error.message,
-        },
-      });
-    res.status(500).send({ respuesta: await getMensajes("serverError") });
+    await manejarError(error, req, res);
   }
 };
+
+// exports.postConocimientoDeuda = async (req, res) => {
+//   try {
+//     const conocimientoDeuda = {
+//       idPaciente: req.idPaciente,
+//       rutPaciente: req.rutPaciente,
+//       fecha: new Date(),
+//     };
+
+//     await ConocimientoDeuda.create(conocimientoDeuda);
+
+//     res
+//       .status(200)
+//       .send({ respuesta: await getMensajes("conocimientoDeudaRegistrado") });
+//   } catch (error) {
+//     await manejarError(error, req, res);
+//   }
+// };
