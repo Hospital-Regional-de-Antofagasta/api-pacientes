@@ -39,6 +39,18 @@ const mensajesPorDefecto = {
     color: "",
     icono: "",
   },
+  solicitudDuplicadaIdSuscripcion: {
+    titulo: "Id de suscripción duplicada",
+    mensaje: "Ya existe un dispositivo con la id de suscripción enviada.",
+    color: "",
+    icono: "",
+  },
+  solicitudCreadaIdSuscripcion: {
+    titulo: "¡Todo ha salido bien!",
+    mensaje: "Su solicitud ha sido creada con éxito",
+    color: "",
+    icono: "",
+  },
   // conocimientoDeudaRegistrado: {
   //   titulo: "Conocimiento Deuda Registrado",
   //   mensaje: "Conocimiento de deuda Registrado correctamente.",

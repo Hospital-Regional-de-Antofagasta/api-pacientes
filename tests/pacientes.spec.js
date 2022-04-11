@@ -3,7 +3,9 @@ const mongoose = require("mongoose");
 const jwt = require("jsonwebtoken");
 const supertest = require("supertest");
 const Pacientes = require("../api/models/Pacientes");
+const SolicitudIdSuscriptorPaciente = require("../api/models/SolicitudIdSuscriptorPaciente");
 const pacientesSeeds = require("./testSeeds/pacientesSeeds.json");
+//const solicitudIdSuscriptorSeeds = require("./testSeeds/solicitudIdSuscriptorSeeds.json");
 const PacientesActualizados = require("../api/models/PacientesActualizados");
 // const ConocimientoDeuda = require("../api/models/ConocimientoDeuda");
 const { getMensajes } = require("../api/config");
@@ -22,17 +24,77 @@ beforeEach(async () => {
   });
   await Pacientes.create(pacientesSeeds);
   await ConfigApiPacientes.create(configSeed);
+ // await SolicitudIdSuscriptorPaciente.create(solicitudIdSuscriptorSeeds);
 });
 
 afterEach(async () => {
   await Pacientes.deleteMany();
   await PacientesActualizados.deleteMany();
   await ConfigApiPacientes.deleteMany();
+  /* Se limpia colección para iniciar siempre con colección vacia */
+  await SolicitudIdSuscriptorPaciente.deleteMany();
   // await ConocimientoDeuda.deleteMany();
   await mongoose.connection.close();
 });
 
 describe("Endpoints", () => {
+
+  describe("POST /v1/pacientes/solicitud-id-suscriptor-paciente", () => {
+
+    it("Intenta crear solicitud id suscriptor sin token", async () => {
+      const respuesta = await request.post("/v1/pacientes/solicitud-id-suscriptor-paciente");
+      /* Obtiene mensaje por defecto de tipo de error "forbiddenAcces" */
+      const mensaje = await getMensajes("forbiddenAccess");
+      /* Compara el status obtenido de la respuesta con la esperada */
+      expect(respuesta.status).toBe(401);
+      /* Compara el cuerpo de la respuesta con el mensaje esperado obtenido */
+      expect(respuesta.body).toEqual({
+        respuesta: {
+          titulo: mensaje.titulo,
+          mensaje: mensaje.mensaje,
+          color: mensaje.color,
+          icono: mensaje.icono,
+        },
+      });
+    });
+
+    it("Intenta crear una solicitud id suscriptor con los datos de un paciente con token", async () => {
+      /* Se genera token de prueba de paciente existente */
+      let paciente = await Pacientes.findById("6101834e912f6209f4851fdb").select("_id rut");
+      console.log("paciente.rut",paciente.rut)
+      token = jwt.sign(
+        {
+          _id: paciente._id,
+          rut: paciente.rut,
+        },
+        secreto
+      );
+      /* Se crea el body que enviara, en este caso el idSuscriptor */
+      const body = {
+        idSuscriptorPaciente: '111100000000022222222333333333'
+
+      };
+      /* Se llama al endpoint con el body y token generados */
+      const respuesta = await request
+        .post("/v1/pacientes/solicitud-id-suscriptor-paciente")
+        .set("Authorization", token)
+        .send(body);
+
+      const mensaje = await getMensajes("solicitudCreadaIdSuscripcion");
+
+      /* Se compara respuesta obtenida con la esperada */
+      expect(respuesta.status).toBe(201);
+      expect(respuesta.body).toEqual({
+        respuesta: {
+          titulo: mensaje.titulo,
+          mensaje: mensaje.mensaje,
+          color: mensaje.color,
+          icono: mensaje.icono,
+        },
+      });
+    });
+  })
+
   describe("GET /v1/pacientes/informacion", () => {
     it("Intenta obtener la información de un paciente sin token", async () => {
       const respuesta = await request.get("/v1/pacientes/informacion");
@@ -168,7 +230,9 @@ describe("Endpoints", () => {
       expect(pacienteObtenido.datosContactoActualizados).toBeTruthy();
     });
   });
+
   describe("POST /v1/pacientes/actualizar-datos", () => {
+
     it("Intenta actualizar los datos de un paciente sin token", async () => {
       const respuesta = await request.post("/v1/pacientes/actualizar-datos");
 
@@ -184,6 +248,7 @@ describe("Endpoints", () => {
         },
       });
     });
+
     it("Intenta actualizar los datos de un paciente con token (El paciente no existe)", async () => {
       token = jwt.sign(
         {
@@ -223,6 +288,7 @@ describe("Endpoints", () => {
         },
       });
     });
+    
     it("Should update datos de un paciente", async () => {
       let paciente = await Pacientes.findById("6101834e912f6209f4851fdb").select("_id rut");
       token = jwt.sign(

@@ -41,6 +41,18 @@ router.get(
   pacientesController.getSolicitudPendientePaciente
 );
 
+//#region Inicio sección notificaciones
+
+router.post(
+  "/solicitud-id-suscriptor-paciente",
+  isAuthenticated,
+  validarSiPacienteExiste,
+  pacientesController.postSolicitudIdSuscriptorPaciente
+);
+
+//#endregion
+
+
 // router.post(
 //   "/conocimiento-deuda",
 //   isAuthenticated,

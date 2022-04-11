@@ -1,5 +1,6 @@
 const Pacientes = require("../models/Pacientes");
 const PacientesActualizados = require("../models/PacientesActualizados");
+const SolicitudIdSuscriptorPaciente = require("../models/SolicitudIdSuscriptorPaciente");
 // const ConocimientoDeuda = require("../models/ConocimientoDeuda");
 const { getMensajes } = require("../config");
 const { manejarError } = require("../utils/errorController");
@@ -81,6 +82,45 @@ exports.getSolicitudPendientePaciente = async (req, res) => {
         respuesta: await getMensajes("solicitudDuplicada"),
       });
     res.status(200).send({ solicitudDuplicada: false });
+  } catch (error) {
+    await manejarError(error, req, res);
+  }
+};
+
+exports.postSolicitudIdSuscriptorPaciente = async (req, res) => {
+
+  try {
+    const {idSuscriptorPaciente} = req.body;
+    const rutPaciente = req.rutPaciente;
+    
+    let idSucriptorEncontradoSolicitud = [];
+    let idsSucriptorPaciente = [];
+
+    //#region Buscar si un mismo paciente tiene más de una solicitud con el mismo id suscriptor
+    const pacientesIdSucriptorSolicitud = await SolicitudIdSuscriptorPaciente.find({ rutPaciente: req.rutPaciente }).exec();
+    if(pacientesIdSucriptorSolicitud.length > 0 ){
+      idSucriptorEncontradoSolicitud = await pacientesIdSucriptorSolicitud.find({ idSuscriptorPaciente: idSuscriptorPaciente }).exec();
+    }
+    //#endregion
+
+    //#region Buscar que el paciente no tenga vinculado el id suscriptor en su arreglo idsSuscriptor
+    const paciente = await Pacientes.findOne({ rutPaciente:  req.rutPaciente }).exec();
+    if(paciente.idsSuscriptor.length > 0){
+      idsSucriptorPaciente = paciente.idsSuscriptor.find(idSuscriptorPaciente).exec();
+    }
+    //#endregion
+   
+    /* Se valida que no exista la id suscriptor en la colección de actualización y en la colección de paciente */
+    if(idSucriptorEncontradoSolicitud.length > 0 || idsSucriptorPaciente.length > 0){
+      res.status(200).send({ respuesta: await getMensajes("solicitudDuplicadaIdSuscripcion") });
+      return;
+    } 
+
+    await SolicitudIdSuscriptorPaciente.create({rutPaciente,idSuscriptorPaciente});
+
+    res.status(201).send({ respuesta: await getMensajes("solicitudCreadaIdSuscripcion") });
+     
+
   } catch (error) {
     await manejarError(error, req, res);
   }

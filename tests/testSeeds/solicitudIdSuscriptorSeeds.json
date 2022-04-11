@@ -1,0 +1,19 @@
+[
+  {
+    "_id": "6101834e912f6209f4851fdc",
+    "rut": "10771131-7",
+    "idSuscriptorPaciente":"123"
+
+  },
+  {
+    "_id": "6101834e912f6209f4851fdd",
+    "rut": "17724699-9",
+    "idSuscriptorPaciente":"1234"
+
+  },
+  {
+    "_id": "6101834e912f6209f4851fdb",
+    "rut": "33333333-3",
+    "idSuscriptorPaciente":"1235"
+  }
+]
