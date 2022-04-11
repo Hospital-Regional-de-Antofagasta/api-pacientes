@@ -9,8 +9,6 @@ exports.getInformacionPaciente = async (req, res) => {
     let filter = { _id: req.idPaciente };
     if (req.query.filter === "rut") filter = { rut: req.rutPaciente };
 
-    console.log("filter", filter)
-
     const paciente = await Pacientes.findOne(filter).exec();
     if (!paciente) return res.sendStatus(200);
     res.status(200).send(paciente);
