@@ -47,18 +47,6 @@ const ConfigApiPacientes = mongoose.model(
         color: String,
         icono: String,
       },
-      solicitudDuplicadaIdSuscripcion: {
-        titulo: String,
-        mensaje: String,
-        color: String,
-        icono: String,
-      },
-      solicitudCreadaIdSuscripcion: {
-        titulo: String,
-        mensaje: String,
-        color: String,
-        icono: String,
-      },
       // conocimientoDeudaRegistrado: {
       //   titulo: String,
       //   mensaje: String,

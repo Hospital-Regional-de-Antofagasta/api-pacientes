@@ -3,6 +3,7 @@ const PacientesActualizados = require("../models/PacientesActualizados");
 // const ConocimientoDeuda = require("../models/ConocimientoDeuda");
 const { getMensajes } = require("../config");
 const { manejarError } = require("../utils/errorController");
+const IdsSuscriptorPacientes = require("../models/IdsSuscriptorPacientes");
 
 exports.getInformacionPaciente = async (req, res) => {
   try {
@@ -84,6 +85,26 @@ exports.getSolicitudPendientePaciente = async (req, res) => {
   } catch (error) {
     await manejarError(error, req, res);
   }
+};
+
+exports.postIdSuscriptor = async (req, res) => {
+  try {
+    const {idSuscriptor} = req.body;
+    const rutPaciente = req.rutPaciente;
+  
+    const existeIdSuscriptor = await IdsSuscriptorPacientes.findOne({rutPaciente: rutPaciente, idSuscriptor: idSuscriptor});
+    console.log("existeIdSuscriptor",existeIdSuscriptor)
+    if(existeIdSuscriptor){
+      console.log("existeIdSuscriptorexisteIdSuscriptorexisteIdSuscriptor")
+      return res.sendStatus(200);
+    }
+    await IdsSuscriptorPacientes.create({rutPaciente,idSuscriptor});
+    res.sendStatus(201);
+
+  } catch (error) {
+    await manejarError(error, req, res);
+  }
+
 };
 
 // exports.postConocimientoDeuda = async (req, res) => {

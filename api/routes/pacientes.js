@@ -1,6 +1,7 @@
 const express = require("express");
 const pacientesController = require("../controllers/pacientesController");
 const isAuthenticated = require("../middleware/auth");
+const { validarIdSuscriptorExiste } = require("../middleware/validaraIdSuscriptor");
 
 const {
   validarCorreo,
@@ -40,6 +41,14 @@ router.get(
   isAuthenticated,
   validarSiPacienteExiste,
   pacientesController.getSolicitudPendientePaciente
+);
+
+router.post(
+  "/id-suscriptor",
+  isAuthenticated,
+  validarSiPacienteExiste,
+  validarIdSuscriptorExiste,
+  pacientesController.postIdSuscriptor
 );
 
 //#region Inicio sección notificaciones
