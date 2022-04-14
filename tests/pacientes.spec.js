@@ -69,12 +69,13 @@ describe("Endpoints", () => {
       );
       /* Se crea el body que enviara, en este caso el idSuscriptor */
       const body = {
-        idSuscriptorPaciente: '111100000000022222222333333333'
-
+        idSuscriptorPaciente: "111100000000022222222333333333",
       };
 
-      const respuesta = await request.post("/v1/pacientes/id-suscriptor")              .set("Authorization", token)
-      .send(body);
+      const respuesta = await request
+        .post("/v1/pacientes/id-suscriptor")
+        .set("Authorization", token)
+        .send(body);
 
       const mensaje = await getMensajes("badRequest");
 
@@ -123,7 +124,7 @@ describe("Endpoints", () => {
       });
     });
 
-    it.only("Intenta agregar idSuscriptor duplicado al paciente ", async () => {
+    it("Intenta agregar idSuscriptor duplicado al paciente ", async () => {
       /* Se genera token de prueba de paciente existente */
       let paciente = await Pacientes.findById(
         "6101834e912f6209f4851fdb"
@@ -144,9 +145,11 @@ describe("Endpoints", () => {
         .post("/v1/pacientes/id-suscriptor")
         .set("Authorization", token)
         .send(body);
-      console.log("paciente.rut", paciente.rut);
 
-      const idSuscriptorAgregado = await IdsSuscriptorPacientes.findOne({rutPaciente: paciente.rut, idSuscriptor: body.idSuscriptor});
+      const idSuscriptorAgregado = await IdsSuscriptorPacientes.findOne({
+        rutPaciente: paciente.rut,
+        idSuscriptor: body.idSuscriptor,
+      });
       expect(idSuscriptorAgregado);
 
       expect(respuesta.status).toBe(200);
@@ -173,12 +176,9 @@ describe("Endpoints", () => {
         .post("/v1/pacientes/id-suscriptor")
         .set("Authorization", token)
         .send(body);
-      console.log("paciente.rut", paciente.rut);
 
       expect(respuesta.status).toBe(201);
     });
-
-
   });
   describe("GET /v1/pacientes/informacion", () => {
     it("Intenta obtener la información de un paciente sin token", async () => {

@@ -93,9 +93,7 @@ exports.postIdSuscriptor = async (req, res) => {
     const rutPaciente = req.rutPaciente;
   
     const existeIdSuscriptor = await IdsSuscriptorPacientes.findOne({rutPaciente: rutPaciente, idSuscriptor: idSuscriptor});
-    console.log("existeIdSuscriptor",existeIdSuscriptor)
     if(existeIdSuscriptor){
-      console.log("existeIdSuscriptorexisteIdSuscriptorexisteIdSuscriptor")
       return res.sendStatus(200);
     }
     await IdsSuscriptorPacientes.create({rutPaciente,idSuscriptor});
