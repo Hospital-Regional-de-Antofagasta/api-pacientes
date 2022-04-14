@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
-
+/* Modelo para solicitudes de actualización de paciente */
 const PacientesActualizados = mongoose.model(
   "pacientes_actualizado",
   new Schema(
