@@ -91,19 +91,29 @@ exports.postIdSuscriptor = async (req, res) => {
   try {
     const {idSuscriptor} = req.body;
     const rutPaciente = req.rutPaciente;
-  
-    const existeIdSuscriptor = await IdsSuscriptorPacientes.findOne({rutPaciente: rutPaciente, idSuscriptor: idSuscriptor});
-    if(existeIdSuscriptor){
-      return res.sendStatus(200);
+
+    /* Paciente existe en la colección de idsSuscriptores */
+    const pacienteTieneIdSuscriptor =  await IdsSuscriptorPacientes.findOne({rutPaciente: rutPaciente});
+    if(!pacienteTieneIdSuscriptor){
+      await IdsSuscriptorPacientes.create({rutPaciente,idSuscriptor});
+      return res.sendStatus(201);
     }
-    await IdsSuscriptorPacientes.create({rutPaciente,idSuscriptor});
-    res.sendStatus(201);
+
+    /* Se busca si existe el id suscriptor */
+    const existeIdSuscriptor = await IdsSuscriptorPacientes.find({rutPaciente: rutPaciente, idSuscriptor: idSuscriptor});
+    console.log("existeIdSuscriptor", existeIdSuscriptor);
+    if(existeIdSuscriptor.length > 0){
+      return res.sendStatus(200);
+    };
+
+    /* Se agrega nuevo id suscriptor al arreglo del paciente */
+    await IdsSuscriptorPacientes.findOneAndUpdate({rutPaciente: rutPaciente},{$push: { 'idSuscriptor': idSuscriptor }})
+    return res.sendStatus(201);
 
   } catch (error) {
     await manejarError(error, req, res);
   }
-
-};
+}
 
 // exports.postConocimientoDeuda = async (req, res) => {
 //   try {
