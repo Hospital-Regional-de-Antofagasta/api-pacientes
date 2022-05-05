@@ -23,7 +23,8 @@ const Paciente = mongoose.model(
     correoExtension: String,
     codigosEstablecimientos: [String],
     datosContactoActualizados: { type: Boolean, default: false },
-  })
+  },
+  { timestamps: true })
 );
 
 module.exports = Paciente;
