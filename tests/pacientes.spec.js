@@ -148,7 +148,7 @@ describe("Endpoints", () => {
       expect(respuesta.status).toBe(200);
       //Probar que el paciente es el esperado.
       const pacienteObtenido = respuesta.body;
-      expect(pacienteObtenido.rut).toBeFalsy();
+      expect(pacienteObtenido.rut).toBe("17724699-9");
       expect(pacienteObtenido.nombre).toStrictEqual("JOHANA GABRIEL");
       expect(pacienteObtenido.nombreSocial).toStrictEqual("name");
       expect(pacienteObtenido.apellidoPaterno).toStrictEqual("RIVERA");
