@@ -9,8 +9,10 @@ exports.getInformacionPaciente = async (req, res) => {
   try {
     let filter = { _id: req.idPaciente };
     if (req.query.filter === "rut") filter = { rut: req.rutPaciente };
+    let select = "-rut"
+    if (req.query.filter === "rut") select = "";
 
-    const paciente = await Pacientes.findOne(filter).exec();
+    const paciente = await Pacientes.findOne(filter).select(select).exec();
     if (!paciente) return res.sendStatus(200);
     res.status(200).send(paciente);
   } catch (error) {
