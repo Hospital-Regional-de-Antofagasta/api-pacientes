@@ -5,7 +5,7 @@ const Paciente = mongoose.model(
   "paciente",
   new Schema({
     // numeroPaciente: Number,
-    rut: { type: String, required: true, unique: true, select: false },
+    rut: { type: String, required: true, unique: true },
     nombreSocial: String,
     nombre: { type: String },
     apellidoPaterno: { type: String },
