@@ -3,11 +3,11 @@ const { getMensajes } = require("../config");
 
 exports.validarIdSuscriptorExiste = async (req, res, next) => {
   try {
-    const {idSuscriptor} = req.body;
-    if(!idSuscriptor){
+    const { idSuscriptor } = req.body;
+    if (!idSuscriptor) {
       return res
-      .status(400)
-      .send({ respuesta: await getMensajes("badRequest") });
+        .status(400)
+        .send({ respuesta: await getMensajes("badRequest") });
     }
     next();
   } catch (error) {

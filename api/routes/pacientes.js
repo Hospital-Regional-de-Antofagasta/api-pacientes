@@ -1,7 +1,9 @@
 const express = require("express");
 const pacientesController = require("../controllers/pacientesController");
 const isAuthenticated = require("../middleware/auth");
-const { validarIdSuscriptorExiste } = require("../middleware/validaraIdSuscriptor");
+const {
+  validarIdSuscriptorExiste,
+} = require("../middleware/validaraIdSuscriptor");
 
 const {
   validarCorreo,
@@ -50,16 +52,5 @@ router.post(
   validarIdSuscriptorExiste,
   pacientesController.postIdSuscriptor
 );
-
-//#region Inicio sección notificaciones
-
-
-//#endregion
-// router.post(
-//   "/conocimiento-deuda",
-//   isAuthenticated,
-//   validarSiPacienteExiste,
-//   pacientesController.postConocimientoDeuda
-// );
 
 module.exports = router;

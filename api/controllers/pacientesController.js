@@ -9,7 +9,7 @@ exports.getInformacionPaciente = async (req, res) => {
   try {
     let filter = { _id: req.idPaciente };
     if (req.query.filter === "rut") filter = { rut: req.rutPaciente };
-    let select = "-rut"
+    let select = "-rut";
     if (req.query.filter === "rut") select = "";
 
     const paciente = await Pacientes.findOne(filter).select(select).exec();
@@ -91,46 +91,34 @@ exports.getSolicitudPendientePaciente = async (req, res) => {
 
 exports.postIdSuscriptor = async (req, res) => {
   try {
-    const {idSuscriptor} = req.body;
+    const { idSuscriptor } = req.body;
     const rutPaciente = req.rutPaciente;
 
     /* Paciente existe en la colección de idsSuscriptores */
-    const pacienteTieneIdSuscriptor =  await IdsSuscriptorPacientes.findOne({rutPaciente: rutPaciente});
-    if(!pacienteTieneIdSuscriptor){
-      await IdsSuscriptorPacientes.create({rutPaciente,idSuscriptor});
+    const pacienteTieneIdSuscriptor = await IdsSuscriptorPacientes.findOne({
+      rutPaciente: rutPaciente,
+    });
+    if (!pacienteTieneIdSuscriptor) {
+      await IdsSuscriptorPacientes.create({ rutPaciente, idSuscriptor });
       return res.sendStatus(201);
     }
 
     /* Se busca si existe el id suscriptor */
-    const existeIdSuscriptor = await IdsSuscriptorPacientes.find({rutPaciente: rutPaciente, idSuscriptor: idSuscriptor});
-    console.log("existeIdSuscriptor", existeIdSuscriptor);
-    if(existeIdSuscriptor.length > 0){
+    const existeIdSuscriptor = await IdsSuscriptorPacientes.find({
+      rutPaciente: rutPaciente,
+      idSuscriptor: idSuscriptor,
+    });
+    if (existeIdSuscriptor.length > 0) {
       return res.sendStatus(200);
-    };
+    }
 
     /* Se agrega nuevo id suscriptor al arreglo del paciente */
-    await IdsSuscriptorPacientes.findOneAndUpdate({rutPaciente: rutPaciente},{$push: { 'idSuscriptor': idSuscriptor }})
+    await IdsSuscriptorPacientes.findOneAndUpdate(
+      { rutPaciente: rutPaciente },
+      { $push: { idSuscriptor: idSuscriptor } }
+    );
     return res.sendStatus(201);
-
   } catch (error) {
     await manejarError(error, req, res);
   }
-}
-
-// exports.postConocimientoDeuda = async (req, res) => {
-//   try {
-//     const conocimientoDeuda = {
-//       idPaciente: req.idPaciente,
-//       rutPaciente: req.rutPaciente,
-//       fecha: new Date(),
-//     };
-
-//     await ConocimientoDeuda.create(conocimientoDeuda);
-
-//     res
-//       .status(200)
-//       .send({ respuesta: await getMensajes("conocimientoDeudaRegistrado") });
-//   } catch (error) {
-//     await manejarError(error, req, res);
-//   }
-// };
+};
