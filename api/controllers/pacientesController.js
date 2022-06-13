@@ -115,9 +115,18 @@ exports.postIdSuscriptor = async (req, res) => {
       { rutPaciente: rutPaciente },
       { $push: { idSuscriptor: idSuscriptor } }
     ).exec();
-    return res
-      .status(201)
-      .send({ respuesta: await getMensajes("success") });
+    return res.status(201).send({ respuesta: await getMensajes("success") });
+  } catch (error) {
+    await manejarError(error, req, res);
+  }
+};
+
+exports.getIdsSuscriptor = async (req, res) => {
+  try {
+    const idsSuscriptorPaciente = await IdsSuscriptorPacientes.findOne({
+      rutPaciente: req.rutPaciente,
+    }).exec();
+    res.status(200).send(idsSuscriptorPaciente.idSuscriptor);
   } catch (error) {
     await manejarError(error, req, res);
   }

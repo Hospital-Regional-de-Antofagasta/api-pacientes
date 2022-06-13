@@ -1,7 +1,7 @@
 const Pacientes = require("../models/Pacientes");
 const { getMensajes } = require("../config");
 
-exports.validarIdSuscriptorExiste = async (req, res, next) => {
+exports.validarIdSuscriptor = async (req, res, next) => {
   try {
     const { idSuscriptor } = req.body;
     if (!idSuscriptor) {

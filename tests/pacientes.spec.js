@@ -879,8 +879,6 @@ describe("Endpoints", () => {
 
       expect(respuesta.status).toBe(201);
 
-      console.log(respuesta.body);
-
       expect(respuesta.body).toEqual({
         respuesta: {
           titulo: mensaje.titulo,
@@ -920,8 +918,6 @@ describe("Endpoints", () => {
       const mensaje = await getMensajes("success");
 
       expect(respuesta.status).toBe(201);
-
-      console.log(respuesta.body);
 
       expect(respuesta.body).toEqual({
         respuesta: {
@@ -984,7 +980,7 @@ describe("Endpoints", () => {
         .get("/v1/pacientes/id-suscriptor")
         .set("Authorization", token);
 
-      const mensaje = await getMensajes("forbiddenAccess");
+      const mensaje = await getMensajes("badRequest");
 
       expect(respuesta.status).toBe(400);
 
