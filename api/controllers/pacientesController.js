@@ -126,7 +126,7 @@ exports.getIdsSuscriptor = async (req, res) => {
     const idsSuscriptorPaciente = await IdsSuscriptorPacientes.findOne({
       rutPaciente: req.rutPaciente,
     }).exec();
-    res.status(200).send(idsSuscriptorPaciente.idSuscriptor);
+    res.status(200).send(idsSuscriptorPaciente.idsSuscriptor);
   } catch (error) {
     await manejarError(error, req, res);
   }

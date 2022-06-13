@@ -1011,10 +1011,10 @@ describe("Endpoints", () => {
       expect(respuesta.status).toBe(200);
 
       expect(respuesta.body.length).toBe(4);
-      expect(respuesta.body[0]).toBe("778899");
-      expect(respuesta.body[1]).toBe("778800");
-      expect(respuesta.body[2]).toBe("101112");
-      expect(respuesta.body[3]).toBe("131415");
+      expect(respuesta.body[0].idSuscriptor).toBe("778899");
+      expect(respuesta.body[1].idSuscriptor).toBe("778800");
+      expect(respuesta.body[2].idSuscriptor).toBe("101112");
+      expect(respuesta.body[3].idSuscriptor).toBe("131415");
     });
   });
 });
