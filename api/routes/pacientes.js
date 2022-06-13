@@ -1,9 +1,7 @@
 const express = require("express");
 const pacientesController = require("../controllers/pacientesController");
 const isAuthenticated = require("../middleware/auth");
-const {
-  validarIdSuscriptorExiste,
-} = require("../middleware/validaraIdSuscriptor");
+const { validarIdSuscriptor } = require("../middleware/validaraIdSuscriptor");
 
 const {
   validarCorreo,
@@ -49,8 +47,15 @@ router.post(
   "/id-suscriptor",
   isAuthenticated,
   validarSiPacienteExiste,
-  validarIdSuscriptorExiste,
+  validarIdSuscriptor,
   pacientesController.postIdSuscriptor
+);
+
+router.get(
+  "/id-suscriptor",
+  isAuthenticated,
+  validarSiPacienteExiste,
+  pacientesController.getIdsSuscriptor
 );
 
 module.exports = router;

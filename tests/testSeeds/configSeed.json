@@ -42,6 +42,12 @@
         "mensaje": "Es necesario que confirme que su información de contacto está correcta para poder realizar esta acción. -test",
         "color": " -test",
         "icono": " -test"
+      },
+      "success": {
+        "titulo": "Acción Realizada -test",
+        "mensaje": "La acción fue realizada con éxito. -test",
+        "color": " -test",
+        "icono": " -test"
       }
     },
     "version": 1

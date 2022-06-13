@@ -6,9 +6,7 @@ const Pacientes = require("../api/models/Pacientes");
 const pacientesSeeds = require("./testSeeds/pacientesSeeds.json");
 const idsSuscriptorSeeds = require("./testSeeds/idsSuscriptorSeeds.json");
 
-//const solicitudIdSuscriptorSeeds = require("./testSeeds/solicitudIdSuscriptorSeeds.json");
 const PacientesActualizados = require("../api/models/PacientesActualizados");
-// const ConocimientoDeuda = require("../api/models/ConocimientoDeuda");
 const { getMensajes } = require("../api/config");
 const ConfigApiPacientes = require("../api/models/ConfigApiPacientes");
 const configSeed = require("./testSeeds/configSeed.json");
@@ -35,151 +33,10 @@ afterEach(async () => {
   await ConfigApiPacientes.deleteMany();
   await IdsSuscriptorPacientes.deleteMany();
   /* Se limpia colección para iniciar siempre con colección vacia */
-  // await ConocimientoDeuda.deleteMany();
   await mongoose.connection.close();
 });
 
 describe("Endpoints", () => {
-  describe("POST /v1/pacientes/id-suscriptor", () => {
-    it("Intenta agregar idSuscriptor sin token", async () => {
-      /* Se genera token de prueba de paciente existente */
-      const respuesta = await request.post("/v1/pacientes/id-suscriptor");
-
-      const mensaje = await getMensajes("forbiddenAccess");
-
-      expect(respuesta.status).toBe(401);
-
-      expect(respuesta.body).toEqual({
-        respuesta: {
-          titulo: mensaje.titulo,
-          mensaje: mensaje.mensaje,
-          color: mensaje.color,
-          icono: mensaje.icono,
-        },
-      });
-    });
-
-    it("Intenta agregar idSuscriptor con token falso", async () => {
-      token = jwt.sign(
-        {
-          _id: "000000000000",
-          rut: "22222222-2",
-        },
-        secreto
-      );
-      /* Se crea el body que enviara, en este caso el idSuscriptor */
-      const body = {
-        idSuscriptorPaciente: "111100000000022222222333333333",
-      };
-
-      const respuesta = await request
-        .post("/v1/pacientes/id-suscriptor")
-        .set("Authorization", token)
-        .send(body);
-
-      const mensaje = await getMensajes("badRequest");
-
-      expect(respuesta.status).toBe(400);
-
-      expect(respuesta.body).toEqual({
-        respuesta: {
-          titulo: mensaje.titulo,
-          mensaje: mensaje.mensaje,
-          color: mensaje.color,
-          icono: mensaje.icono,
-        },
-      });
-    });
-
-    it("Intenta agregar idSuscriptor sin enviar un idSuscriptor", async () => {
-      let paciente = await Pacientes.findById(
-        "6101834e912f6209f4851fdb"
-      ).select("_id rut");
-      token = jwt.sign(
-        {
-          _id: paciente._id,
-          rut: paciente.rut,
-        },
-        secreto
-      );
-      /* Se crea el body que enviara, en este caso el idSuscriptor */
-      const body = {};
-      /* Se llama al endpoint con el body y token generados */
-      const respuesta = await request
-        .post("/v1/pacientes/id-suscriptor")
-        .set("Authorization", token)
-        .send(body);
-
-      const mensaje = await getMensajes("badRequest");
-
-      expect(respuesta.status).toBe(400);
-
-      expect(respuesta.body).toEqual({
-        respuesta: {
-          titulo: mensaje.titulo,
-          mensaje: mensaje.mensaje,
-          color: mensaje.color,
-          icono: mensaje.icono,
-        },
-      });
-    });
-
-    it("Intenta agregar idSuscriptor duplicado al paciente ", async () => {
-      /* Se genera token de prueba de paciente existente */
-      let paciente = await Pacientes.findById(
-        "6101834e912f6209f4851fdb"
-      ).select("_id rut");
-      token = jwt.sign(
-        {
-          _id: paciente._id,
-          rut: paciente.rut,
-        },
-        secreto
-      );
-      /* Se crea el body que enviara, en este caso el idSuscriptor */
-      const body = {
-        idSuscriptor: "778899",
-      };
-      /* Se llama al endpoint con el body y token generados */
-      const respuesta = await request
-        .post("/v1/pacientes/id-suscriptor")
-        .set("Authorization", token)
-        .send(body);
-
-      const idSuscriptorAgregado = await IdsSuscriptorPacientes.findOne({
-        rutPaciente: paciente.rut,
-        idSuscriptor: body.idSuscriptor,
-      });
-      expect(idSuscriptorAgregado);
-
-      expect(respuesta.status).toBe(200);
-    });
-
-    it("Intenta agregar idSuscriptor no duplicado al paciente", async () => {
-      /* Se genera token de prueba de paciente existente */
-      let paciente = await Pacientes.findById(
-        "6101834e912f6209f4851fdb"
-      ).select("_id rut");
-      token = jwt.sign(
-        {
-          _id: paciente._id,
-          rut: paciente.rut,
-        },
-        secreto
-      );
-      /* Se crea el body que enviara, en este caso el idSuscriptor */
-      const body = {
-        idSuscriptor: "908070",
-      };
-      /* Se llama al endpoint con el body y token generados */
-      const respuesta = await request
-        .post("/v1/pacientes/id-suscriptor")
-        .set("Authorization", token)
-        .send(body);
-
-      expect(respuesta.status).toBe(201);
-    });
-  });
   describe("GET /v1/pacientes/informacion", () => {
     it("Intenta obtener la información de un paciente sin token", async () => {
       const respuesta = await request.get("/v1/pacientes/informacion");
@@ -317,7 +174,6 @@ describe("Endpoints", () => {
       expect(pacienteObtenido.datosContactoActualizados).toBeTruthy();
     });
   });
-
   describe("POST /v1/pacientes/actualizar-datos", () => {
     it("Intenta actualizar los datos de un paciente sin token", async () => {
       const respuesta = await request.post("/v1/pacientes/actualizar-datos");
@@ -334,7 +190,6 @@ describe("Endpoints", () => {
         },
       });
     });
-
     it("Intenta actualizar los datos de un paciente con token (El paciente no existe)", async () => {
       token = jwt.sign(
         {
@@ -374,7 +229,6 @@ describe("Endpoints", () => {
         },
       });
     });
-
     it("Should update datos de un paciente", async () => {
       let paciente = await Pacientes.findById(
         "6101834e912f6209f4851fdb"
@@ -600,7 +454,6 @@ describe("Endpoints", () => {
       expect(pacienteActualizado).toStrictEqual([]);
     });
   });
-
   describe("GET /v1/pacientes/verificar-si-datos-contacto-confirmados", () => {
     it("Should not verify without token", async () => {
       const respuesta = await request
@@ -734,7 +587,6 @@ describe("Endpoints", () => {
       expect(respuesta.body).toEqual({ datosContactoConfirmados: true });
     });
   });
-
   describe("GET /v1/pacientes/verificar-solicitud-duplicada", () => {
     it("Should not verify without token", async () => {
       const respuesta = await request
@@ -837,6 +689,332 @@ describe("Endpoints", () => {
           icono: mensaje.icono,
         },
       });
+    });
+  });
+  describe("POST /v1/pacientes/id-suscriptor", () => {
+    it("Intenta agregar idSuscriptor sin token", async () => {
+      const respuesta = await request.post("/v1/pacientes/id-suscriptor");
+
+      const mensaje = await getMensajes("forbiddenAccess");
+
+      expect(respuesta.status).toBe(401);
+
+      expect(respuesta.body).toEqual({
+        respuesta: {
+          titulo: mensaje.titulo,
+          mensaje: mensaje.mensaje,
+          color: mensaje.color,
+          icono: mensaje.icono,
+        },
+      });
+    });
+    it("Intenta agregar idSuscriptor con token falso", async () => {
+      const respuesta = await request
+        .post("/v1/pacientes/id-suscriptor")
+        .set("Authorization", "token")
+        .send({ idSuscriptorPaciente: "111100000000022222222333333333" });
+
+      const mensaje = await getMensajes("forbiddenAccess");
+
+      expect(respuesta.status).toBe(401);
+
+      expect(respuesta.body).toEqual({
+        respuesta: {
+          titulo: mensaje.titulo,
+          mensaje: mensaje.mensaje,
+          color: mensaje.color,
+          icono: mensaje.icono,
+        },
+      });
+    });
+    it("Intenta agregar idSuscriptor si paciente no existe", async () => {
+      token = jwt.sign(
+        {
+          _id: "000000000000",
+          rut: "2-2",
+        },
+        secreto
+      );
+
+      const respuesta = await request
+        .post("/v1/pacientes/id-suscriptor")
+        .set("Authorization", token)
+        .send({ idSuscriptorPaciente: "111100000000022222222333333333" });
+
+      const mensaje = await getMensajes("badRequest");
+
+      expect(respuesta.status).toBe(400);
+
+      expect(respuesta.body).toEqual({
+        respuesta: {
+          titulo: mensaje.titulo,
+          mensaje: mensaje.mensaje,
+          color: mensaje.color,
+          icono: mensaje.icono,
+        },
+      });
+    });
+    it("Intenta agregar idSuscriptor sin enviar un idSuscriptor (body vacio)", async () => {
+      let paciente = await Pacientes.findById("6101834e912f6209f4851fdb")
+        .select("_id rut")
+        .exec();
+
+      token = jwt.sign(
+        {
+          _id: paciente._id,
+          rut: paciente.rut,
+        },
+        secreto
+      );
+
+      const respuesta = await request
+        .post("/v1/pacientes/id-suscriptor")
+        .set("Authorization", token)
+        .send();
+
+      const mensaje = await getMensajes("badRequest");
+
+      expect(respuesta.status).toBe(400);
+
+      expect(respuesta.body).toEqual({
+        respuesta: {
+          titulo: mensaje.titulo,
+          mensaje: mensaje.mensaje,
+          color: mensaje.color,
+          icono: mensaje.icono,
+        },
+      });
+    });
+    it("Intenta agregar idSuscriptor sin enviar un idSuscriptor (objeto vacio)", async () => {
+      let paciente = await Pacientes.findById("6101834e912f6209f4851fdb")
+        .select("_id rut")
+        .exec();
+
+      token = jwt.sign(
+        {
+          _id: paciente._id,
+          rut: paciente.rut,
+        },
+        secreto
+      );
+
+      const respuesta = await request
+        .post("/v1/pacientes/id-suscriptor")
+        .set("Authorization", token)
+        .send({});
+
+      const mensaje = await getMensajes("badRequest");
+
+      expect(respuesta.status).toBe(400);
+
+      expect(respuesta.body).toEqual({
+        respuesta: {
+          titulo: mensaje.titulo,
+          mensaje: mensaje.mensaje,
+          color: mensaje.color,
+          icono: mensaje.icono,
+        },
+      });
+    });
+    it("Intenta agregar idSuscriptor ya existente al paciente ", async () => {
+      let paciente = await Pacientes.findById("6101834e912f6209f4851fdb")
+        .select("_id rut")
+        .exec();
+
+      token = jwt.sign(
+        {
+          _id: paciente._id,
+          rut: paciente.rut,
+        },
+        secreto
+      );
+
+      const respuesta = await request
+        .post("/v1/pacientes/id-suscriptor")
+        .set("Authorization", token)
+        .send({ idSuscriptor: "778899" });
+
+      const mensaje = await getMensajes("success");
+
+      expect(respuesta.status).toBe(201);
+
+      expect(respuesta.body).toEqual({
+        respuesta: {
+          titulo: mensaje.titulo,
+          mensaje: mensaje.mensaje,
+          color: mensaje.color,
+          icono: mensaje.icono,
+        },
+      });
+
+      const idSuscriptorAgregado = await IdsSuscriptorPacientes.findOne({
+        rutPaciente: paciente.rut,
+        idSuscriptor: "778899",
+      }).exec();
+
+      expect(
+        idSuscriptorAgregado.idSuscriptor.filter((e) => e === "778899").length
+      ).toBe(1);
+      expect(idSuscriptorAgregado.idSuscriptor[0]).toBe("778899");
+    });
+    it("Intenta agregar idSuscriptor al paciente que no tenía ninguno", async () => {
+      let paciente = await Pacientes.findById("6101834e912f6209f4851fdd")
+        .select("_id rut")
+        .exec();
+
+      token = jwt.sign(
+        {
+          _id: paciente._id,
+          rut: paciente.rut,
+        },
+        secreto
+      );
+
+      const respuesta = await request
+        .post("/v1/pacientes/id-suscriptor")
+        .set("Authorization", token)
+        .send({ idSuscriptor: "908071" });
+
+      const mensaje = await getMensajes("success");
+
+      expect(respuesta.status).toBe(201);
+
+      expect(respuesta.body).toEqual({
+        respuesta: {
+          titulo: mensaje.titulo,
+          mensaje: mensaje.mensaje,
+          color: mensaje.color,
+          icono: mensaje.icono,
+        },
+      });
+
+      const idSuscriptorAgregado = await IdsSuscriptorPacientes.findOne({
+        rutPaciente: paciente.rut,
+        idSuscriptor: "908071",
+      }).exec();
+
+      expect(idSuscriptorAgregado.rutPaciente).toBe(paciente.rut);
+      expect(idSuscriptorAgregado.idSuscriptor.length).toBe(1);
+      expect(idSuscriptorAgregado.idSuscriptor[0]).toBe("908071");
+    });
+    it("Intenta agregar idSuscriptor al paciente", async () => {
+      let paciente = await Pacientes.findById("6101834e912f6209f4851fdb")
+        .select("_id rut")
+        .exec();
+
+      token = jwt.sign(
+        {
+          _id: paciente._id,
+          rut: paciente.rut,
+        },
+        secreto
+      );
+
+      const respuesta = await request
+        .post("/v1/pacientes/id-suscriptor")
+        .set("Authorization", token)
+        .send({ idSuscriptor: "908070" });
+
+      const mensaje = await getMensajes("success");
+
+      expect(respuesta.status).toBe(201);
+
+      expect(respuesta.body).toEqual({
+        respuesta: {
+          titulo: mensaje.titulo,
+          mensaje: mensaje.mensaje,
+          color: mensaje.color,
+          icono: mensaje.icono,
+        },
+      });
+
+      const idSuscriptorAgregado = await IdsSuscriptorPacientes.findOne({
+        rutPaciente: paciente.rut,
+        idSuscriptor: "908070",
+      }).exec();
+
+      expect(idSuscriptorAgregado.idSuscriptor[4]).toBe("908070");
+    });
+  });
+  describe("GET /v1/pacientes/id-suscriptor", () => {
+    it("Debería retornar error si no se recibe token.", async () => {
+      const respuesta = await request.get("/v1/pacientes/id-suscriptor");
+
+      const mensaje = await getMensajes("forbiddenAccess");
+
+      expect(respuesta.status).toBe(401);
+
+      expect(respuesta.body.respuesta).toEqual({
+        titulo: mensaje.titulo,
+        mensaje: mensaje.mensaje,
+        color: mensaje.color,
+        icono: mensaje.icono,
+      });
+    });
+    it("Debería retornar error si el token es invalido.", async () => {
+      const respuesta = await request
+        .get("/v1/pacientes/id-suscriptor")
+        .set("Authorization", "token");
+
+      const mensaje = await getMensajes("forbiddenAccess");
+
+      expect(respuesta.status).toBe(401);
+
+      expect(respuesta.body.respuesta).toEqual({
+        titulo: mensaje.titulo,
+        mensaje: mensaje.mensaje,
+        color: mensaje.color,
+        icono: mensaje.icono,
+      });
+    });
+    it("Debería retornar error si el paciente no existe.", async () => {
+      token = jwt.sign(
+        {
+          _id: "000000000000",
+          rut: "2-2",
+        },
+        secreto
+      );
+
+      const respuesta = await request
+        .get("/v1/pacientes/id-suscriptor")
+        .set("Authorization", token);
+
+      const mensaje = await getMensajes("badRequest");
+
+      expect(respuesta.status).toBe(400);
+
+      expect(respuesta.body.respuesta).toEqual({
+        titulo: mensaje.titulo,
+        mensaje: mensaje.mensaje,
+        color: mensaje.color,
+        icono: mensaje.icono,
+      });
+    });
+    it("Debería obtener los ids suscriptor del paciente.", async () => {
+      let paciente = await Pacientes.findById("6101834e912f6209f4851fdb")
+        .select("_id rut")
+        .exec();
+
+      token = jwt.sign(
+        {
+          _id: paciente._id,
+          rut: paciente.rut,
+        },
+        secreto
+      );
+
+      const respuesta = await request
+        .get("/v1/pacientes/id-suscriptor")
+        .set("Authorization", token);
+
+      expect(respuesta.status).toBe(200);
+
+      expect(respuesta.body.length).toBe(4);
+      expect(respuesta.body[0]).toBe("778899");
+      expect(respuesta.body[1]).toBe("778800");
+      expect(respuesta.body[2]).toBe("101112");
+      expect(respuesta.body[3]).toBe("131415");
     });
   });
 });

@@ -39,6 +39,12 @@ const mensajesPorDefecto = {
     color: "",
     icono: "",
   },
+  success: {
+    titulo: "Acción Realizada",
+    mensaje: "La acción fue realizada con éxito.",
+    color: "",
+    icono: "",
+  },
 };
 
 exports.getMensajes = async (tipo) => {
