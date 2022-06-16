@@ -1,6 +1,6 @@
 const Pacientes = require("../models/Pacientes");
 const { getMensajes } = require("../config");
-const { manejarError } = require("../utils/errorController");
+const { handleError } = require("../utils/errorHandler");
 
 exports.validarCorreo = async (req, res, next) => {
   try {
@@ -19,7 +19,7 @@ exports.validarCorreo = async (req, res, next) => {
 
     next();
   } catch (error) {
-    await manejarError(error, req, res);
+    await handleError(res, error);
   }
 };
 
@@ -65,7 +65,7 @@ exports.validarTelefono = async (req, res, next) => {
     }
     next();
   } catch (error) {
-    await manejarError(error, req, res);
+    await handleError(res, error);
   }
 };
 
@@ -90,7 +90,7 @@ exports.validarUbicacion = async (req, res, next) => {
     }
     next();
   } catch (error) {
-    await manejarError(error, req, res);
+    await handleError(res, error);
   }
 };
 
@@ -122,7 +122,7 @@ exports.validarNoObligatorios = async (req, res, next) => {
     }
     next();
   } catch (error) {
-    await manejarError(error, req, res);
+    await handleError(res, error);
   }
 };
 
@@ -138,6 +138,6 @@ exports.validarSiPacienteExiste = async (req, res, next) => {
 
     next();
   } catch (error) {
-    await manejarError(error, req, res);
+    await handleError(res, error);
   }
 };

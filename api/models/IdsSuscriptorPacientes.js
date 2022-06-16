@@ -11,12 +11,10 @@ const IdsSuscriptorPacientes = mongoose.model(
           {
             idSuscriptor: { type: String, required: true },
             nombreDispositivo: { type: String, required: true },
-            deletedAt: { type: Date, default: null },
           },
         ],
         required: true,
       },
-      enviarHRA: { type: Boolean, default: true },
     },
     { timestamps: true }
   )

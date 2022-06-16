@@ -1,8 +1,6 @@
 const express = require("express");
 const pacientesController = require("../controllers/pacientesController");
 const isAuthenticated = require("../middleware/auth");
-const { validarIdSuscriptor } = require("../middleware/validaraIdSuscriptor");
-
 const {
   validarCorreo,
   validarTelefono,
@@ -10,6 +8,7 @@ const {
   validarUbicacion,
   validarNoObligatorios,
 } = require("../middleware/validarDatosContacto");
+
 const router = express.Router();
 
 router.get(
@@ -41,21 +40,6 @@ router.get(
   isAuthenticated,
   validarSiPacienteExiste,
   pacientesController.getSolicitudPendientePaciente
-);
-
-router.post(
-  "/id-suscriptor",
-  isAuthenticated,
-  validarSiPacienteExiste,
-  validarIdSuscriptor,
-  pacientesController.postIdSuscriptor
-);
-
-router.get(
-  "/id-suscriptor",
-  isAuthenticated,
-  validarSiPacienteExiste,
-  pacientesController.getIdsSuscriptor
 );
 
 module.exports = router;

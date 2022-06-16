@@ -1,8 +1,7 @@
 const Pacientes = require("../models/Pacientes");
 const PacientesActualizados = require("../models/PacientesActualizados");
-const IdsSuscriptorPacientes = require("../models/IdsSuscriptorPacientes");
 const { getMensajes } = require("../config");
-const { manejarError } = require("../utils/errorController");
+const { handleError } = require("../utils/errorHandler");
 
 exports.getInformacionPaciente = async (req, res) => {
   try {
@@ -15,7 +14,7 @@ exports.getInformacionPaciente = async (req, res) => {
     if (!paciente) return res.sendStatus(200);
     res.status(200).send(paciente);
   } catch (error) {
-    await manejarError(error, req, res);
+    await handleError(res, error);
   }
 };
 
@@ -43,7 +42,7 @@ exports.postDatosPaciente = async (req, res) => {
 
     res.status(201).send({ respuesta: await getMensajes("solicitudCreada") });
   } catch (error) {
-    await manejarError(error, req, res);
+    await handleError(res, error);
   }
 };
 
@@ -68,7 +67,7 @@ exports.getSiDatosContactoConfirmados = async (req, res) => {
       .status(200)
       .send({ datosContactoConfirmados: paciente.datosContactoActualizados });
   } catch (error) {
-    await manejarError(error, req, res);
+    await handleError(res, error);
   }
 };
 
@@ -84,50 +83,6 @@ exports.getSolicitudPendientePaciente = async (req, res) => {
       });
     res.status(200).send({ solicitudDuplicada: false });
   } catch (error) {
-    await manejarError(error, req, res);
-  }
-};
-
-exports.postIdSuscriptor = async (req, res) => {
-  try {
-    const { idSuscriptor } = req.body;
-    const rutPaciente = req.rutPaciente;
-
-    /* Paciente existe en la colección de idsSuscriptores */
-    const pacienteTieneIdSuscriptor = await IdsSuscriptorPacientes.findOne({
-      rutPaciente: rutPaciente,
-    }).exec();
-    if (!pacienteTieneIdSuscriptor) {
-      await IdsSuscriptorPacientes.create({ rutPaciente, idSuscriptor });
-      return res.status(201).send({ respuesta: await getMensajes("success") });
-    }
-
-    /* Se busca si existe el id suscriptor */
-    const existeIdSuscriptor = await IdsSuscriptorPacientes.find({
-      rutPaciente: rutPaciente,
-      idSuscriptor: idSuscriptor,
-    }).exec();
-    if (existeIdSuscriptor.length > 0)
-      return res.status(201).send({ respuesta: await getMensajes("success") });
-
-    /* Se agrega nuevo id suscriptor al arreglo del paciente */
-    await IdsSuscriptorPacientes.findOneAndUpdate(
-      { rutPaciente: rutPaciente },
-      { $push: { idSuscriptor: idSuscriptor } }
-    ).exec();
-    return res.status(201).send({ respuesta: await getMensajes("success") });
-  } catch (error) {
-    await manejarError(error, req, res);
-  }
-};
-
-exports.getIdsSuscriptor = async (req, res) => {
-  try {
-    const idsSuscriptorPaciente = await IdsSuscriptorPacientes.findOne({
-      rutPaciente: req.rutPaciente,
-    }).exec();
-    res.status(200).send(idsSuscriptorPaciente.idsSuscriptor);
-  } catch (error) {
-    await manejarError(error, req, res);
+    await handleError(res, error);
   }
 };

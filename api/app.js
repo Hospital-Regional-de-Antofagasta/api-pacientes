@@ -3,6 +3,7 @@ const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
 const pacientes = require("./routes/pacientes");
+const idsSuscriptor = require("./routes/idsSuscriptor");
 const app = express();
 app.use(express.json());
 app.use(cors());
@@ -21,6 +22,8 @@ app.get("/v1/pacientes/health", (req, res) => {
 });
 
 app.use("/v1/pacientes", pacientes);
+
+app.use("/v1/pacientes/id-suscriptor", idsSuscriptor);
 
 if (require.main === module) {
   // true if file is executed
