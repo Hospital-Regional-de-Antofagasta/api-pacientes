@@ -6,7 +6,15 @@ const IdsSuscriptorPacientes = mongoose.model(
   new Schema(
     {
       rutPaciente: { type: String, required: true },
-      idSuscriptor: [String],
+      idsSuscriptor: {
+        type: [
+          {
+            idSuscriptor: { type: String, required: true },
+            nombreDispositivo: { type: String, required: true },
+          },
+        ],
+        required: true,
+      },
     },
     { timestamps: true }
   )
