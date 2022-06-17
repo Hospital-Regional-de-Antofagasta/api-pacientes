@@ -627,10 +627,11 @@ describe("Endpoints", () => {
 
       expect(idSuscriptorAgregado).toBeFalsy();
 
-      const solicitudIdSuscriptor = await SolicitudesIdsSuscriptorPacientes.findOne({
-        rutPaciente: null,
-        idSuscriptor: "778891",
-      }).exec();
+      const solicitudIdSuscriptor =
+        await SolicitudesIdsSuscriptorPacientes.findOne({
+          rutPaciente: null,
+          idSuscriptor: "778891",
+        }).exec();
 
       expect(solicitudIdSuscriptor).toBeFalsy();
     });
@@ -663,10 +664,11 @@ describe("Endpoints", () => {
 
       expect(idSuscriptorAgregado).toBeFalsy();
 
-      const solicitudIdSuscriptor = await SolicitudesIdsSuscriptorPacientes.findOne({
-        rutPaciente: null,
-        idSuscriptor: "778891",
-      }).exec();
+      const solicitudIdSuscriptor =
+        await SolicitudesIdsSuscriptorPacientes.findOne({
+          rutPaciente: null,
+          idSuscriptor: "778891",
+        }).exec();
 
       expect(solicitudIdSuscriptor).toBeFalsy();
     });
@@ -699,10 +701,11 @@ describe("Endpoints", () => {
 
       expect(idSuscriptorAgregado).toBeFalsy();
 
-      const solicitudIdSuscriptor = await SolicitudesIdsSuscriptorPacientes.findOne({
-        rutPaciente: "2-2",
-        idSuscriptor: "778891",
-      }).exec();
+      const solicitudIdSuscriptor =
+        await SolicitudesIdsSuscriptorPacientes.findOne({
+          rutPaciente: "2-2",
+          idSuscriptor: "778891",
+        }).exec();
 
       expect(solicitudIdSuscriptor).toBeFalsy();
     });
@@ -734,10 +737,11 @@ describe("Endpoints", () => {
 
       expect(idSuscriptorAgregado).toBeFalsy();
 
-      const solicitudIdSuscriptor = await SolicitudesIdsSuscriptorPacientes.findOne({
-        rutPaciente: rutPaciente,
-        idSuscriptor: null,
-      }).exec();
+      const solicitudIdSuscriptor =
+        await SolicitudesIdsSuscriptorPacientes.findOne({
+          rutPaciente: rutPaciente,
+          idSuscriptor: null,
+        }).exec();
 
       expect(solicitudIdSuscriptor).toBeFalsy();
     });
@@ -769,10 +773,11 @@ describe("Endpoints", () => {
 
       expect(idSuscriptorAgregado).toBeFalsy();
 
-      const solicitudIdSuscriptor = await SolicitudesIdsSuscriptorPacientes.findOne({
-        rutPaciente: rutPaciente,
-        idSuscriptor: null,
-      }).exec();
+      const solicitudIdSuscriptor =
+        await SolicitudesIdsSuscriptorPacientes.findOne({
+          rutPaciente: rutPaciente,
+          idSuscriptor: null,
+        }).exec();
 
       expect(solicitudIdSuscriptor).toBeFalsy();
     });
@@ -804,10 +809,11 @@ describe("Endpoints", () => {
 
       expect(idSuscriptorAgregado).toBeFalsy();
 
-      const solicitudIdSuscriptor = await SolicitudesIdsSuscriptorPacientes.findOne({
-        rutPaciente: rutPaciente,
-        idSuscriptor: null,
-      }).exec();
+      const solicitudIdSuscriptor =
+        await SolicitudesIdsSuscriptorPacientes.findOne({
+          rutPaciente: rutPaciente,
+          idSuscriptor: null,
+        }).exec();
 
       expect(solicitudIdSuscriptor).toBeFalsy();
     });
@@ -839,10 +845,11 @@ describe("Endpoints", () => {
 
       expect(idSuscriptorAgregado).toBeFalsy();
 
-      const solicitudIdSuscriptor = await SolicitudesIdsSuscriptorPacientes.findOne({
-        rutPaciente: rutPaciente,
-        idSuscriptor: "778891",
-      }).exec();
+      const solicitudIdSuscriptor =
+        await SolicitudesIdsSuscriptorPacientes.findOne({
+          rutPaciente: rutPaciente,
+          idSuscriptor: "778891",
+        }).exec();
 
       expect(solicitudIdSuscriptor).toBeFalsy();
     });
@@ -874,10 +881,11 @@ describe("Endpoints", () => {
 
       expect(idSuscriptorAgregado).toBeFalsy();
 
-      const solicitudIdSuscriptor = await SolicitudesIdsSuscriptorPacientes.findOne({
-        rutPaciente: rutPaciente,
-        idSuscriptor: null,
-      }).exec();
+      const solicitudIdSuscriptor =
+        await SolicitudesIdsSuscriptorPacientes.findOne({
+          rutPaciente: rutPaciente,
+          idSuscriptor: null,
+        }).exec();
 
       expect(solicitudIdSuscriptor).toBeFalsy();
     });
@@ -909,10 +917,11 @@ describe("Endpoints", () => {
 
       expect(idSuscriptorAgregado).toBeFalsy();
 
-      const solicitudIdSuscriptor = await SolicitudesIdsSuscriptorPacientes.findOne({
-        rutPaciente: rutPaciente,
-        idSuscriptor: "778891",
-      }).exec();
+      const solicitudIdSuscriptor =
+        await SolicitudesIdsSuscriptorPacientes.findOne({
+          rutPaciente: rutPaciente,
+          idSuscriptor: "778891",
+        }).exec();
 
       expect(solicitudIdSuscriptor).toBeFalsy();
     });
@@ -952,14 +961,15 @@ describe("Endpoints", () => {
         "samsung S22"
       );
 
-      const solicitudIdSuscriptor = await SolicitudesIdsSuscriptorPacientes.findOne({
-        rutPaciente: rutPaciente,
-        idSuscriptor: "778800",
-      }).exec();
+      const solicitudIdSuscriptor =
+        await SolicitudesIdsSuscriptorPacientes.findOne({
+          rutPaciente: rutPaciente,
+          idSuscriptor: "778800",
+        }).exec();
 
       expect(solicitudIdSuscriptor).toBeFalsy();
     });
-    it("Intenta agregar idSuscriptor al paciente que no tenía ninguno", async () => {
+    it("Intenta agregar idSuscriptor al paciente que no tenía ninguno y crea una solicitud de insertar el idSuscriptor", async () => {
       const { token, rutPaciente } = await getToken("6101834e912f6209f4851fdd");
 
       const respuesta = await request
@@ -992,14 +1002,16 @@ describe("Endpoints", () => {
         "moto g7"
       );
 
-      const solicitudIdSuscriptor = await SolicitudesIdsSuscriptorPacientes.findOne({
-        rutPaciente: rutPaciente,
-        idSuscriptor: "778899",
-      }).exec();
+      const solicitudIdSuscriptor =
+        await SolicitudesIdsSuscriptorPacientes.findOne({
+          rutPaciente: rutPaciente,
+          idSuscriptor: "778899",
+        }).exec();
 
       expect(solicitudIdSuscriptor).toBeTruthy();
+      expect(solicitudIdSuscriptor.accion).toBe("INSERTAR");
     });
-    it("Intenta agregar idSuscriptor al paciente", async () => {
+    it("Intenta agregar idSuscriptor al paciente y crea una solicitud de insertar el idSuscriptor", async () => {
       const { token, rutPaciente } = await getToken("6101834e912f6209f4851fdb");
 
       const respuesta = await request
@@ -1030,12 +1042,14 @@ describe("Endpoints", () => {
         "moto g8"
       );
 
-      const solicitudIdSuscriptor = await SolicitudesIdsSuscriptorPacientes.findOne({
-        rutPaciente: rutPaciente,
-        idSuscriptor: "161718",
-      }).exec();
+      const solicitudIdSuscriptor =
+        await SolicitudesIdsSuscriptorPacientes.findOne({
+          rutPaciente: rutPaciente,
+          idSuscriptor: "161718",
+        }).exec();
 
       expect(solicitudIdSuscriptor).toBeTruthy();
+      expect(solicitudIdSuscriptor.accion).toBe("INSERTAR");
     });
   });
   describe("GET /v1/pacientes/id-suscriptor", () => {
@@ -1103,6 +1117,124 @@ describe("Endpoints", () => {
       expect(respuesta.body[2].nombreDispositivo).toBe("samsung S21");
       expect(respuesta.body[3].idSuscriptor).toBe("131415");
       expect(respuesta.body[3].nombreDispositivo).toBe("iphone 13");
+    });
+  });
+  describe("DELETE /v1/pacientes/id-suscriptor/:idSuscriptor", () => {
+    it("Debería retornar error si no se recibe token.", async () => {
+      const respuesta = await request.delete(
+        "/v1/pacientes/id-suscriptor/778899"
+      );
+
+      const mensaje = await getMensajes("forbiddenAccess");
+
+      expect(respuesta.status).toBe(401);
+
+      expect(respuesta.body.respuesta).toEqual({
+        titulo: mensaje.titulo,
+        mensaje: mensaje.mensaje,
+        color: mensaje.color,
+        icono: mensaje.icono,
+      });
+    });
+    it("Debería retornar error si el token es invalido.", async () => {
+      const respuesta = await request
+        .delete("/v1/pacientes/id-suscriptor/778899")
+        .set("Authorization", "token");
+
+      const mensaje = await getMensajes("forbiddenAccess");
+
+      expect(respuesta.status).toBe(401);
+
+      expect(respuesta.body.respuesta).toEqual({
+        titulo: mensaje.titulo,
+        mensaje: mensaje.mensaje,
+        color: mensaje.color,
+        icono: mensaje.icono,
+      });
+    });
+    it("Debería retornar error si el paciente no existe.", async () => {
+      const respuesta = await request
+        .delete("/v1/pacientes/id-suscriptor/778899")
+        .set("Authorization", tokenPacienteNoExistente);
+
+      const mensaje = await getMensajes("badRequest");
+
+      expect(respuesta.status).toBe(400);
+
+      expect(respuesta.body.respuesta).toEqual({
+        titulo: mensaje.titulo,
+        mensaje: mensaje.mensaje,
+        color: mensaje.color,
+        icono: mensaje.icono,
+      });
+    });
+    it("Debería retornar error si el idSuscriptor no existe.", async () => {
+      const { token } = await getToken("6101834e912f6209f4851fdb");
+
+      const respuesta = await request
+        .delete("/v1/pacientes/id-suscriptor/778891")
+        .set("Authorization", token);
+
+      const mensaje = await getMensajes("badRequest");
+
+      expect(respuesta.status).toBe(400);
+
+      expect(respuesta.body.respuesta).toEqual({
+        titulo: mensaje.titulo,
+        mensaje: mensaje.mensaje,
+        color: mensaje.color,
+        icono: mensaje.icono,
+      });
+    });
+    it("Debería eliminar el id suscriptor y crear una solicitud de eliminar el idSuscriptor cuando solo tiene uno.", async () => {
+      const { token, rutPaciente } = await getToken("6101834e912f6209f4851fdc");
+
+      const respuesta = await request
+        .delete("/v1/pacientes/id-suscriptor/161718")
+        .set("Authorization", token);
+
+      expect(respuesta.status).toBe(200);
+
+      const idSuscriptorAgregado = await IdsSuscriptorPacientes.findOne({
+        rutPaciente: rutPaciente,
+        "idsSuscriptor.idSuscriptor": "161718",
+      }).exec();
+
+      expect(idSuscriptorAgregado).toBeFalsy();
+
+      const solicitudIdSuscriptor =
+        await SolicitudesIdsSuscriptorPacientes.findOne({
+          rutPaciente: rutPaciente,
+          idSuscriptor: "161718",
+        }).exec();
+
+      expect(solicitudIdSuscriptor).toBeTruthy();
+      expect(solicitudIdSuscriptor.accion).toBe("ELIMINAR");
+    });
+    it("Debería eliminar el id suscriptor y crear una solicitud de eliminar el idSuscriptor cuando tiene varios.", async () => {
+      const { token, rutPaciente } = await getToken("6101834e912f6209f4851fdb");
+
+      const respuesta = await request
+        .delete("/v1/pacientes/id-suscriptor/778899")
+        .set("Authorization", token);
+
+      expect(respuesta.status).toBe(200);
+
+      const idSuscriptorEliminado = await IdsSuscriptorPacientes.findOne({
+        rutPaciente: rutPaciente,
+        "idsSuscriptor.idSuscriptor": "778899",
+      }).exec();
+
+      expect(idSuscriptorEliminado).toBeFalsy();
+
+      const solicitudIdSuscriptor =
+        await SolicitudesIdsSuscriptorPacientes.findOne({
+          rutPaciente: rutPaciente,
+          idSuscriptor: "778899",
+        }).exec();
+
+      expect(solicitudIdSuscriptor).toBeTruthy();
+      expect(solicitudIdSuscriptor.accion).toBe("ELIMINAR");
     });
   });
 });

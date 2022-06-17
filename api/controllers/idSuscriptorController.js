@@ -3,6 +3,17 @@ const SolicitudesIdsSuscriptorPacientes = require("../models/SolicitudesIdsSuscr
 const { getMensajes } = require("../config");
 const { handleError } = require("../utils/errorHandler");
 
+exports.getIdsSuscriptor = async (req, res) => {
+  try {
+    const idsSuscriptorPaciente = await IdsSuscriptorPacientes.findOne({
+      rutPaciente: req.rutPaciente,
+    }).exec();
+    res.status(200).send(idsSuscriptorPaciente.idsSuscriptor);
+  } catch (error) {
+    await handleError(res, error);
+  }
+};
+
 exports.postIdSuscriptor = async (req, res) => {
   try {
     const { idSuscriptor, nombreDispositivo } = req.body;
@@ -23,7 +34,7 @@ exports.postIdSuscriptor = async (req, res) => {
         rutPaciente,
         idSuscriptor,
         accion: "INSERTAR",
-      })
+      });
 
       return res.status(201).send({ respuesta: await getMensajes("success") });
     }
@@ -50,7 +61,7 @@ exports.postIdSuscriptor = async (req, res) => {
       rutPaciente,
       idSuscriptor,
       accion: "INSERTAR",
-    })
+    });
 
     return res.status(201).send({ respuesta: await getMensajes("success") });
   } catch (error) {
@@ -58,12 +69,23 @@ exports.postIdSuscriptor = async (req, res) => {
   }
 };
 
-exports.getIdsSuscriptor = async (req, res) => {
+exports.deleteIdsSuscriptor = async (req, res) => {
   try {
-    const idsSuscriptorPaciente = await IdsSuscriptorPacientes.findOne({
-      rutPaciente: req.rutPaciente,
-    }).exec();
-    res.status(200).send(idsSuscriptorPaciente.idsSuscriptor);
+    const { idSuscriptor } = req.params;
+    const rutPaciente = req.rutPaciente;
+
+    await IdsSuscriptorPacientes.updateOne(
+      { rutPaciente: rutPaciente, "idsSuscriptor.idSuscriptor": idSuscriptor },
+      { $pull: { idsSuscriptor: { idSuscriptor } } }
+    ).exec();
+
+    await SolicitudesIdsSuscriptorPacientes.create({
+      rutPaciente,
+      idSuscriptor,
+      accion: "ELIMINAR",
+    });
+
+    res.status(200).send({ respuesta: await getMensajes("success") });
   } catch (error) {
     await handleError(res, error);
   }
