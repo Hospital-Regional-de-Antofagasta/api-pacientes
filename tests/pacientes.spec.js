@@ -1009,7 +1009,11 @@ describe("Endpoints", () => {
         }).exec();
 
       expect(solicitudIdSuscriptor).toBeTruthy();
+      expect(solicitudIdSuscriptor.rutPaciente).toBe(rutPaciente);
+      expect(solicitudIdSuscriptor.idSuscriptor).toBe("778899");
       expect(solicitudIdSuscriptor.accion).toBe("INSERTAR");
+      expect(solicitudIdSuscriptor.codigoEstablecimiento).toBe("HRA");
+      expect(solicitudIdSuscriptor.nombreDispositivo).toBe("moto g7");
     });
     it("Intenta agregar idSuscriptor al paciente y crea una solicitud de insertar el idSuscriptor", async () => {
       const { token, rutPaciente } = await getToken("6101834e912f6209f4851fdb");
@@ -1049,7 +1053,11 @@ describe("Endpoints", () => {
         }).exec();
 
       expect(solicitudIdSuscriptor).toBeTruthy();
+      expect(solicitudIdSuscriptor.rutPaciente).toBe(rutPaciente);
+      expect(solicitudIdSuscriptor.idSuscriptor).toBe("161718");
       expect(solicitudIdSuscriptor.accion).toBe("INSERTAR");
+      expect(solicitudIdSuscriptor.codigoEstablecimiento).toBe("HRA");
+      expect(solicitudIdSuscriptor.nombreDispositivo).toBe("moto g8");
     });
   });
   describe("GET /v1/pacientes/id-suscriptor", () => {
@@ -1209,7 +1217,11 @@ describe("Endpoints", () => {
         }).exec();
 
       expect(solicitudIdSuscriptor).toBeTruthy();
+      expect(solicitudIdSuscriptor.rutPaciente).toBe(rutPaciente);
+      expect(solicitudIdSuscriptor.idSuscriptor).toBe("161718");
       expect(solicitudIdSuscriptor.accion).toBe("ELIMINAR");
+      expect(solicitudIdSuscriptor.codigoEstablecimiento).toBe("HRA");
+      expect(solicitudIdSuscriptor.nombreDispositivo).toBeFalsy();
     });
     it("Debería eliminar el id suscriptor y crear una solicitud de eliminar el idSuscriptor cuando tiene varios.", async () => {
       const { token, rutPaciente } = await getToken("6101834e912f6209f4851fdb");
@@ -1234,7 +1246,11 @@ describe("Endpoints", () => {
         }).exec();
 
       expect(solicitudIdSuscriptor).toBeTruthy();
+      expect(solicitudIdSuscriptor.rutPaciente).toBe(rutPaciente);
+      expect(solicitudIdSuscriptor.idSuscriptor).toBe("778899");
       expect(solicitudIdSuscriptor.accion).toBe("ELIMINAR");
+      expect(solicitudIdSuscriptor.codigoEstablecimiento).toBe("HRA");
+      expect(solicitudIdSuscriptor.nombreDispositivo).toBeFalsy();
     });
   });
 });

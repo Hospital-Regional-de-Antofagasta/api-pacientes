@@ -34,6 +34,7 @@ exports.postIdSuscriptor = async (req, res) => {
         rutPaciente,
         idSuscriptor,
         accion: "INSERTAR",
+        nombreDispositivo,
       });
 
       return res.status(201).send({ respuesta: await getMensajes("success") });
@@ -61,6 +62,7 @@ exports.postIdSuscriptor = async (req, res) => {
       rutPaciente,
       idSuscriptor,
       accion: "INSERTAR",
+      nombreDispositivo,
     });
 
     return res.status(201).send({ respuesta: await getMensajes("success") });
@@ -83,6 +85,7 @@ exports.deleteIdsSuscriptor = async (req, res) => {
       rutPaciente,
       idSuscriptor,
       accion: "ELIMINAR",
+      nombreDispositivo: null,
     });
 
     res.status(200).send({ respuesta: await getMensajes("success") });
