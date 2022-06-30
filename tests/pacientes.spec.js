@@ -57,6 +57,7 @@ afterEach(async () => {
   await PacientesActualizados.deleteMany();
   await ConfigApiPacientes.deleteMany();
   await IdsSuscriptorPacientes.deleteMany();
+  await SolicitudesIdsSuscriptorPacientes.deleteMany();
   /* Se limpia colección para iniciar siempre con colección vacia */
   await mongoose.connection.close();
 });
@@ -604,7 +605,7 @@ describe("Endpoints", () => {
     it("Intenta agregar idSuscriptor sin token", async () => {
       const respuesta = await request.post("/v1/pacientes/id-suscriptor").send({
         idSuscriptorPaciente: "778891",
-        nombreDispositivo: "moto g7",
+        nombreDispositivo: "iPhone9,3",
       });
 
       const mensaje = await getMensajes("forbiddenAccess");
@@ -641,7 +642,7 @@ describe("Endpoints", () => {
         .set("Authorization", "token")
         .send({
           idSuscriptorPaciente: "778891",
-          nombreDispositivo: "moto g7",
+          nombreDispositivo: "iPhone9,3",
         });
 
       const mensaje = await getMensajes("forbiddenAccess");
@@ -678,7 +679,7 @@ describe("Endpoints", () => {
         .set("Authorization", tokenPacienteNoExistente)
         .send({
           idSuscriptorPaciente: "778891",
-          nombreDispositivo: "moto g7",
+          nombreDispositivo: "iPhone9,3",
         });
 
       const mensaje = await getMensajes("badRequest");
@@ -787,7 +788,7 @@ describe("Endpoints", () => {
       const respuesta = await request
         .post("/v1/pacientes/id-suscriptor")
         .set("Authorization", token)
-        .send({ nombreDispositivo: "moto g7" });
+        .send({ nombreDispositivo: "iPhone9,3" });
 
       const mensaje = await getMensajes("badRequest");
 
@@ -859,7 +860,7 @@ describe("Endpoints", () => {
       const respuesta = await request
         .post("/v1/pacientes/id-suscriptor")
         .set("Authorization", token)
-        .send({ idSuscriptor: {}, nombreDispositivo: "moto g9" });
+        .send({ idSuscriptor: {}, nombreDispositivo: "SM-S901B" });
 
       const mensaje = await getMensajes("badRequest");
 
@@ -931,7 +932,7 @@ describe("Endpoints", () => {
       const respuesta = await request
         .post("/v1/pacientes/id-suscriptor")
         .set("Authorization", token)
-        .send({ idSuscriptor: "778800", nombreDispositivo: "samsung S22" });
+        .send({ idSuscriptor: "778800", nombreDispositivo: "SM-G973F" });
 
       const mensaje = await getMensajes("success");
 
@@ -958,7 +959,7 @@ describe("Endpoints", () => {
       expect(idSuscriptor.length).toBe(1);
       expect(idSuscriptorAgregado.idsSuscriptor[1].idSuscriptor).toBe("778800");
       expect(idSuscriptorAgregado.idsSuscriptor[1].nombreDispositivo).toBe(
-        "samsung S22"
+        "Galaxy S10"
       );
 
       const solicitudIdSuscriptor =
@@ -975,7 +976,7 @@ describe("Endpoints", () => {
       const respuesta = await request
         .post("/v1/pacientes/id-suscriptor")
         .set("Authorization", token)
-        .send({ idSuscriptor: "778899", nombreDispositivo: "moto g7" });
+        .send({ idSuscriptor: "778899", nombreDispositivo: "iPhone9,3" });
 
       const mensaje = await getMensajes("success");
 
@@ -999,7 +1000,7 @@ describe("Endpoints", () => {
       expect(idSuscriptorAgregado.idsSuscriptor.length).toBe(1);
       expect(idSuscriptorAgregado.idsSuscriptor[0].idSuscriptor).toBe("778899");
       expect(idSuscriptorAgregado.idsSuscriptor[0].nombreDispositivo).toBe(
-        "moto g7"
+        "iPhone 7"
       );
 
       const solicitudIdSuscriptor =
@@ -1013,7 +1014,7 @@ describe("Endpoints", () => {
       expect(solicitudIdSuscriptor.idSuscriptor).toBe("778899");
       expect(solicitudIdSuscriptor.accion).toBe("INSERTAR");
       expect(solicitudIdSuscriptor.codigoEstablecimiento).toBe("HRA");
-      expect(solicitudIdSuscriptor.nombreDispositivo).toBe("moto g7");
+      expect(solicitudIdSuscriptor.nombreDispositivo).toBe("iPhone 7");
     });
     it("Intenta agregar idSuscriptor al paciente y crea una solicitud de insertar el idSuscriptor", async () => {
       const { token, rutPaciente } = await getToken("6101834e912f6209f4851fdb");
@@ -1021,7 +1022,7 @@ describe("Endpoints", () => {
       const respuesta = await request
         .post("/v1/pacientes/id-suscriptor")
         .set("Authorization", token)
-        .send({ idSuscriptor: "161718", nombreDispositivo: "moto g8" });
+        .send({ idSuscriptor: "161718", nombreDispositivo: "SM-G991N" });
 
       const mensaje = await getMensajes("success");
 
@@ -1043,7 +1044,7 @@ describe("Endpoints", () => {
 
       expect(idSuscriptorAgregado.idsSuscriptor[4].idSuscriptor).toBe("161718");
       expect(idSuscriptorAgregado.idsSuscriptor[4].nombreDispositivo).toBe(
-        "moto g8"
+        "Galaxy S21 5G"
       );
 
       const solicitudIdSuscriptor =
@@ -1057,7 +1058,7 @@ describe("Endpoints", () => {
       expect(solicitudIdSuscriptor.idSuscriptor).toBe("161718");
       expect(solicitudIdSuscriptor.accion).toBe("INSERTAR");
       expect(solicitudIdSuscriptor.codigoEstablecimiento).toBe("HRA");
-      expect(solicitudIdSuscriptor.nombreDispositivo).toBe("moto g8");
+      expect(solicitudIdSuscriptor.nombreDispositivo).toBe("Galaxy S21 5G");
     });
   });
   describe("GET /v1/pacientes/id-suscriptor", () => {
@@ -1118,11 +1119,11 @@ describe("Endpoints", () => {
 
       expect(respuesta.body.length).toBe(4);
       expect(respuesta.body[0].idSuscriptor).toBe("778899");
-      expect(respuesta.body[0].nombreDispositivo).toBe("moto g7");
+      expect(respuesta.body[0].nombreDispositivo).toBe("iPhone 7");
       expect(respuesta.body[1].idSuscriptor).toBe("778800");
-      expect(respuesta.body[1].nombreDispositivo).toBe("samsung S22");
+      expect(respuesta.body[1].nombreDispositivo).toBe("Galaxy S10");
       expect(respuesta.body[2].idSuscriptor).toBe("101112");
-      expect(respuesta.body[2].nombreDispositivo).toBe("samsung S21");
+      expect(respuesta.body[2].nombreDispositivo).toBe("Galaxy S22");
       expect(respuesta.body[3].idSuscriptor).toBe("131415");
       expect(respuesta.body[3].nombreDispositivo).toBe("iphone 13");
     });

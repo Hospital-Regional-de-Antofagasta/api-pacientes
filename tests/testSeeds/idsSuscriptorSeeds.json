@@ -4,15 +4,15 @@
     "idsSuscriptor": [
       {
         "idSuscriptor": "778899",
-        "nombreDispositivo": "moto g7"
+        "nombreDispositivo": "iPhone 7"
       },
       {
         "idSuscriptor": "778800",
-        "nombreDispositivo": "samsung S22"
+        "nombreDispositivo": "Galaxy S10"
       },
       {
         "idSuscriptor": "101112",
-        "nombreDispositivo": "samsung S21"
+        "nombreDispositivo": "Galaxy S22"
       },
       {
         "idSuscriptor": "131415",
@@ -25,7 +25,7 @@
     "idsSuscriptor": [
       {
         "idSuscriptor": "161718",
-        "nombreDispositivo": "moto g8"
+        "nombreDispositivo": "moto g(7) power"
       }
     ]
   }
