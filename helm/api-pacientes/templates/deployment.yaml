@@ -59,6 +59,11 @@ spec:
                 secretKeyRef:
                   name: {{ include "api-pacientes.secrets" . }}
                   key: mongo
+            - name: API_URL
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "api-pacientes.secrets" . }}
+                  key: api-url
 
           {{- if .Values.resources }}
           resources:

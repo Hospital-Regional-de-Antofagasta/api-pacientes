@@ -21,6 +21,7 @@ var apiKey = System.getenv("API_KEY") ?: "0123456789ABCDEF"
 var mongoIp = System.getenv("MONGO_IP") ?: "localhost"
 var keyJson = System.getenv("KEY") ?: "{}"
 var nodeEnv = System.getenv("NODE_ENV") ?: "prod"
+var apiUrl = System.getenv("URL") ?: "0123456789ABCDEF"
 var commitId
 
 gitVersion{
@@ -182,12 +183,14 @@ helm {
             forTarget('local') {
                 values.put('enviroment', nodeEnv)
                 values.put('secrets.mongoUrl', "mongodb://$mongoIp:27017/hrapp_pacientes_dev")
+                values.put('secrets.apiUrl', apiUrl)
             }
 
             forTarget('cloud') {
                 values.put('enviroment', nodeEnv)
                 values.put('secrets.apiKey', apiKey)
                 values.put('secrets.mongoUrl', "mongodb://$mongoIp:27017/hrapp_pacientes")
+                values.put('secrets.apiUrl', apiUrl)
             }
 
             forAnyTarget{

@@ -17,6 +17,7 @@ fullnameOverride: ""
 secrets:
   apiKey: ""
   mongoUrl: "mongodb://mongo/hrapp"
+  apiUrl: ""
 
 enviroment: prod
 
