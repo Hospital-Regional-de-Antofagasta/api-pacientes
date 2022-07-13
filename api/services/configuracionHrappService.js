@@ -1,4 +1,4 @@
-const { httpRequest } = require("./httpRequests");
+const { httpRequest } = require("../utils/httpRequests");
 
 const urlConfiguracionHrapp = process.env.API_URL;
 

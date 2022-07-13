@@ -1,14 +1,37 @@
 const IdsSuscriptorPacientes = require("../models/IdsSuscriptorPacientes");
 const SolicitudesIdsSuscriptorPacientes = require("../models/SolicitudesIdsSuscriptorPacientes");
 const { getMensajes } = require("../config");
-const { handleError } = require("../utils/errorHandler");
-const { getNombreDispositivo } = require("../utils/configuracionHrappService");
+const { handleError, sendCustomError } = require("../utils/errorHandler");
+const { getNombreDispositivo } = require("../services/configuracionHrappService");
+const { getDevice } = require("../services/oneSignalService");
 
 exports.getIdsSuscriptor = async (req, res) => {
   try {
     const idsSuscriptorPaciente = await IdsSuscriptorPacientes.findOne({
       rutPaciente: req.rutPaciente,
     }).exec();
+
+    for (let idSuscriptor of idsSuscriptorPaciente.idsSuscriptor) {
+      const oneSignalResponse = await getDevice(idSuscriptor.idSuscriptor);
+
+      if (!oneSignalResponse.id)
+        return await sendCustomError(
+          res,
+          500,
+          "serverError",
+          oneSignalResponse
+        );
+
+      if (oneSignalResponse.invalid_identifier) {
+        await removerIdSuscriptor(req.rutPaciente, idSuscriptor.idSuscriptor);
+
+        idsSuscriptorPaciente.idsSuscriptor.splice(
+          idsSuscriptorPaciente.idsSuscriptor.indexOf(idSuscriptor),
+          1
+        );
+      }
+    }
+
     res.status(200).send(idsSuscriptorPaciente.idsSuscriptor);
   } catch (error) {
     await handleError(res, error);
@@ -94,20 +117,24 @@ exports.deleteIdsSuscriptor = async (req, res) => {
     const { idSuscriptor } = req.params;
     const rutPaciente = req.rutPaciente;
 
-    await IdsSuscriptorPacientes.updateOne(
-      { rutPaciente: rutPaciente, "idsSuscriptor.idSuscriptor": idSuscriptor },
-      { $pull: { idsSuscriptor: { idSuscriptor } } }
-    ).exec();
-
-    await SolicitudesIdsSuscriptorPacientes.create({
-      rutPaciente,
-      idSuscriptor,
-      accion: "ELIMINAR",
-      nombreDispositivo: null,
-    });
+    await removerIdSuscriptor(rutPaciente, idSuscriptor);
 
     res.status(200).send({ respuesta: await getMensajes("success") });
   } catch (error) {
     await handleError(res, error);
   }
+};
+
+const removerIdSuscriptor = async (rutPaciente, idSuscriptor) => {
+  await IdsSuscriptorPacientes.updateOne(
+    { rutPaciente: rutPaciente, "idsSuscriptor.idSuscriptor": idSuscriptor },
+    { $pull: { idsSuscriptor: { idSuscriptor } } }
+  ).exec();
+
+  await SolicitudesIdsSuscriptorPacientes.create({
+    rutPaciente,
+    idSuscriptor,
+    accion: "ELIMINAR",
+    nombreDispositivo: null,
+  });
 };
