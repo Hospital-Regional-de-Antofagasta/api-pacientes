@@ -22,6 +22,9 @@ var mongoIp = System.getenv("MONGO_IP") ?: "localhost"
 var keyJson = System.getenv("KEY") ?: "{}"
 var nodeEnv = System.getenv("NODE_ENV") ?: "prod"
 var apiUrl = System.getenv("URL") ?: "0123456789ABCDEF"
+var oneSignalAppId = System.getenv("ONE_SIGNAL_APP_ID") ?: "0123456789ABCDEF"
+var oneSignalToken = System.getenv("ONE_SIGNAL_TOKEN") ?: "0123456789ABCDEF"
+var oneSignalUrl = System.getenv("ONE_SIGNAL_URL") ?: "0123456789ABCDEF"
 var commitId
 
 gitVersion{
@@ -191,6 +194,9 @@ helm {
                 values.put('secrets.apiKey', apiKey)
                 values.put('secrets.mongoUrl', "mongodb://$mongoIp:27017/hrapp_pacientes")
                 values.put('secrets.apiUrl', apiUrl)
+                values.put('secrets.oneSignalAppId', oneSignalAppId)
+                values.put('secrets.oneSignalToken', oneSignalToken)
+                values.put('secrets.oneSignalUrl', oneSignalUrl)
             }
 
             forAnyTarget{

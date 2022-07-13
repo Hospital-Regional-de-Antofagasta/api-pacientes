@@ -15,6 +15,9 @@
         API_KEY: ${{ secrets.API_KEY_PROD }}
         MONGO_IP: ${{ secrets.MONGO_IP_PROD }}
         URL: ${{ secrets.API_URL_PROD }}
+        ONE_SIGNAL_APP_ID: ${{ secrets.ONE_SIGNAL_APP_ID_PROD }}
+        ONE_SIGNAL_TOKEN: ${{ secrets.ONE_SIGNAL_TOKEN_PROD }}
+        ONE_SIGNAL_URL: ${{ secrets.ONE_SIGNAL_URL_PROD }}
         NODE_ENV: "prod"
       steps:
         - name: Checkout

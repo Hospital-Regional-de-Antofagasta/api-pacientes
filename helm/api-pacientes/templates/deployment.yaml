@@ -64,6 +64,21 @@ spec:
                 secretKeyRef:
                   name: {{ include "api-pacientes.secrets" . }}
                   key: api-url
+            - name: ONE_SIGNAL_APP_ID
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "api-pacientes.secrets" . }}
+                  key: one-signal-app-id
+            - name: ONE_SIGNAL_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "api-pacientes.secrets" . }}
+                  key: one-signal-token
+            - name: ONE_SIGNAL_URL
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "api-pacientes.secrets" . }}
+                  key: one-signal-url
 
           {{- if .Values.resources }}
           resources:
