@@ -39,12 +39,12 @@ const mensajesPorDefecto = {
     color: "",
     icono: "",
   },
-  // conocimientoDeudaRegistrado: {
-  //   titulo: "Conocimiento Deuda Registrado",
-  //   mensaje: "Conocimiento de deuda Registrado correctamente.",
-  //   color: "",
-  //   icono: "",
-  // },
+  success: {
+    titulo: "Acción Realizada",
+    mensaje: "La acción fue realizada con éxito.",
+    color: "",
+    icono: "",
+  },
 };
 
 exports.getMensajes = async (tipo) => {

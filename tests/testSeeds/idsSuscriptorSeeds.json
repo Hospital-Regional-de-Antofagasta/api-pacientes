@@ -1,0 +1,32 @@
+[
+  {
+    "rutPaciente": "33333333-3",
+    "idsSuscriptor": [
+      {
+        "idSuscriptor": "778899",
+        "nombreDispositivo": "iPhone 7"
+      },
+      {
+        "idSuscriptor": "778800",
+        "nombreDispositivo": "Galaxy S10"
+      },
+      {
+        "idSuscriptor": "101112",
+        "nombreDispositivo": "Galaxy S22"
+      },
+      {
+        "idSuscriptor": "131415",
+        "nombreDispositivo": "iphone 13"
+      }
+    ]
+  },
+  {
+    "rutPaciente": "10771131-7",
+    "idsSuscriptor": [
+      {
+        "idSuscriptor": "161718",
+        "nombreDispositivo": "moto g(7) power"
+      }
+    ]
+  }
+]

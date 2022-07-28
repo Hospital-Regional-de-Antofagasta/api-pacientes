@@ -8,6 +8,7 @@ const {
   validarUbicacion,
   validarNoObligatorios,
 } = require("../middleware/validarDatosContacto");
+
 const router = express.Router();
 
 router.get(
@@ -40,12 +41,5 @@ router.get(
   validarSiPacienteExiste,
   pacientesController.getSolicitudPendientePaciente
 );
-
-// router.post(
-//   "/conocimiento-deuda",
-//   isAuthenticated,
-//   validarSiPacienteExiste,
-//   pacientesController.postConocimientoDeuda
-// );
 
 module.exports = router;

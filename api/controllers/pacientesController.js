@@ -1,21 +1,20 @@
 const Pacientes = require("../models/Pacientes");
 const PacientesActualizados = require("../models/PacientesActualizados");
-// const ConocimientoDeuda = require("../models/ConocimientoDeuda");
 const { getMensajes } = require("../config");
-const { manejarError } = require("../utils/errorController");
+const { handleError } = require("../utils/errorHandler");
 
 exports.getInformacionPaciente = async (req, res) => {
   try {
     let filter = { _id: req.idPaciente };
     if (req.query.filter === "rut") filter = { rut: req.rutPaciente };
-    let select = "-rut"
+    let select = "-rut";
     if (req.query.filter === "rut") select = "";
 
     const paciente = await Pacientes.findOne(filter).select(select).exec();
     if (!paciente) return res.sendStatus(200);
     res.status(200).send(paciente);
   } catch (error) {
-    await manejarError(error, req, res);
+    await handleError(res, error);
   }
 };
 
@@ -43,7 +42,7 @@ exports.postDatosPaciente = async (req, res) => {
 
     res.status(201).send({ respuesta: await getMensajes("solicitudCreada") });
   } catch (error) {
-    await manejarError(error, req, res);
+    await handleError(res, error);
   }
 };
 
@@ -68,7 +67,7 @@ exports.getSiDatosContactoConfirmados = async (req, res) => {
       .status(200)
       .send({ datosContactoConfirmados: paciente.datosContactoActualizados });
   } catch (error) {
-    await manejarError(error, req, res);
+    await handleError(res, error);
   }
 };
 
@@ -84,24 +83,6 @@ exports.getSolicitudPendientePaciente = async (req, res) => {
       });
     res.status(200).send({ solicitudDuplicada: false });
   } catch (error) {
-    await manejarError(error, req, res);
+    await handleError(res, error);
   }
 };
-
-// exports.postConocimientoDeuda = async (req, res) => {
-//   try {
-//     const conocimientoDeuda = {
-//       idPaciente: req.idPaciente,
-//       rutPaciente: req.rutPaciente,
-//       fecha: new Date(),
-//     };
-
-//     await ConocimientoDeuda.create(conocimientoDeuda);
-
-//     res
-//       .status(200)
-//       .send({ respuesta: await getMensajes("conocimientoDeudaRegistrado") });
-//   } catch (error) {
-//     await manejarError(error, req, res);
-//   }
-// };

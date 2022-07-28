@@ -1,5 +1,6 @@
 const Pacientes = require("../models/Pacientes");
 const { getMensajes } = require("../config");
+const { handleError } = require("../utils/errorHandler");
 
 exports.validarCorreo = async (req, res, next) => {
   try {
@@ -18,15 +19,7 @@ exports.validarCorreo = async (req, res, next) => {
 
     next();
   } catch (error) {
-    if (process.env.NODE_ENV === "dev")
-      return res.status(500).send({
-        respuesta: await getMensajes("serverError"),
-        detalles_error: {
-          nombre: error.name,
-          mensaje: error.message,
-        },
-      });
-    res.status(500).send({ respuesta: await getMensajes("serverError") });
+    await handleError(res, error);
   }
 };
 
@@ -72,15 +65,7 @@ exports.validarTelefono = async (req, res, next) => {
     }
     next();
   } catch (error) {
-    if (process.env.NODE_ENV === "dev")
-      return res.status(500).send({
-        respuesta: await getMensajes("serverError"),
-        detalles_error: {
-          nombre: error.name,
-          mensaje: error.message,
-        },
-      });
-    res.status(500).send({ respuesta: await getMensajes("serverError") });
+    await handleError(res, error);
   }
 };
 
@@ -105,15 +90,7 @@ exports.validarUbicacion = async (req, res, next) => {
     }
     next();
   } catch (error) {
-    if (process.env.NODE_ENV === "dev")
-      return res.status(500).send({
-        respuesta: await getMensajes("serverError"),
-        detalles_error: {
-          nombre: error.name,
-          mensaje: error.message,
-        },
-      });
-    res.status(500).send({ respuesta: await getMensajes("serverError") });
+    await handleError(res, error);
   }
 };
 
@@ -145,15 +122,7 @@ exports.validarNoObligatorios = async (req, res, next) => {
     }
     next();
   } catch (error) {
-    if (process.env.NODE_ENV === "dev")
-      return res.status(500).send({
-        respuesta: await getMensajes("serverError"),
-        detalles_error: {
-          nombre: error.name,
-          mensaje: error.message,
-        },
-      });
-    res.status(500).send({ respuesta: await getMensajes("serverError") });
+    await handleError(res, error);
   }
 };
 
@@ -169,14 +138,6 @@ exports.validarSiPacienteExiste = async (req, res, next) => {
 
     next();
   } catch (error) {
-    if (process.env.NODE_ENV === "dev")
-      return res.status(500).send({
-        respuesta: await getMensajes("serverError"),
-        detalles_error: {
-          nombre: error.name,
-          mensaje: error.message,
-        },
-      });
-    res.status(500).send({ respuesta: await getMensajes("serverError") });
+    await handleError(res, error);
   }
 };
