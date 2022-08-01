@@ -2,7 +2,9 @@ const IdsSuscriptorPacientes = require("../models/IdsSuscriptorPacientes");
 const SolicitudesIdsSuscriptorPacientes = require("../models/SolicitudesIdsSuscriptorPacientes");
 const { getMensajes } = require("../config");
 const { handleError, sendCustomError } = require("../utils/errorHandler");
-const { getNombreDispositivo } = require("../services/configuracionHrappService");
+const {
+  getNombreDispositivo,
+} = require("../services/configuracionHrappService");
 const { getDevice } = require("../services/oneSignalService");
 
 exports.getIdsSuscriptor = async (req, res) => {
@@ -11,6 +13,7 @@ exports.getIdsSuscriptor = async (req, res) => {
       rutPaciente: req.rutPaciente,
     }).exec();
 
+    const idsSuscriptorEliminar = [];
     for (let idSuscriptor of idsSuscriptorPaciente.idsSuscriptor) {
       const oneSignalResponse = await getDevice(idSuscriptor.idSuscriptor);
 
@@ -22,14 +25,20 @@ exports.getIdsSuscriptor = async (req, res) => {
           oneSignalResponse
         );
 
-      if (oneSignalResponse.invalid_identifier) {
-        await removerIdSuscriptor(req.rutPaciente, idSuscriptor.idSuscriptor);
+      if (oneSignalResponse.invalid_identifier)
+        idsSuscriptorEliminar.push(idSuscriptor);
+    }
 
-        idsSuscriptorPaciente.idsSuscriptor.splice(
-          idsSuscriptorPaciente.idsSuscriptor.indexOf(idSuscriptor),
-          1
-        );
-      }
+    for (let idSuscriptor of idsSuscriptorEliminar) {
+      await removerIdSuscriptor(
+        req.rutPaciente,
+        idSuscriptor.idSuscriptor
+      );
+
+      idsSuscriptorPaciente.idsSuscriptor.splice(
+        idsSuscriptorPaciente.idsSuscriptor.indexOf(idSuscriptor),
+        1
+      );
     }
 
     res.status(200).send(idsSuscriptorPaciente.idsSuscriptor);
