@@ -11,6 +11,7 @@ const IdsSuscriptorPacientes = mongoose.model(
           {
             idSuscriptor: { type: String, required: true },
             nombreDispositivo: { type: String, required: true },
+            esExternalId: { type: Boolean }
           },
         ],
         required: true,

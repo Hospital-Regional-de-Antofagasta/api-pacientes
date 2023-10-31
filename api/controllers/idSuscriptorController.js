@@ -39,7 +39,11 @@ exports.postIdSuscriptor = async (req, res) => {
       await IdsSuscriptorPacientes.create({
         rutPaciente,
         idsSuscriptor: [
-          { idSuscriptor, nombreDispositivo: nombreDispositivoAmigable },
+          {
+            idSuscriptor,
+            nombreDispositivo: nombreDispositivoAmigable,
+            esExternalId: true,
+          },
         ],
       });
 
@@ -57,6 +61,7 @@ exports.postIdSuscriptor = async (req, res) => {
     const existeIdSuscriptor = await IdsSuscriptorPacientes.findOne({
       rutPaciente: rutPaciente,
       "idsSuscriptor.idSuscriptor": idSuscriptor,
+      "idsSuscriptor.esExternalId": true,
     }).exec();
 
     if (existeIdSuscriptor)
@@ -70,6 +75,7 @@ exports.postIdSuscriptor = async (req, res) => {
           idsSuscriptor: {
             idSuscriptor,
             nombreDispositivo: nombreDispositivoAmigable,
+            esExternalId: true,
           },
         },
       },
