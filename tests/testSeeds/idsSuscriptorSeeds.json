@@ -4,19 +4,23 @@
     "idsSuscriptor": [
       {
         "idSuscriptor": "778899",
-        "nombreDispositivo": "iPhone 7"
+        "nombreDispositivo": "iPhone 7",
+        "esExternalId": true
       },
       {
         "idSuscriptor": "778800",
-        "nombreDispositivo": "Galaxy S10"
+        "nombreDispositivo": "Galaxy S10",
+        "esExternalId": true
       },
       {
         "idSuscriptor": "101112",
-        "nombreDispositivo": "Galaxy S22"
+        "nombreDispositivo": "Galaxy S22",
+        "esExternalId": true
       },
       {
         "idSuscriptor": "131415",
-        "nombreDispositivo": "iphone 13"
+        "nombreDispositivo": "iphone 13",
+        "esExternalId": true
       }
     ]
   },
@@ -25,7 +29,8 @@
     "idsSuscriptor": [
       {
         "idSuscriptor": "161718",
-        "nombreDispositivo": "moto g(7) power"
+        "nombreDispositivo": "moto g(7) power",
+        "esExternalId": true
       }
     ]
   }

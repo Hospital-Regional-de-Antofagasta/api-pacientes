@@ -951,6 +951,7 @@ describe("Endpoints", () => {
     //   const idSuscriptorAgregado = await IdsSuscriptorPacientes.findOne({
     //     rutPaciente: rutPaciente,
     //     "idsSuscriptor.idSuscriptor": "778800",
+    //     "idsSuscriptor.esExternalId": true,
     //   }).exec();
 
     //   const idSuscriptor = idSuscriptorAgregado.idsSuscriptor.filter(
@@ -962,6 +963,7 @@ describe("Endpoints", () => {
     //   expect(idSuscriptorAgregado.idsSuscriptor[1].nombreDispositivo).toBe(
     //     "Galaxy S10"
     //   );
+    //   expect(idSuscriptorAgregado.idsSuscriptor[1].esExternalId).toBeTruthy();
 
     //   const solicitudIdSuscriptor =
     //     await SolicitudesIdsSuscriptorPacientes.findOne({
@@ -995,6 +997,7 @@ describe("Endpoints", () => {
     //   const idSuscriptorAgregado = await IdsSuscriptorPacientes.findOne({
     //     rutPaciente: rutPaciente,
     //     "idsSuscriptor.idSuscriptor": "778899",
+    //     "idsSuscriptor.esExternalId": true,
     //   }).exec();
 
     //   expect(idSuscriptorAgregado.rutPaciente).toBe(rutPaciente);
@@ -1003,6 +1006,7 @@ describe("Endpoints", () => {
     //   expect(idSuscriptorAgregado.idsSuscriptor[0].nombreDispositivo).toBe(
     //     "iPhone 7"
     //   );
+    //   expect(idSuscriptorAgregado.idsSuscriptor[0].esExternalId).toBeTruthy();
 
     //   const solicitudIdSuscriptor =
     //     await SolicitudesIdsSuscriptorPacientes.findOne({
@@ -1041,12 +1045,14 @@ describe("Endpoints", () => {
     //   const idSuscriptorAgregado = await IdsSuscriptorPacientes.findOne({
     //     rutPaciente: rutPaciente,
     //     "idsSuscriptor.idSuscriptor": "161718",
+    //     "idsSuscriptor.esExternalId": true,
     //   }).exec();
 
     //   expect(idSuscriptorAgregado.idsSuscriptor[4].idSuscriptor).toBe("161718");
     //   expect(idSuscriptorAgregado.idsSuscriptor[4].nombreDispositivo).toBe(
     //     "Galaxy S21 5G"
     //   );
+    //   expect(idSuscriptorAgregado.idsSuscriptor[0].esExternalId).toBeTruthy();
 
     //   const solicitudIdSuscriptor =
     //     await SolicitudesIdsSuscriptorPacientes.findOne({
