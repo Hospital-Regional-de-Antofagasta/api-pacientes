@@ -39,7 +39,16 @@ exports.getIdsSuscriptor = async (req, res) => {
 
         continue;
       }
-      idsSuscriptorAEnviar.push(idSuscriptor);
+      const fechaCreacion = new Date(0);
+      if (estadoActualIdSuscriptor?.created_at)
+        fechaCreacion.setUTCSeconds(estadoActualIdSuscriptor?.created_at);
+      idsSuscriptorAEnviar.push({
+        idSuscriptor: idSuscriptor.idSuscriptor,
+        nombreDispositivo: idSuscriptor.nombreDispositivo,
+        fechaCreacion: estadoActualIdSuscriptor?.created_at
+          ? fechaCreacion
+          : undefined,
+      });
     }
 
     res.status(200).send(idsSuscriptorAEnviar);
