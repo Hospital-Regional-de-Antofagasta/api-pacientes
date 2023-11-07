@@ -3,13 +3,46 @@ const SolicitudesIdsSuscriptorPacientes = require("../models/SolicitudesIdsSuscr
 const { getMensajes } = require("../config");
 const { handleError } = require("../utils/errorHandler");
 const { getNombreDispositivo } = require("../utils/configuracionHrappService");
+const { getEstadoActualIdSuscriptor } = require("../utils/oneSignalService");
 
 exports.getIdsSuscriptor = async (req, res) => {
   try {
     const idsSuscriptorPaciente = await IdsSuscriptorPacientes.findOne({
       rutPaciente: req.rutPaciente,
     }).exec();
-    res.status(200).send(idsSuscriptorPaciente.idsSuscriptor);
+
+    const idsSuscriptorAEnviar = [];
+    for (const idSuscriptor of idsSuscriptorPaciente.idsSuscriptor) {
+      const estadoActualIdSuscriptor = await getEstadoActualIdSuscriptor(
+        idSuscriptor.idSuscriptor
+      );
+      if (!estadoActualIdSuscriptor?.id) continue;
+      if (estadoActualIdSuscriptor?.invalid_identifier) {
+        await IdsSuscriptorPacientes.updateOne(
+          {
+            rutPaciente: idsSuscriptorPaciente.rutPaciente,
+            "idsSuscriptor.idSuscriptor": idSuscriptor.idSuscriptor,
+          },
+          {
+            $pull: {
+              idsSuscriptor: { idSuscriptor: idSuscriptor.idSuscriptor },
+            },
+          }
+        ).exec();
+
+        await SolicitudesIdsSuscriptorPacientes.create({
+          rutPaciente: idsSuscriptorPaciente.rutPaciente,
+          idSuscriptor: idSuscriptor.idSuscriptor,
+          accion: "ELIMINAR",
+          nombreDispositivo: null,
+        });
+
+        continue;
+      }
+      idsSuscriptorAEnviar.push(idSuscriptor);
+    }
+
+    res.status(200).send(idsSuscriptorAEnviar);
   } catch (error) {
     await handleError(res, error);
   }
