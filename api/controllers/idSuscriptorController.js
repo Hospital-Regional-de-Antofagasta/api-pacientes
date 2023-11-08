@@ -30,7 +30,7 @@ exports.getIdsSuscriptor = async (req, res) => {
           }
         ).exec();
 
-        await SolicitudesIdsSuscriptorPacientes.create({
+        crearSolicitudIdSuscriptor({
           rutPaciente: idsSuscriptorPaciente.rutPaciente,
           idSuscriptor: idSuscriptor.idSuscriptor,
           accion: "ELIMINAR",
@@ -85,7 +85,7 @@ exports.postIdSuscriptor = async (req, res) => {
         ],
       });
 
-      await SolicitudesIdsSuscriptorPacientes.create({
+      crearSolicitudIdSuscriptor({
         rutPaciente,
         idSuscriptor,
         accion: "INSERTAR",
@@ -118,7 +118,7 @@ exports.postIdSuscriptor = async (req, res) => {
       { runValidator: true }
     ).exec();
 
-    await SolicitudesIdsSuscriptorPacientes.create({
+    crearSolicitudIdSuscriptor({
       rutPaciente,
       idSuscriptor,
       accion: "INSERTAR",
@@ -141,7 +141,7 @@ exports.deleteIdsSuscriptor = async (req, res) => {
       { $pull: { idsSuscriptor: { idSuscriptor } } }
     ).exec();
 
-    await SolicitudesIdsSuscriptorPacientes.create({
+    crearSolicitudIdSuscriptor({
       rutPaciente,
       idSuscriptor,
       accion: "ELIMINAR",
@@ -152,4 +152,28 @@ exports.deleteIdsSuscriptor = async (req, res) => {
   } catch (error) {
     await handleError(res, error);
   }
+};
+
+const crearSolicitudIdSuscriptor = async ({
+  rutPaciente,
+  idSuscriptor,
+  accion,
+  nombreDispositivo,
+}) => {
+  const solicitudIdSuscriptor = await SolicitudesIdsSuscriptorPacientes.findOne(
+    {
+      rutPaciente,
+      idSuscriptor,
+      accion,
+      nombreDispositivo,
+    }
+  ).exec();
+
+  if (!solicitudIdSuscriptor)
+    await SolicitudesIdsSuscriptorPacientes.create({
+      rutPaciente,
+      idSuscriptor,
+      accion,
+      nombreDispositivo,
+    });
 };
