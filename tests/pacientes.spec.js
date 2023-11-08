@@ -1110,25 +1110,26 @@ describe("Endpoints", () => {
         icono: mensaje.icono,
       });
     });
-    it("Debería obtener los ids suscriptor del paciente.", async () => {
-      const { token } = await getToken("6101834e912f6209f4851fdb");
+    // // no se puede ejecutar en produccion
+    // it("Debería obtener los ids suscriptor del paciente.", async () => {
+    //   const { token } = await getToken("6101834e912f6209f4851fdb");
 
-      const respuesta = await request
-        .get("/v1/pacientes/id-suscriptor")
-        .set("Authorization", token);
+    //   const respuesta = await request
+    //     .get("/v1/pacientes/id-suscriptor")
+    //     .set("Authorization", token);
 
-      expect(respuesta.status).toBe(200);
+    //   expect(respuesta.status).toBe(200);
 
-      expect(respuesta.body.length).toBe(4);
-      expect(respuesta.body[0].idSuscriptor).toBe("778899");
-      expect(respuesta.body[0].nombreDispositivo).toBe("iPhone 7");
-      expect(respuesta.body[1].idSuscriptor).toBe("778800");
-      expect(respuesta.body[1].nombreDispositivo).toBe("Galaxy S10");
-      expect(respuesta.body[2].idSuscriptor).toBe("101112");
-      expect(respuesta.body[2].nombreDispositivo).toBe("Galaxy S22");
-      expect(respuesta.body[3].idSuscriptor).toBe("131415");
-      expect(respuesta.body[3].nombreDispositivo).toBe("iphone 13");
-    });
+    //   expect(respuesta.body.length).toBe(4);
+    //   expect(respuesta.body[0].idSuscriptor).toBe("778899");
+    //   expect(respuesta.body[0].nombreDispositivo).toBe("iPhone 7");
+    //   expect(respuesta.body[1].idSuscriptor).toBe("778800");
+    //   expect(respuesta.body[1].nombreDispositivo).toBe("Galaxy S10");
+    //   expect(respuesta.body[2].idSuscriptor).toBe("101112");
+    //   expect(respuesta.body[2].nombreDispositivo).toBe("Galaxy S22");
+    //   expect(respuesta.body[3].idSuscriptor).toBe("131415");
+    //   expect(respuesta.body[3].nombreDispositivo).toBe("iphone 13");
+    // });
   });
   describe("DELETE /v1/pacientes/id-suscriptor/:idSuscriptor", () => {
     it("Debería retornar error si no se recibe token.", async () => {
