@@ -1,4 +1,4 @@
-const { httpRequest } = require("./httpRequests");
+const { httpRequest } = require("../utils/httpRequests");
 
 const oneSignalAppId = process.env.ONE_SIGNAL_APP_ID;
 const oneSignalToken = process.env.ONE_SIGNAL_TOKEN;

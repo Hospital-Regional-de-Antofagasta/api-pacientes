@@ -17,6 +17,10 @@ fullnameOverride: ""
 secrets:
   apiKey: ""
   mongoUrl: "mongodb://mongo/hrapp"
+  apiUrl: ""
+  oneSignalAppId: ""
+  oneSignalToken: ""
+  oneSignalUrl: ""
 
 enviroment: prod
 

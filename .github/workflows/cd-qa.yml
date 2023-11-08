@@ -15,6 +15,10 @@
         API_CLUSTER: ${{ secrets.GCP_CLUSTER_QA }}
         API_KEY: ${{ secrets.API_KEY_QA }}
         MONGO_IP: ${{ secrets.MONGO_IP_QA }}
+        URL: ${{ secrets.API_URL_QA }}
+        ONE_SIGNAL_APP_ID: ${{ secrets.ONE_SIGNAL_APP_ID_QA }}
+        ONE_SIGNAL_TOKEN: ${{ secrets.ONE_SIGNAL_TOKEN_QA }}
+        ONE_SIGNAL_URL: ${{ secrets.ONE_SIGNAL_URL_QA }}
         NODE_ENV: "dev"
       steps:
         - name: Checkout

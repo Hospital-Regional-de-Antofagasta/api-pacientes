@@ -2,8 +2,10 @@ const IdsSuscriptorPacientes = require("../models/IdsSuscriptorPacientes");
 const SolicitudesIdsSuscriptorPacientes = require("../models/SolicitudesIdsSuscriptorPacientes");
 const { getMensajes } = require("../config");
 const { handleError } = require("../utils/errorHandler");
-const { getNombreDispositivo } = require("../utils/configuracionHrappService");
-const { getEstadoActualIdSuscriptor } = require("../utils/oneSignalService");
+const {
+  getNombreDispositivo,
+} = require("../services/configuracionHrappService");
+const { getEstadoActualIdSuscriptor } = require("../services/oneSignalService");
 
 exports.getIdsSuscriptor = async (req, res) => {
   try {
