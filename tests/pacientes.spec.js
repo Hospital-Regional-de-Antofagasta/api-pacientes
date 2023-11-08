@@ -1110,6 +1110,7 @@ describe("Endpoints", () => {
         icono: mensaje.icono,
       });
     });
+    // // no se puede ejecutar en produccion
     // it("Debería obtener los ids suscriptor del paciente.", async () => {
     //   const { token } = await getToken("6101834e912f6209f4851fdb");
 

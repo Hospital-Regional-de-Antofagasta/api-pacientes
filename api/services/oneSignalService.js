@@ -4,19 +4,16 @@ const oneSignalAppId = process.env.ONE_SIGNAL_APP_ID;
 const oneSignalToken = process.env.ONE_SIGNAL_TOKEN;
 const urlOneSignal = process.env.ONE_SIGNAL_URL;
 
-exports.getDevice = async (idSuscriptor) => {
+exports.getEstadoActualIdSuscriptor = async (idsSuscriptor) => {
   const config = {
     headers: {
-      Authorization: `Basic ${oneSignalToken}`,
-      "Content-Type": "application/json",
-      Accept: "text/plain",
+      Authorization: `Bearer token="${oneSignalToken}"`,
     },
   };
 
   const response = await httpRequest(
     "GET",
-    `${urlOneSignal}/api/v1/players/${idSuscriptor}?app_id=${oneSignalAppId}`,
-    null,
+    `${urlOneSignal}/api/v1/players/${idsSuscriptor}?app_id=${oneSignalAppId}`,
     config,
     10
   );

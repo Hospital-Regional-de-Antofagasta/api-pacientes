@@ -1,11 +1,11 @@
 const IdsSuscriptorPacientes = require("../models/IdsSuscriptorPacientes");
 const SolicitudesIdsSuscriptorPacientes = require("../models/SolicitudesIdsSuscriptorPacientes");
 const { getMensajes } = require("../config");
-const { handleError, sendCustomError } = require("../utils/errorHandler");
+const { handleError } = require("../utils/errorHandler");
 const {
   getNombreDispositivo,
 } = require("../services/configuracionHrappService");
-const { getDevice } = require("../services/oneSignalService");
+const { getEstadoActualIdSuscriptor } = require("../services/oneSignalService");
 
 exports.getIdsSuscriptor = async (req, res) => {
   try {
@@ -13,35 +13,47 @@ exports.getIdsSuscriptor = async (req, res) => {
       rutPaciente: req.rutPaciente,
     }).exec();
 
-    const idsSuscriptorEliminar = [];
-    for (let idSuscriptor of idsSuscriptorPaciente.idsSuscriptor) {
-      const oneSignalResponse = await getDevice(idSuscriptor.idSuscriptor);
-
-      if (!oneSignalResponse.id)
-        return await sendCustomError(
-          res,
-          500,
-          "serverError",
-          oneSignalResponse
-        );
-
-      if (oneSignalResponse.invalid_identifier)
-        idsSuscriptorEliminar.push(idSuscriptor);
-    }
-
-    for (let idSuscriptor of idsSuscriptorEliminar) {
-      await removerIdSuscriptor(
-        req.rutPaciente,
+    const idsSuscriptorAEnviar = [];
+    for (const idSuscriptor of idsSuscriptorPaciente.idsSuscriptor) {
+      const estadoActualIdSuscriptor = await getEstadoActualIdSuscriptor(
         idSuscriptor.idSuscriptor
       );
+      if (!estadoActualIdSuscriptor?.id) continue;
+      if (estadoActualIdSuscriptor?.invalid_identifier) {
+        await IdsSuscriptorPacientes.updateOne(
+          {
+            rutPaciente: idsSuscriptorPaciente.rutPaciente,
+            "idsSuscriptor.idSuscriptor": idSuscriptor.idSuscriptor,
+          },
+          {
+            $pull: {
+              idsSuscriptor: { idSuscriptor: idSuscriptor.idSuscriptor },
+            },
+          }
+        ).exec();
 
-      idsSuscriptorPaciente.idsSuscriptor.splice(
-        idsSuscriptorPaciente.idsSuscriptor.indexOf(idSuscriptor),
-        1
-      );
+        crearSolicitudIdSuscriptor({
+          rutPaciente: idsSuscriptorPaciente.rutPaciente,
+          idSuscriptor: idSuscriptor.idSuscriptor,
+          accion: "ELIMINAR",
+          nombreDispositivo: null,
+        });
+
+        continue;
+      }
+      const fechaCreacion = new Date(0);
+      if (estadoActualIdSuscriptor?.created_at)
+        fechaCreacion.setUTCSeconds(estadoActualIdSuscriptor?.created_at);
+      idsSuscriptorAEnviar.push({
+        idSuscriptor: idSuscriptor.idSuscriptor,
+        nombreDispositivo: idSuscriptor.nombreDispositivo,
+        fechaCreacion: estadoActualIdSuscriptor?.created_at
+          ? fechaCreacion
+          : undefined,
+      });
     }
 
-    res.status(200).send(idsSuscriptorPaciente.idsSuscriptor);
+    res.status(200).send(idsSuscriptorAEnviar);
   } catch (error) {
     await handleError(res, error);
   }
@@ -75,7 +87,7 @@ exports.postIdSuscriptor = async (req, res) => {
         ],
       });
 
-      await SolicitudesIdsSuscriptorPacientes.create({
+      crearSolicitudIdSuscriptor({
         rutPaciente,
         idSuscriptor,
         accion: "INSERTAR",
@@ -108,7 +120,7 @@ exports.postIdSuscriptor = async (req, res) => {
       { runValidator: true }
     ).exec();
 
-    await SolicitudesIdsSuscriptorPacientes.create({
+    crearSolicitudIdSuscriptor({
       rutPaciente,
       idSuscriptor,
       accion: "INSERTAR",
@@ -126,7 +138,17 @@ exports.deleteIdsSuscriptor = async (req, res) => {
     const { idSuscriptor } = req.params;
     const rutPaciente = req.rutPaciente;
 
-    await removerIdSuscriptor(rutPaciente, idSuscriptor);
+    await IdsSuscriptorPacientes.updateOne(
+      { rutPaciente: rutPaciente, "idsSuscriptor.idSuscriptor": idSuscriptor },
+      { $pull: { idsSuscriptor: { idSuscriptor } } }
+    ).exec();
+
+    crearSolicitudIdSuscriptor({
+      rutPaciente,
+      idSuscriptor,
+      accion: "ELIMINAR",
+      nombreDispositivo: null,
+    });
 
     res.status(200).send({ respuesta: await getMensajes("success") });
   } catch (error) {
@@ -134,16 +156,26 @@ exports.deleteIdsSuscriptor = async (req, res) => {
   }
 };
 
-const removerIdSuscriptor = async (rutPaciente, idSuscriptor) => {
-  await IdsSuscriptorPacientes.updateOne(
-    { rutPaciente: rutPaciente, "idsSuscriptor.idSuscriptor": idSuscriptor },
-    { $pull: { idsSuscriptor: { idSuscriptor } } }
+const crearSolicitudIdSuscriptor = async ({
+  rutPaciente,
+  idSuscriptor,
+  accion,
+  nombreDispositivo,
+}) => {
+  const solicitudIdSuscriptor = await SolicitudesIdsSuscriptorPacientes.findOne(
+    {
+      rutPaciente,
+      idSuscriptor,
+      accion,
+      nombreDispositivo,
+    }
   ).exec();
 
-  await SolicitudesIdsSuscriptorPacientes.create({
-    rutPaciente,
-    idSuscriptor,
-    accion: "ELIMINAR",
-    nombreDispositivo: null,
-  });
+  if (!solicitudIdSuscriptor)
+    await SolicitudesIdsSuscriptorPacientes.create({
+      rutPaciente,
+      idSuscriptor,
+      accion,
+      nombreDispositivo,
+    });
 };
