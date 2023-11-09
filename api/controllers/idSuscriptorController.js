@@ -147,7 +147,7 @@ exports.deleteIdsSuscriptor = async (req, res) => {
 
     console.log("IdsSuscriptorPacientes.updateOne", idSuscriptor, log);
 
-    crearSolicitudIdSuscriptor({
+    await crearSolicitudIdSuscriptor({
       rutPaciente,
       idSuscriptor,
       accion: "ELIMINAR",
