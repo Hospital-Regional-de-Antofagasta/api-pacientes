@@ -1227,7 +1227,7 @@ describe("Endpoints", () => {
       expect(solicitudIdSuscriptor.codigoEstablecimiento).toBe("HRA");
       expect(solicitudIdSuscriptor.nombreDispositivo).toBeFalsy();
     });
-    it.only("Debería eliminar el id suscriptor y crear una solicitud de eliminar el idSuscriptor cuando tiene varios.", async () => {
+    it("Debería eliminar el id suscriptor y crear una solicitud de eliminar el idSuscriptor cuando tiene varios.", async () => {
       const { token, rutPaciente } = await getToken("6101834e912f6209f4851fdb");
 
       const respuesta = await request
