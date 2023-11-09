@@ -135,15 +135,17 @@ exports.postIdSuscriptor = async (req, res) => {
 
 exports.deleteIdsSuscriptor = async (req, res) => {
   try {
-    console.log("deleteIdsSuscriptor");
     const { idSuscriptor } = req.params;
     const rutPaciente = req.rutPaciente;
+
+    console.log("deleteIdsSuscriptor", idSuscriptor);
 
     const log = await IdsSuscriptorPacientes.updateOne(
       { rutPaciente: rutPaciente, "idsSuscriptor.idSuscriptor": idSuscriptor },
       { $pull: { idsSuscriptor: { idSuscriptor } } }
     ).exec();
-    console.log("IdsSuscriptorPacientes.updateOne", log);
+
+    console.log("IdsSuscriptorPacientes.updateOne", idSuscriptor, log);
 
     crearSolicitudIdSuscriptor({
       rutPaciente,
@@ -151,7 +153,8 @@ exports.deleteIdsSuscriptor = async (req, res) => {
       accion: "ELIMINAR",
       nombreDispositivo: null,
     });
-    console.log("crearSolicitudIdSuscriptor despues");
+
+    console.log("crearSolicitudIdSuscriptor despues", idSuscriptor);
 
     res.status(200).send({ respuesta: await getMensajes("success") });
   } catch (error) {
@@ -166,7 +169,9 @@ const crearSolicitudIdSuscriptor = async ({
   accion,
   nombreDispositivo,
 }) => {
-  console.log("crearSolicitudIdSuscriptor");
+
+  console.log("crearSolicitudIdSuscriptor", idSuscriptor);
+
   const solicitudIdSuscriptor = await SolicitudesIdsSuscriptorPacientes.findOne(
     {
       rutPaciente,
@@ -176,7 +181,7 @@ const crearSolicitudIdSuscriptor = async ({
     }
   ).exec();
 
-  console.log("solicitudIdSuscriptor", solicitudIdSuscriptor);
+  console.log("solicitudIdSuscriptor", idSuscriptor, solicitudIdSuscriptor);
 
   if (!solicitudIdSuscriptor) {
     const log = await SolicitudesIdsSuscriptorPacientes.create({
@@ -186,6 +191,6 @@ const crearSolicitudIdSuscriptor = async ({
       nombreDispositivo,
     });
 
-    console.log("SolicitudesIdsSuscriptorPacientes.create", log);
+    console.log("SolicitudesIdsSuscriptorPacientes.create", idSuscriptor, log);
   }
 };
